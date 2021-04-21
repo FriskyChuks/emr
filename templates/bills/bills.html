@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+  <div class="row g-3">
+    <div class="col-md-5">
+
+      <table class="table table-bordered border-primary">
+        <tr>
+            <th scope="row">1</th>
+            <td>Medical Service Bill:</td>
+            <td>N{{ med_total }}</td>
+            <td><a href="#" onclick='show(1);'>View Detail</a></td>
+        </tr>
+        
+        <tr>
+          <th scope="row">2</th>
+          <td>Radiology Bill:</td>
+          <td>N{{ rad_total }}</td>
+          <td><a href="#" onclick='show(2);'>View Detail</td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td><b>Total Bill</b></td>
+          <td><b>N{{ total_bill }}</b></td>
+        </tr>
+      </table>
+      
+    </div>
+
+    <div class="col-md-1">
+
+    </div>
+
+    <!-- Tables -->
+    <div class="col-md-6">
+      <table id="1" class="table">
+        <thead>
+          <tr>
+            <th scope="col">Item/Service</th>
+            <th scope="col">Unit Price</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Sub_Total</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        {% for bill in bills %}
+          {% if bill.status != "paid" %}
+          {% if bill.medical_service %}
+        <tr>
+            <!-- <td>{{ bill.medical_service }}--N{{ bill.medical_service.medical_service.price }}</td> -->
+            <td>{{ bill.medical_service.medical_service }}</td>
+            <td>N{{ bill.medical_service.medical_service.price }}</td>
+            <td>{{ bill.medical_service.unit }}</td>
+            <td>N{{ bill.medical_service.subtotal }}</td>
+            <td>{{ bill.status }}</td>
+        </tr>
+          {% endif %}
+          {% endif %}
+        {% endfor %}
+      </table>
+  
+      <table id="2" class="table">
+        <thead>
+          <tr>
+            <th scope="col">Item/Service</th>
+            <th scope="col">Unit Price</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Sub_Total</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        {% for bill in bills %}
+        {% if bill.status != "paid" %}
+        {% if bill.radiology_service %}
+        <tr>
+            <td>{{ bill.radiology_service }}</td>
+            <td>N{{ bill.radiology_service.radiology_service.price }}</td>
+            <td>{{ bill.radiology_service.unit }}</td>
+            <td>N{{ bill.radiology_service.subtotal }}</td>
+            <td>{{ bill.status }}</td>
+        </tr>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+      </table>
+    </div>
+ 
+  </div>
+</div>
+
+<script>
+  $(document).ready(function()
+  {
+    document.getElementById("1").style.display="none";
+    document.getElementById("2").style.display="none";
+  });
+  function show(nr) {
+    document.getElementById("1").style.display="none";
+    document.getElementById("2").style.display="none";
+    document.getElementById(nr).style.display="block";
+}
+</script>
+{% endblock %}

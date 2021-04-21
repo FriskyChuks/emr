@@ -1,0 +1,28 @@
+<table class="table">
+    <thead>
+      <tr>
+        <!-- <th scope="col">Ecounter</th> -->
+        <!-- <th scope="col">PID</th> -->
+        <th scope="col">Date</th>
+        <th scope="col">Weight</th>
+        <th scope="col">Temp</th>
+        <th scope="col">B/P</th>
+        <th scope="col">Pulse Rate</th>
+        <th scope="col">SP02</th>
+      </tr>
+    </thead>
+    
+    <tbody>
+        {% for vitals in patient.patientvitalsigns_set.all %}            
+        <tr>
+            <!-- <td>{{ vitals.date|date:"d-m-y" }} {{ vitals.date|time:"h:i a" }}</td> -->
+            <td>{{ vitals.date }}</td>
+            <td>{{ vitals.weight }}</td>
+            <td>{{ vitals.temperature }}</td>
+            <td>{{ vitals.blood_pressure }}</td>
+            <td>{{ vitals.pulse_rate }}</a></td>
+            <td>{{ vitals.sp_02 }}</td>
+        </tr>       
+        {% endfor %}           
+    </tbody>
+  </table>

@@ -1,0 +1,29 @@
+<!-- {% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    {% for q in qs %}
+    <a href="{{ q.get_absolute_url }}">{{ q.clinic }}</a>
+    {% endfor %}
+    <h3>Clinics</h3>
+    <table>
+        <thead>
+            <td>Firstname</td>
+            <td>Lastname</td>
+            <td>Marital Status</td>
+        </thead>
+        {% for qs in qs %}
+        <tr>
+            <td>{{ qs.patient.first_name }}</td>
+            <td>{{ qs.patient.last_name }}</td>
+            <td>{{ qs.patient.marital_status }}</td>
+            <td>{{ qs.current_clinic.clinic }}</td>
+            
+        </tr>       
+        {% endfor %}
+    </table>
+        
+    
+</div>
+
+{% endblock %} -->

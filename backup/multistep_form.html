@@ -1,0 +1,148 @@
+
+
+<!-- multistep form -->
+<form id="msform" action="{% url 'multistep_form_save' %}" method="POST">{% csrf_token %}
+    <!-- <h2 style="color: black; text-align: start;">Patient Registration</h2> -->
+    <!-- progressbar -->
+    <ul id="progressbar">
+      <li class="active">Account Setup</li>
+      <li>Social Profiles</li>
+      <li>Personal Details</li>
+    </ul>
+    <!-- fieldsets -->
+    <fieldset>
+      <h2 class="fs-title">Personal Info</h2>
+      <h3 class="fs-subtitle">This is step 1</h3>
+      <input type="text" name="first_name" placeholder="First name" />
+      <input type="text" name="last_name" placeholder="Last name" />
+      <input type="text" name="other_names" placeholder="Other names" />
+      <!-- <input type="text" name="gender" placeholder="Gender" /> -->
+      <input type="date" name="date_of_birth" placeholder="Date of birth" />
+      <!-- <input type="text" name="marital_status" placeholder="Marital status" /> -->
+      <select name="marital_status" class="form-select form-select-sm" aria-label=".form-select-sm example">
+        <option selected>Marital status</option>
+        <option value="married">Married</option>
+        <option value="single">Single</option>
+        <option value="divorced">Divorced</option>
+      </select><br>
+      <select name="gender" class="form-select form-select-sm" aria-label=".form-select-sm example">
+        <option selected>Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select><br>
+      <input type="text" name="next" class="next action-button" value="Next" />
+    </fieldset>
+    <fieldset>
+      <h2 class="fs-title">Addresses/Contact</h2>
+      <h3 class="fs-subtitle">We will never sell it</h3>
+      <input type="text" name="phone_1" placeholder="Phone 1" />
+      <input type="text" name="phone_2" placeholder="phone 2" />
+      <input type="text" name="country" placeholder="Country" />
+      <input type="text" name="state" placeholder="State" />
+      <input type="text" name="l_g_a" placeholder="Local Govt Area" />
+      <textarea name="address" placeholder="Address"></textarea>
+      <input type="button" name="previous" class="previous action-button" value="Previous" />
+      <input type="button" name="next" class="next action-button" value="Next" />       
+    </fieldset>
+    <fieldset>
+      <h2 class="fs-title">Next of Kin Details</h2>
+      <h3 class="fs-subtitle">Your next of kin information</h3>
+      <!-- <input type="text" name="next_of_kin_relationship" placeholder="Relationship" /> -->
+      <input type="text" name="full_name" placeholder="Fullname of next of Kin" />
+      <input type="text" name="phone" placeholder="Phone number" />
+      <textarea name="next_of_kin_address" placeholder="Address"></textarea>
+      <select name="next_of_kin_relationship" class="form-select form-select-sm" aria-label=".form-select-sm example">
+        <option selected>Relationship</option>
+        <option value="brother">Brother</option>
+        <option value="sister">Sister</option>
+      </select><br>
+      <input type="button" name="previous" class="previous action-button" value="Previous" />
+      <input type="submit" name="submit" class="submit action-button" value="Submit" />
+    </fieldset>      
+  </form>
+  
+
+<!-- jQuery time -->
+<script>
+var current_fs, next_fs, previous_fs; //fieldsets
+var left, opacity, scale; //fieldset properties which we will animate
+var animating; //flag to prevent quick multi-click glitches
+
+$(".next").click(function(){
+  if(animating) return false;
+  animating = true;
+  
+  current_fs = $(this).parent();
+  next_fs = $(this).parent().next();
+  
+  //activate next step on progressbar using the index of next_fs
+  $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+  
+  //show the next fieldset
+  next_fs.show(); 
+  //hide the current fieldset with style
+  current_fs.animate({opacity: 0}, {
+    step: function(now, mx) {
+      //as the opacity of current_fs reduces to 0 - stored in "now"
+      //1. scale current_fs down to 80%
+      scale = 1 - (1 - now) * 0.2;
+      //2. bring next_fs from the right(50%)
+      left = (now * 50)+"%";
+      //3. increase opacity of next_fs to 1 as it moves in
+      opacity = 1 - now;
+      current_fs.css({
+        'transform': 'scale('+scale+')',
+        'position': 'absolute'
+      });
+      next_fs.css({'left': left, 'opacity': opacity});
+    }, 
+    duration: 800, 
+    complete: function(){
+      current_fs.hide();
+      animating = false;
+    }, 
+    //this comes from the custom easing plugin
+    easing: 'easeInOutBack'
+  });
+});
+
+$(".previous").click(function(){
+  if(animating) return false;
+  animating = true;
+  
+  current_fs = $(this).parent();
+  previous_fs = $(this).parent().prev();
+  
+  //de-activate current step on progressbar
+  $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+  
+  //show the previous fieldset
+  previous_fs.show(); 
+  //hide the current fieldset with style
+  current_fs.animate({opacity: 0}, {
+    step: function(now, mx) {
+      //as the opacity of current_fs reduces to 0 - stored in "now"
+      //1. scale previous_fs from 80% to 100%
+      scale = 0.8 + (1 - now) * 0.2;
+      //2. take current_fs to the right(50%) - from 0%
+      left = ((1-now) * 50)+"%";
+      //3. increase opacity of previous_fs to 1 as it moves in
+      opacity = 1 - now;
+      current_fs.css({'left': left});
+      previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+    }, 
+    duration: 800, 
+    complete: function(){
+      current_fs.hide();
+      animating = false;
+    }, 
+    //this comes from the custom easing plugin
+    easing: 'easeInOutBack'
+  });
+});
+
+// $(".submit").click(function(){
+//   return false;
+// })
+
+</script>

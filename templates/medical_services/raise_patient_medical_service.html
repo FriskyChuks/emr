@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<--<a href="{% url 'patient_folder' patient_id=encounter.patient.id %}">{{ encounter.patient.first_name }}'s Folder</a>
+<br>
+
+<--{% if encounter.current_clinic %}
+    <a href="{% url 'clinic_visits_display' id=encounter.current_clinic.id %}"> {{ encounter.current_clinic }}</a>
+{% else %}
+    <a href="{% url 'ward_admission_display' id=encounter.current_ward.id %}"> {{ encounter.current_ward }}</a>
+{% endif %}
+
+<h5>Create Services for <b>{{ encounter.patient.first_name }} {{ encounter.patient.last_name }}</b> </h5> 
+<br>
+
+<form class="row g-3" id="form" method="POST" action="">{% csrf_token %} 
+    {{ formset.management_form }}
+    {% for form in formset %}
+        <div class="col-md-2">Select service: {{ form.medical_service }}</div> &nbsp; &nbsp; &nbsp; &nbsp;
+        <div class="col-md-2">Qty: {{ form.unit }}</div> &nbsp; &nbsp; &nbsp;
+        <hr>
+    {% endfor %}
+    <input type="submit" class="btn btn-success", value="Save">
+</form>
+
+
+{% endblock %}

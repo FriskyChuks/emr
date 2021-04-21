@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% for patient in patient %}
+
+  <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
+    <a href="{% url 'schedule_appointment' patient_id=patient.id %}"><button type="button" class="btn btn-primary col-md-12">Schedule Appointment</button></a>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="card">
+        {% if patient.foto %}
+        <img src="{{ patient.foto.url }}" class="card-img-top" alt="No Image">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title"><b></b></h5></div>
+      </div>
+    </div>
+    <div class="col-sm-9">
+      <!-- <div class="card">
+        <div class="card-body"> -->
+          <h5 class="card-title">{{ patient.first_name }} {{ patient.last_name }} {{ patient.other_name }}</h5>
+          <p class="card-text">
+            Phone:&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.phone_1 }} <br>
+            Age:&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.date_of_birth|timesince }} old <br>
+            Gender: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.gender|capfirst }} <br> 
+            Marital status:&nbsp; {{ patient.marital_status|capfirst }} <br>
+            L.G.A: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {{ patient.l_g_a|capfirst }} <br>
+            State: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {{ patient.state|capfirst }} <br>
+            Nationality:&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; {{ patient.country|capfirst }}
+          </p>
+          
+            <hr>
+            <div class="nav d-flex justify-content-between">
+              {% if patient.new %}
+                <a href="{% url 'create_new_encounter' patient_id=patient.id %}">Send to Clinic</a>
+              {% else %}
+              {% for p in patient.patientencounter_set.all|dictsortreversed:"id" %}
+                {% if p.active  %}
+                  {% if p.current_clinic  %} 
+                    <a href="{% url 'clinic_visits_display' id=p.current_clinic_id %}">{{ p.current_clinic.clinic }} Clinic</a>
+                  {% else %}
+                    <a href="{% url 'ward_admission_display' id=p.current_ward_id %}">{{ p.current_ward.ward }} Ward</a>            
+                  {% endif %}
+                <a href="#">View Bills</a>
+                {% endif %}
+              {% endfor %}
+        
+              {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
+                {% if not p.active  %}
+                  <a href="{% url 'create_new_encounter' patient_id=patient.id %}">Send to Clinic</a>
+                {% endif %}
+              {% endfor %}
+              {% endif %}
+              <a href="#" class="card-link">Update Record</a>
+              <a href="{% url 'patient_folder' patient_id=patient.id %}" class="card-link">View Folder</a>
+            </div>
+            
+        <!-- </div>
+      </div> -->
+    </div>
+  </div>
+
+{% endfor %}
+
+{% endblock %}

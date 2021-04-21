@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Item: <select name="item" id="items">
+    {% for i in item %}
+    <option value="{{ i.id }}">{{ i.title }}-{{ i.type }}</option>
+    {% endfor %}
+    </select> -->
+
+<--<a href="{% url 'patient_folder' patient_id=encounter.patient.id %}">{{ encounter.patient.first_name }}'s Folder</a>
+<br>
+    <--{% if encounter.current_clinic %}
+    <a href="{% url 'clinic_visits_display' id=encounter.current_clinic.id %}"> {{ encounter.current_clinic }}</a>
+{% else %}
+    <a href="{% url 'ward_admission_display' id=encounter.current_ward.id %}"> {{ encounter.current_ward }}</a>
+{% endif %}
+
+<h5>Prescription Sheet for <b>{{ encounter.patient.first_name }} {{ encounter.patient.last_name }}</b> </h5> 
+<br>    
+<form class="row g-3" id="form" method="POST" action="">{% csrf_token %} 
+    {{ formset.management_form }}
+    {% for form in formset %}
+        <div class="col-md-2">Item: {{ form.item }}</div> &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+        <div class="col-md-2">Qty per intake: {{ form.qty_per_take }}</div> &nbsp; &nbsp; &nbsp;&nbsp;
+        <div class="col-md-2">Times daily: {{ form.times_daily }}</div>  
+        <div class="col-md-2">No. of days: {{ form.no_of_days }}</div> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; 
+        <div class="col-md-2">No. of days: {{ form.route }}</div> &nbsp;
+         <hr>
+    {% endfor %}
+    <input type="submit" class="btn btn-success", value="Save">
+</form>
+
+
+{% endblock %}
