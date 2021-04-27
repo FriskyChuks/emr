@@ -103,12 +103,13 @@ WSGI_APPLICATION = 'emr.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': "emr",
-        'USER': "root",
-        'PASSWORD': "",
-        'HOST': "localhost",
-        'PORT': "3306",
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'NAME': "emr",
+        # 'USER': "root",
+        # 'PASSWORD': "",
+        # 'HOST': "localhost",
+        # 'PORT': "3306",
     }
 }
 
