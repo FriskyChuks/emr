@@ -26,7 +26,7 @@ SECRET_KEY = '3zjkc0dd^5hi@xgvrkb^ip6l=$15pf)w5*spd$9dxx#0$fijf5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.herokuapp.com']
+ALLOWED_HOSTS = ['smart-care.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -103,7 +103,7 @@ WSGI_APPLICATION = 'emr.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         # 'NAME': "emr",
         # 'USER': "root",
