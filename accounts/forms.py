@@ -84,10 +84,10 @@ class LoginForm(forms.Form):
 		return username 
 
 	def clean_password(self):
-		username_var = self.cleaned_data.get("email")
+		username_var = self.cleaned_data.get("username")
 		password_var = self.cleaned_data.get("password")
 		try:
-			user = User.objects.get(email=username_var)
+			user = User.objects.get(username=username_var)
 		except:
 			user = None
 		if user is not None and not user.check_password(password_var):
