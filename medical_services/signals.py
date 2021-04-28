@@ -24,7 +24,7 @@ def post_save_create_consultation_bill(sender, instance, created, **kwargs):
                 PatientEncounterService.objects.create(
                     encounter_no_id    = instance.id,
                     patient_id          = instance.patient.id,
-                    medical_service_id  = 3,
+                    medical_service_id  = 1,
                     unit                = 1,
                     created_by_id       = instance.created_by.id
                 )
