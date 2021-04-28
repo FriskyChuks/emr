@@ -33,7 +33,7 @@ def login_view(request):
         user = authenticate(username=username_var, password=password_var)
         user = form.save()
         user.set_password(user.password)
-        user.save()
+        # user.save()
         login(request, user)
         # messages.success(request, "Welcome" + " " + str(userlogin))
         if "next" in request.POST:
