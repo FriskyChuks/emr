@@ -31,12 +31,14 @@ def login_view(request):
         username_var = (form.cleaned_data['username'])
         password_var = (form.cleaned_data['password'])
         user = authenticate(username=username_var, password=password_var)
-        login(request, user)
+        if user is not None:
+            login(request, user)
+        # login(request, user)
         # messages.success(request, "Welcome" + " " + str(userlogin))
-        if "next" in request.POST:
-            return redirect(request.POST.get('next'))
-        else:
-            return HttpResponseRedirect("/home")
+            if "next" in request.POST:
+                return redirect(request.POST.get('next'))
+            else:
+                return HttpResponseRedirect("/home")
 
         # if user.is_superuser:
         #     return HttpResponseRedirect("/")
