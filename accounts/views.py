@@ -31,7 +31,10 @@ def login_view(request):
         username_var = (form.cleaned_data['username'])
         password_var = (form.cleaned_data['password'])
         user = authenticate(username=username_var, password=password_var)
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        user = form.save()
+        user.set_password(user.password)
+        user.save()
+        login(request, user)
         # messages.success(request, "Welcome" + " " + str(userlogin))
         if "next" in request.POST:
             return redirect(request.POST.get('next'))
