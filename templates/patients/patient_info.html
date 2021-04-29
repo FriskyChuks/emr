@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-
+{% load static %}
 {% for patient in patient %}
 
   <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
@@ -9,18 +9,19 @@
   <br>
   <div class="row">
     <div class="col-sm-3">
-      <div class="card">
-        {% if patient.foto %}
-        <img src="{{ patient.foto.url }}" class="card-img-top" alt="No Image">
-        {% endif %}
-        <div class="card-body">
-          <h5 class="card-title"><b></b></h5></div>
-      </div>
+      {% if patient.foto %}
+        <img src="{{ patient.foto.url }}" class="img-thumbnail">
+      <a href="{% url 'upload_image' pid=patient.id %}">Change Image</a>
+      {% else %}
+        <img src="{{ patient.foto.url }}" class="img-thumbnail">
+        <a href="{% url 'upload_image' pid=patient.id %}">Attach Image</a>
+      {% endif %}
+      
     </div>
     <div class="col-sm-9">
       <!-- <div class="card">
         <div class="card-body"> -->
-          <h5 class="card-title">{{ patient.first_name }} {{ patient.last_name }} {{ patient.other_name }}</h5>
+          <h5 class="card-title">{{ patient.first_name }} {{ patient.last_name }} {{ patient.other_name }} ({{ patient.id }})</h5>
           <p class="card-text">
             Phone:&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.phone_1 }} <br>
             Age:&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.date_of_birth|timesince }} old <br>

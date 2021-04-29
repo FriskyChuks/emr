@@ -10,7 +10,7 @@ from visits.models import PatientEncounter
 from accounts.models import User
 
 from .models import Patient#, NextOfKin, Address
-from .forms import PatientBiodataForm#, FotoForm#, AddressForm, NextOfKinForm
+from .forms import PatientBiodataForm, PatientImageForm#, FotoForm#, AddressForm, NextOfKinForm
 
 
 @login_required(login_url="auth_login")
@@ -55,7 +55,7 @@ def search_patient_view(request):
 @login_required(login_url="auth_login")
 def patient_detail_view(request, id):
     patient = Patient.objects.filter(id=id, active=True)
-    print(patient)
+    # print(patient)
     template = "patients/patient_info.html"
     context = {"patient":patient}
     return render(request, template, context)
@@ -81,14 +81,39 @@ def home(request):
 
 @login_required(login_url="auth_login")
 def patient_registration_form(request):  
-    form = PatientBiodataForm(request.POST or None, request.FILES or None)
+    form = PatientBiodataForm(request.POST or None)#, request.FILES or None)
     if form.is_valid():
         obj = form.save(commit=False)
         obj.created_by = request.user
         obj.save()
+        last_id = Patient.objects.last()
+        id = last_id.id
+        foto = last_id.foto
+        messages.success(request, "PID: "+str(id))
+        # messages.success(request, "PID is:"+str(last_id))
         return render(request, 'patients/success.html', {})
-        # form_biodata = PatientBiodataForm()               
+        # form_biodata = PatientBiodataForm() 
+                     
 
     template = "patients/registration.html"
     context = {"form": form}
+    return render(request, template, context)
+
+
+# @login_required(login_url="auth_login")
+def upload_patient_image_form(request, pid):
+    patient_instance = Patient.objects.get(id=pid)
+    pid = patient_instance.id
+    form1 = PatientImageForm(instance=patient_instance) 
+    if request.method == "POST":
+        form1 = PatientImageForm(request.POST or None, request.FILES or None, instance=patient_instance)
+        if form1.is_valid():
+            form1.save()
+            print("Uploaded Successfully")
+            return redirect("patient_detail", id=pid)
+        else:
+            return redirect("patient_detail", id=pid)
+
+    template = "patients/patient_foto.html"
+    context = {"form": form1, "patient_instance":patient_instance}
     return render(request, template, context)

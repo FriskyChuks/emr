@@ -74,7 +74,7 @@ RELATIONSHIP = (
 	)
 
 class Patient(models.Model):
-	foto			= models.ImageField(null=True, blank=True, upload_to="images/")
+	foto			= models.ImageField(null=True, blank=True, upload_to="image/", default="image/male.jpg")
 	first_name      = models.CharField(max_length=50)
 	last_name       = models.CharField(max_length=50)
 	other_names     = models.CharField(max_length=50)
@@ -106,7 +106,15 @@ class Patient(models.Model):
 	def get_absolute_url(self):
 		return reverse("patient_detail", kwargs={"id": self.id})
 
-	
+
+# class PatientImage(models.Model):
+# 	patient 		= models.OneToOneField(Patient, on_delete=models.CASCADE, blank=True, null=True)
+# 	foto			= models.ImageField(null=True, blank=True, upload_to="image/")
+# 	created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
+# 	def __str__(self):
+# 		return str(self.patient)
+
 
 
 # class NextOfKin(models.Model):
@@ -126,9 +134,3 @@ class Patient(models.Model):
 #     l_g_a           = models.CharField(max_length=100)
 #     address         = models.TextField()
 
-# class Foto(models.Model):
-# 	patient 		= models.ForeignKey(Patient, on_delete=models.CASCADE)
-# 	foto			= models.ImageField(null=True, blank=True, upload_to="images/")
-
-# 	def __str__(self):
-# 		return str(self.patient)

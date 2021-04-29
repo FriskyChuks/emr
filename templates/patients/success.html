@@ -3,8 +3,22 @@
 {% block content %}
 
 <div style="text-align: center;">
-    <h1>SUCCESSFUL!</h1><br>
-    <a href="{% url 'reg' %}"><div class="col-md-12"><input type="submit" class="btn btn-success", value="Ok"></div></a>
+  {% if messages %} 
+  {% for result in messages %} 
+   <h3>{{ result }}</h3> 
+  {% endfor %}
+  {% endif %}
+  <!-- <button type="submit">Attach Foto</button> -->
+  <button type="submit">
+    <a href="{% url 'registration' %}" >
+      Attach Foto
+    </a>
+  </button>
+  <!-- Go back button -->
+  <button type="submit">
+    <a href="{% url 'registration' %}" >
+      New Registration
+    </a>
+  </button>
 </div>
-
 {% endblock %}
