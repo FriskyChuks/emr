@@ -13,7 +13,6 @@
         <img src="{{ patient.foto.url }}" class="img-thumbnail">
       <a href="{% url 'upload_image' pid=patient.id %}">Change Image</a>
       {% else %}
-        <img src="{{ patient.foto.url }}" class="img-thumbnail">
         <a href="{% url 'upload_image' pid=patient.id %}">Attach Image</a>
       {% endif %}
       
