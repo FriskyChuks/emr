@@ -2,10 +2,13 @@
 
 {% block content %}
 {% for p in p_encounter|slice:":1" %}
+<--<a href="{% url 'patient_folder' patient_id=p.patient.id %}">Open {{ p.patient.first_name }}'s <b>Folder</b></a>
+<br>
+
   {% if p.current_clinic %}
-    <a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}">Back to {{ p.current_clinic }}</a>
+    <--<a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}">Back to {{ p.current_clinic }}</a>
   {% else %}
-    <a href="{% url 'ward_admission_display' id=p.current_ward.id %}">Back to {{ p.current_ward }}</a>
+    <--<a href="{% url 'ward_admission_display' id=p.current_ward.id %}">Back to {{ p.current_ward }}</a>
   {% endif %}
 {% endfor %}
 <div>

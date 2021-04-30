@@ -47,7 +47,7 @@
                   <td>{{ qs.patient.date_of_birth|timesince }} old, {{ qs.patient.gender|capfirst }}</td>
                   <td>{{ qs.updated|timesince }}</td>
                   <!-- <td>{{ qs.updated|time:"h:i a" }}</td> -->
-                  <td><a href="{% url 'take_vital_signs' id=qs.id %}" target="_blank">Vitals</a></td>
+                  <td><a href="{% url 'take_vital_signs' id=qs.id %}">Vitals</a></td>
                   <td><a href="{% url 'patient_notes' id=qs.id %}">Notes</a></td>
                   <td><a href="{% url 'patient_folder' patient_id=qs.patient.id  %}">Folder</a></td>
                   <td><a href="{% url 'transfer_patient' id=qs.id %}">Transfer</a></td>

@@ -3,6 +3,9 @@ from django.conf import settings
 
 User = settings.AUTH_USER_MODEL
 
+from visits.models import PatientEncounter
+from patients.models import Patient
+
 
 class LabUnit(models.Model):
     title        = models.CharField(max_length=100, blank=False, null=False, unique=True)
@@ -32,10 +35,25 @@ class LabTest(models.Model):
     compound_test       = models.ForeignKey(CompoundTest, on_delete=models.CASCADE, blank=True, null=True)
     title               = models.CharField(max_length=100, blank=False, null=False, unique=True)
     description         = models.CharField(max_length=255, blank=True, null=True)
+    cost_price          = models.DecimalField(max_digits=65, decimal_places=2, default=00.00)
+    price               = models.DecimalField(max_digits=65, decimal_places=2, default=00.00)
     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     date_created        = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated             = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
         return self.title
+
+
+class LabRequest(models.Model):
+    encounter           = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE, blank=True, null=True)
+    Patient             = models.ForeignKey(Patient, on_delete=models.CASCADE, blank=True, null=True)
+    test                = models.ForeignKey(LabTest, on_delete=models.CASCADE)
+    decline             = models.BooleanField(default=False)
+    created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    date_created        = models.DateTimeField(auto_now_add=True, auto_now=False)
+    updated             = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    def __str__(self):
+        return self.test
 
