@@ -37,6 +37,7 @@ class LabTest(models.Model):
     description         = models.CharField(max_length=255, blank=True, null=True)
     cost_price          = models.DecimalField(max_digits=65, decimal_places=2, default=00.00)
     price               = models.DecimalField(max_digits=65, decimal_places=2, default=00.00)
+    active              = models.BooleanField(default=True)
     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     date_created        = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated             = models.DateTimeField(auto_now_add=False, auto_now=True)
@@ -47,7 +48,7 @@ class LabTest(models.Model):
 
 class LabRequest(models.Model):
     encounter           = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE, blank=True, null=True)
-    Patient             = models.ForeignKey(Patient, on_delete=models.CASCADE, blank=True, null=True)
+    patient             = models.ForeignKey(Patient, on_delete=models.CASCADE, blank=True, null=True)
     test                = models.ForeignKey(LabTest, on_delete=models.CASCADE)
     decline             = models.BooleanField(default=False)
     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
@@ -55,5 +56,7 @@ class LabRequest(models.Model):
     updated             = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
-        return self.test
-
+        # try:
+        #     return str(self.test.id)
+        # except:
+        return str(self.patient.id)

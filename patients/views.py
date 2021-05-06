@@ -16,10 +16,10 @@ from .forms import PatientBiodataForm, PatientImageForm#, FotoForm#, AddressForm
 @login_required(login_url="auth_login")
 def patient_folder_view(request, patient_id):
     patient_ecounter = PatientEncounter.objects.filter(patient_id=patient_id).order_by("-id")
-    patient = Patient.objects.filter(id=patient_id)
+    current_encounter = Patient.objects.filter(id=patient_id)
     print(patient_ecounter)
     template = "patients/patient_folder.html"
-    context = {"patient_ecounter":patient_ecounter, "patient":patient}
+    context = {"patient_ecounter":patient_ecounter, "current_encounter":current_encounter}
     return render (request, template, context)
 
 

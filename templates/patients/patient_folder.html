@@ -40,16 +40,16 @@
           {% endfor %}
         {% endfor %}
     </p>
-    {% for patient in patient_ecounter|slice:":1" %}
+    {% for e in patient_ecounter|slice:":1" %}
      
     <h6>
-        <b>{{ patient.patient.first_name }} 
-        {{ patient.patient.last_name }} 
-        {{ patient.patient.other_names }}</b>;&nbsp; &nbsp;
-        {{ patient.patient.date_of_birth|timesince }};&nbsp; &nbsp;
-        {{ patient.patient.gender|capfirst }}; &nbsp; &nbsp;
+        <b>{{ e.patient.first_name }} 
+        {{ e.patient.last_name }} 
+        {{ e.patient.other_names }}</b>;&nbsp; &nbsp;
+        {{ e.patient.date_of_birth|timesince }};&nbsp; &nbsp;
+        {{ e.patient.gender|capfirst }}; &nbsp; &nbsp;
      
-        {% for vitals in patient.patientvitalsigns_set.all %}
+        {% for vitals in patient.patientvitalsigns_set.all|slice:":1" %}
             {{ vitals.weight }}Kg,
             {{ vitals.temperature }}°C
         {% endfor %}
@@ -234,8 +234,8 @@
         <div class="col-sm-6">
           <div class="card">
             <div class="card-body">
-              {% for patient in patient_ecounter|slice:":1" %}
-              <a href="{% url 'prescription' encounter_id=patient.id %}" class=""><h5>Prescription</h5></a>
+              {% for e in patient_ecounter|slice:":1" %}
+              <a href="{% url 'prescription' encounter_id=e.id %}" class=""><h5>Prescription</h5></a>
               <h6 class="card-title">Recent Prescriptions</h6>
               <p class="card-text">List of recent prescriptions here.</p>
               
@@ -245,7 +245,7 @@
         <div class="col-sm-6">
           <div class="card">
             <div class="card-body">
-              <a href="#" class=""><h5>Lab Investigation</h5></a>
+              <a href="{% url 'lab_request' enc_id=e.id %}" class=""><h5>Lab Investigation</h5></a>
               <h6 class="card-title">Recent Investigations</h6>
               <p class="card-text">List of recent Investigations here..</p>
             </div>
@@ -257,7 +257,7 @@
         <div class="col-sm-6">
           <div class="card">
             <div class="card-body">
-              <a href="{% url 'raise_patient_radiology_service' encounter_id=patient.id %}" class=""><h5>Radiology Investigation</h5></a>  
+              <a href="{% url 'raise_patient_radiology_service' encounter_id=e.id %}" class=""><h5>Radiology Investigation</h5></a>  
               <h6 class="card-title">Recent Investigations</h6>
               <p class="card-text">List of recent Investigations appear here.</p>
             </div>
@@ -267,7 +267,7 @@
           <div class="card">
             <div class="card-body">
               
-              <a href="{% url 'raise_patient_medical_service' encounter_id=patient.id %}" class=""><h5>Medical Services</h5></a>
+              <a href="{% url 'raise_patient_medical_service' encounter_id=e.id %}" class=""><h5>Medical Services</h5></a>
               <h6 class="card-title">Recent Services</6>
               <p class="card-text">List of recent services offered here.</p>
               

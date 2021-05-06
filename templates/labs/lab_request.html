@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- <script>
+    $(document).ready(function()
+    {
+        document.getElementById("txtDisplay").style.display="none";
+        $('.chkbox').click(function()
+        {
+            var selectedValue = "";
+            $('.chkbox:checked').each(function()
+            {
+                selectedValue += $(this).val()+',';
+            });
+            selectedValue += selectedValue.substring(0,selectedValue.length-1);
+            $('#txtDisplay').val(selectedValue)
+        });
+        $('#btnRequest').click(function()
+        {
+            alert("Request Successful!")
+        });
+    });
+</script> -->
+
+
+<form method="POST" action="">{% csrf_token %}
+<h3>Lab Investigations Sheet</h3>
+<div class="row g-3">
+    <div class="col-md-4">
+        <h4>Microbiology</h4>
+        {% for mc in microbiology_tests %}
+            <input type="checkbox" value="{{ mc.id }}" class="chkbox" id="chkTest" name="test_id"> {{ mc.title }} &nbsp; &nbsp;
+        {% endfor %}
+    </div>
+    <div class="col-md-4">
+        <h4>Chemical Pathology</h4>
+        {% for chempath in chem_path_tests %}
+            <input type="checkbox" value="{{ chempath.id }}" class="chkbox" id="chkTest" name="test_id"> {{ chempath.title }} &nbsp; &nbsp;
+        {% endfor %}
+    </div>
+    <div class="col-md-4">
+        <h4>Hermatology</h4>
+        {% for herma in hermatology_tests %}
+            <input type="checkbox" value="{{ herma.id }}" class="chkbox" id="chkTest" name="test_id"> {{ herma.title }} &nbsp; &nbsp;
+        {% endfor %}
+    </div>
+</div>
+<br><br>
+<input type="submit" id="btnRequest" class="btn btn-success" value="Request Investigation">
+</form>
+
+{% endblock %}
