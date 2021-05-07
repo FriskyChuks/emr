@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 from patients.models import Patient
 from visits.models import PatientEncounter
 
 from .models import LabRequest, LabTest
 
+
+@login_required(login_url="auth_login")
 def lab_request_view(request, enc_id):
     encounter = PatientEncounter.objects.get(id=enc_id, active=True)
     print("id is: ",encounter.patient.first_name)
