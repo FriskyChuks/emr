@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- <script>
+    $(document).ready(function()
+    {
+        document.getElementById("detail").style.display="none";
+        $('#request').click(function()
+        {
+            document.getElementById("detail").style.display="block";
+        })
+    })
+</script> -->
+
+<form method="POST" action="">{% csrf_token %}
+<div class="row g-2">    
+    <div id="detail" class="col-md-8">
+        {% for detail in request_detail|slice:":1" %}
+            <h3>{{ detail.patient.first_name }} {{ detail.patient.last_name }}</h3>
+            <b>{{ detail.patient.date_of_birth|timesince }}; {{ detail.patient.gender|capfirst }}</b>
+        {% endfor %}
+        <hr>
+        {% for detail in request_detail %}
+            * {{ detail.test }} <br>
+        {% endfor %}
+    </div>
+    <div id="detail" class="col-md-4">
+        
+    </div>
+</div>
+<br><br>
+<!-- <input type="submit" id="btnRequest" class="btn btn-success" value="Request Investigation"> -->
+</form>
+
+{% endblock %}
