@@ -52,7 +52,7 @@ def lab_request_view(request, enc_id):
         return render(request, template, context)
 
 
-
+@login_required(login_url="auth_login")
 def dispaly_request_view(request):
     lab_request = LabRequest.objects.values('encounter','patient').filter(decline=False).annotate(total=Count('id'))
     template = 'labs/display_request.html'
@@ -60,7 +60,7 @@ def dispaly_request_view(request):
     return render(request, template, context)
 
 
-
+@login_required(login_url="auth_login")
 def request_detail_view(request, enc_id):
     request_detail = LabRequest.objects.filter(encounter_id=enc_id)
 
