@@ -51,12 +51,22 @@ class LabRequest(models.Model):
     patient             = models.ForeignKey(Patient, on_delete=models.CASCADE, blank=True, null=True)
     test                = models.ForeignKey(LabTest, on_delete=models.CASCADE)
     decline             = models.BooleanField(default=False)
+    done                = models.BooleanField(default=False)
     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     date_created        = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated             = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
-        # try:
-        #     return str(self.test.id)
-        # except:
         return str(self.patient.id)
+
+
+
+class LabResults(models.Model):
+    lab_request         = models.ForeignKey(LabRequest, on_delete=models.CASCADE, blank=True, null=True)
+    result              = models.CharField(max_length=225)
+    created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    date_created        = models.DateTimeField(auto_now_add=True, auto_now=False)
+    updated             = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    def __str__(self):
+        return str(self.result)

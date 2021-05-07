@@ -24,6 +24,7 @@ def lab_request_view(request, enc_id):
             # Convert the string(test_request) to a tuple
             request_list = eval(test_request)
             for item in request_list:
+                print("selected item: ",item)
                 obj = LabRequest.objects.create(
                     encounter_id    = encounter.id,
                     patient_id      = patient_id,
@@ -31,17 +32,17 @@ def lab_request_view(request, enc_id):
                     created_by      = request.user
                 )
                 obj.save()
-                return redirect("patient_folder", patient_id = patient_id)
+            return redirect("patient_folder", patient_id = patient_id)
                   
             # selected_test.save()
-            template = "labs/lab_request2.html"
-            context = {
-                "encounter":encounter,
-                "microbiology_tests":microbiology_tests,
-                "chem_path_tests":chem_path_tests,
-                "hermatology_tests":hermatology_tests
-            }
-            return render(request, template, context)
+            # template = "labs/lab_request2.html"
+            # context = {
+            #     "encounter":encounter,
+            #     "microbiology_tests":microbiology_tests,
+            #     "chem_path_tests":chem_path_tests,
+            #     "hermatology_tests":hermatology_tests
+            # }
+            # return render(request, template, context)
     else:
         template = "labs/lab_request2.html"
         context = {
@@ -54,7 +55,7 @@ def lab_request_view(request, enc_id):
 
 @login_required(login_url="auth_login")
 def dispaly_request_view(request):
-    lab_request = LabRequest.objects.values('encounter','patient').filter(decline=False).annotate(total=Count('id'))
+    lab_request = LabRequest.objects.values('encounter','patient').filter(decline=False, done=False).annotate(total=Count('id'))
     template = 'labs/display_request.html'
     context = {"lab_request":lab_request}
     return render(request, template, context)
@@ -62,7 +63,7 @@ def dispaly_request_view(request):
 
 @login_required(login_url="auth_login")
 def request_detail_view(request, enc_id):
-    request_detail = LabRequest.objects.filter(encounter_id=enc_id)
+    request_detail = LabRequest.objects.filter(encounter_id=enc_id, decline=False, done=False)
 
     template = 'labs/request_detail.html'
     context = {"request_detail":request_detail}
