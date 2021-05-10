@@ -3,7 +3,7 @@
 <script>
     $(document).ready(function()
     {
-        document.getElementById("txtDisplay").style.display="none";
+        document.getElementById("txtDisplay").style.display="block";
         $('.chkbox').click(function()
         {
             var selectedValue = "";
@@ -12,24 +12,24 @@
             {
                 selectedValue += $(this).val()+",";
                 myArray.push(selectedValue)
-                console.log(myArray);
             });
             selectedValue = selectedValue.substring(0,selectedValue.length-1);
             $('#txtDisplay').val(selectedValue);
             
         });
-        $('#btnRequest').click(function()
-        {
-            alert("Request Successful!")
-        });
+        // $('#btnRequest').click(function()
+        // {
+        //     alert("Request Successful!")
+        // });
     });
 </script>
+
 <h3>Lab Investigations Sheet</h3>
 <hr>
 <div class="container">
     <form method="POST" action="">{% csrf_token %}
-        <input type="submit" id="btnRequest" class="btn btn-success" value="Request Investigation">
-        {{ encounter.patient.id }}
+        {{ encounter.patient.first_name }} {{ encounter.patient.last_name }}; {{ encounter.patient.date_of_birth|timesince }}; {{ encounter.patient.gender|capfirst }}
+        <input style="float: right;" type="submit" id="btnRequest" class="btn btn-success" value="Request Investigation">
     <hr>
     <div class="row g-3">
         <div class="col-md-4">
@@ -58,3 +58,7 @@
 </div>
 
 {% endblock %}
+
+{% for request in lab_request %}
+            <a href="{% url 'request_detail' enc_id=request.encounter %}">{{ request.patient }}</a> ({{ request.total }}) <br>
+        {% endfor %}

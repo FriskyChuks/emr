@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.utils.http import is_safe_url
+from django.contrib import messages
 
 from .forms import ContactForm, LoginForm, RegisterForm
 
@@ -33,8 +34,7 @@ def login_view(request):
         user = authenticate(username=username_var, password=password_var)
         if user is not None:
             login(request, user)
-        # login(request, user)
-        # messages.success(request, "Welcome" + " " + str(userlogin))
+            messages.success(request, "Welcome" + " " + str(userlogin))
             if "next" in request.POST:
                 return redirect(request.POST.get('next'))
             else:

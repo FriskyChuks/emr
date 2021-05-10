@@ -1,12 +1,16 @@
 from django.http import request
-from django.shortcuts import render
+from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .models import Bill, Payment
 
 
 @login_required(login_url="auth_login")
 def pending_bills_view(request, pid):
+    if not request.user.admin:
+        messages.warning(request, "You do not have access to this page! thanks.")
+        return HttpResponseRedirect('/accounts/logout/') 
     # bills = Bill.objects.filter(patient=pid, status="pending") | Bill.objects.filter(patient=pid, status="billed") | Bill.objects.filter(patient=pid, status="paid")
     bills = Bill.objects.filter(patient=pid, status="billed") | Bill.objects.filter(patient=pid, status="pending")
     services_bill = Bill.objects.filter(patient=pid, medical_service__isnull=False)

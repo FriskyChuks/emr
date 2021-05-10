@@ -7,9 +7,18 @@
   <body>
     {% include 'base_files/navbar2.html' %}
 
-    <div class="container">
-        
-                    {% block content %} {% endblock %}
+    <div class='container'>
+      {% if messages %}
+        <div class="alert alert-success messages">
+        {% for message in messages %}
+        <span{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+            {{ message }}<br/>
+        </span>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% block content %}{% endblock %}
     </div>
 
     

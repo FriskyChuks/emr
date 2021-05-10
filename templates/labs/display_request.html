@@ -11,25 +11,22 @@
         })
     })
 </script> -->
-
-<form method="POST" action="">{% csrf_token %}
-<h3>Pending Lab Requests</h3>
-<div class="row g-1">
-    <div id="request" class="col-md-10">
-        {% for request in lab_request %}
-            <a href="{% url 'request_detail' enc_id=request.encounter %}">{{ request.patient }}</a> ({{ request.total }}) <br>
-        {% endfor %}
+<div class="container">
+    <div class="row g-2">
+        <div id="detail" class="col-md-4">
+            <form action="">{% csrf_token %}
+                <h4>Pending Lab Requests</h4>     
+                {% for request in lab_request %}
+                # <a href="{% url 'request_detail' enc_id=request.encounter %}">{{ request.patient }}</a> ({{ request.total }})<br>
+                {% endfor %}
+            </form>
+        </div>
+        <div class="col-md-8">
+            <h4>Lab Units</h4>
+            {% include 'labs/lab_units.html' %}
+            
+        </div>
     </div>
-    
-    <!-- <div id="detail" class="col-md-8">
-        {% for detail in request_detail %}
-            {{ detail.patient.first_name }} {{ detail.patient.last_name }}<br>
-            {{ detail.test }} <br>
-        {% endfor %}
-    </div> -->
 </div>
-<br><br>
-<!-- <input type="submit" id="btnRequest" class="btn btn-success" value="Request Investigation"> -->
-</form>
 
 {% endblock %}

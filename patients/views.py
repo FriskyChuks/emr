@@ -15,6 +15,9 @@ from .forms import PatientBiodataForm, PatientImageForm#, FotoForm#, AddressForm
 
 @login_required(login_url="auth_login")
 def patient_folder_view(request, patient_id):
+    if not request.user.admin:
+        messages.warning(request, "You do not have access to this page! thanks.")
+        return HttpResponseRedirect('/')
     patient_ecounter = PatientEncounter.objects.filter(patient_id=patient_id).order_by("-id")
     current_encounter = Patient.objects.filter(id=patient_id)
     print(patient_ecounter)
@@ -54,6 +57,9 @@ def search_patient_view(request):
 
 @login_required(login_url="auth_login")
 def patient_detail_view(request, id):
+    if not request.user.admin:
+        messages.warning(request, "You do not have access to this page! thanks.")
+        return HttpResponseRedirect('/')
     patient = Patient.objects.filter(id=id, active=True)
     # print(patient)
     template = "patients/patient_info.html"
@@ -80,7 +86,10 @@ def home(request):
 
 
 @login_required(login_url="auth_login")
-def patient_registration_form(request):  
+def patient_registration_form(request):
+    if not request.user.admin:
+        messages.warning(request, "You do not have access to this page! thanks.")
+        return HttpResponseRedirect('/')  
     form = PatientBiodataForm(request.POST or None)#, request.FILES or None)
     if form.is_valid():
         obj = form.save(commit=False)
