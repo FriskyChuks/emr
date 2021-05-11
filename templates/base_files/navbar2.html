@@ -122,14 +122,24 @@
   
     <div class="nav-scroller py-1 mb-2 bg-light">
       <nav class="nav d-flex justify-content-between">
-        <a class="p-2 link-secondary" href="{% url 'reg' %}">Registeration</a>
-        <a class="p-2 link-secondary" href="{% url 'clinic_view' %}">Clinics.</a>
-        <a class="p-2 link-secondary" href="{% url 'ward_view' %}">Wards</a>
-        <a class="p-2 link-secondary" href="#">Pharmacy</a>
-        <a class="p-2 link-secondary" href="{% url 'display_request' %}">Laboratory</a>
-        <a class="p-2 link-secondary" href="#">Radiology</a> 
-        <a class="p-2 link-secondary" href="{% url 'display_appointment' %}">Appointments</a>
-        <a class="p-2 link-secondary" href="#">Bills</a>
+        {% if request.user.group.name == 'records' or request.user.group.name == 'doctor' %} 
+          <a class="p-2 link-secondary" href="{% url 'reg' %}">Registeration</a>
+          <a class="p-2 link-secondary" href="{% url 'clinic_view' %}">Clinics.</a>
+          <a class="p-2 link-secondary" href="{% url 'ward_view' %}">Wards</a>
+          <a class="p-2 link-secondary" href="{% url 'display_appointment' %}">Appointments</a>
+        {% endif %}
+        {% if request.user.group.name == 'pharmacy' %}
+          <a class="p-2 link-secondary" href="#">Pharmacy</a>
+        {% endif %}
+        {% if request.user.group.name == 'MLS'%}
+          <a class="p-2 link-secondary" href="{% url 'display_request' %}">Laboratory</a>
+        {% endif %}
+        {% if request.user.group.name == 'radiology'%}
+          <a class="p-2 link-secondary" href="#">radiology</a> 
+        {% endif %}
+        {% if request.user.group.name == 'cashier'%}
+          <a class="p-2 link-secondary" href="#">Bills</a>
+        {% endif %}
       </nav>
     </div>
   

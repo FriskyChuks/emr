@@ -8,16 +8,15 @@ from django.contrib import messages
 
 from visits.models import PatientEncounter
 from accounts.models import User
+from accounts.decorators import unauthenticated_user, allowed_users
 
 from .models import Patient#, NextOfKin, Address
 from .forms import PatientBiodataForm, PatientImageForm#, FotoForm#, AddressForm, NextOfKinForm
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','nurse'])
 def patient_folder_view(request, patient_id):
-    if not request.user.admin:
-        messages.warning(request, "You do not have access to this page! thanks.")
-        return HttpResponseRedirect('/')
     patient_ecounter = PatientEncounter.objects.filter(patient_id=patient_id).order_by("-id")
     current_encounter = Patient.objects.filter(id=patient_id)
     print(patient_ecounter)
@@ -27,6 +26,7 @@ def patient_folder_view(request, patient_id):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','nurse'])
 def current_patient_folder_view(request, id):
     current_patient_ecounter = PatientEncounter.objects.filter(id=id).order_by("-id")
     print(current_patient_ecounter)
@@ -56,10 +56,8 @@ def search_patient_view(request):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['HIM','admin','doctor','nurse'])
 def patient_detail_view(request, id):
-    if not request.user.admin:
-        messages.warning(request, "You do not have access to this page! thanks.")
-        return HttpResponseRedirect('/')
     patient = Patient.objects.filter(id=id, active=True)
     # print(patient)
     template = "patients/patient_info.html"
@@ -86,10 +84,8 @@ def home(request):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','HIM'])
 def patient_registration_form(request):
-    if not request.user.admin:
-        messages.warning(request, "You do not have access to this page! thanks.")
-        return HttpResponseRedirect('/')  
     form = PatientBiodataForm(request.POST or None)#, request.FILES or None)
     if form.is_valid():
         obj = form.save(commit=False)
@@ -109,7 +105,8 @@ def patient_registration_form(request):
     return render(request, template, context)
 
 
-# @login_required(login_url="auth_login")
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['HIM'])
 def upload_patient_image_form(request, pid):
     patient_instance = Patient.objects.get(id=pid)
     pid = patient_instance.id

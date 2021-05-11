@@ -4,18 +4,24 @@
     {% if query %}
         {% if patient.count == 1 %}
             <h5>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> record</h5>
-            {% for pt in patient %}      
+            {% for pt in patient %} 
+            {% if request.user.group.name == 'records' or request.user.group.name == 'doctor' %}     
                 <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
                     <a href="{% url 'schedule_appointment' patient_id=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Schedule Appointment for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
                 </div>
                 <br>
+                {% endif %}
+                {% if request.user.group.name == 'cashier' %}
                 <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
                     <a href="{% url 'pending_bills' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Bills & Payments for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
                 </div>
                 <br>
+                {% endif %}
+                {% if request.user.group.name == 'pharmacy' %}
                 <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
                     <a href="{% url 'view_prescription' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Proceed with {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
                 </div>
+                {% endif %}
             {% endfor %} 
         {% else %}
         <h5>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> records</h5>

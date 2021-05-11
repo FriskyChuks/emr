@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django import forms
 
@@ -53,13 +53,12 @@ class UserAdminChangeForm(forms.ModelForm):
 		return self.initial["password"]
 
 
-# class GuestForm(forms.Form):
-# 	email = forms.EmailField(
-# 							widget=forms.EmailInput(
-# 					attrs={
-# 					"class": "form-control", 
-# 					"placeholder": "Enter Guest email"
-# 					}))
+class UserGroupForm(forms.ModelForm):
+	password = ReadOnlyPasswordHashField()
+
+	class Meta:
+		model = Group
+		fields = ('name',)
 
 
 class LoginForm(forms.Form):
@@ -137,56 +136,6 @@ class RegisterForm(forms.ModelForm):
 			user.save()
 		return user
 			
-
-# class RegisterForm(forms.Form):
-# 	username = forms.CharField(
-# 				widget=forms.TextInput(
-# 					attrs={
-# 					"class": "form-control", 
-# 					"placeholder": "Enter username"
-# 					}))
-# 	email = forms.EmailField(
-# 							widget=forms.EmailInput(
-# 					attrs={
-# 					"class": "form-control", 
-# 					"placeholder": "Enter your email"
-# 					}))
-# 	password = forms.CharField(
-# 				widget=forms.PasswordInput(
-# 					attrs={
-# 					"class": "form-control", 
-# 					"placeholder": "Enter password"
-# 					}))
-# 	password2 = forms.CharField(
-# 				widget=forms.PasswordInput(
-# 					attrs={
-# 					"class": "form-control", 
-# 					"placeholder": "Enter password"
-# 					}))
-
-# 	def clean_username(self):
-# 		username = self.cleaned_data.get('username')
-# 		qs = User.objects.filter(username=username)
-# 		if qs.exists():
-# 			raise forms.ValidationError('username already taken!, try something else pls')
-# 		return username
-
-# 	def clean_email(self):
-# 		email = self.cleaned_data.get('email')
-# 		qs = User.objects.filter(email=email)
-# 		if qs.exists():
-# 			raise forms.ValidationError('Email already taken!, try something else pls')
-# 		return email
-
-
-# 	def clean(self):
-# 		data = self.cleaned_data
-# 		password = self.cleaned_data.get('password')
-# 		password2 = self.cleaned_data.get('password2')
-# 		if password2 != password:
-# 			raise forms.ValidationError("Passwords must match")
-# 		else:
-# 			return data
 
 
 class ContactForm(forms.Form):

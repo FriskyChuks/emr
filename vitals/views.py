@@ -1,11 +1,15 @@
 from django.shortcuts import render
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from visits.models import PatientEncounter
+from accounts.decorators import unauthenticated_user, allowed_users
+
 from .models import PatientVitalSigns, PatientNotes
 from .forms import VitalSignsForm, PatientNotesForm
 
-
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','nurse'])
 def take_vital_signs_view(request, id):
     encounter = PatientEncounter.objects.get(id=id)
     p_encounter = PatientEncounter.objects.filter(id=id)
@@ -34,6 +38,8 @@ def take_vital_signs_view(request, id):
 
 
 
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','nurse'])
 def patient_notes_view(request, id):
     encounter = PatientEncounter.objects.get(id=id)
     p_encounter = PatientEncounter.objects.filter(id=id)

@@ -6,10 +6,13 @@ from django.contrib import messages
 from patients.models import Patient
 from visits.models import PatientEncounter
 
+from accounts.decorators import allowed_users
+
 from .models import LabRequest, LabTest, LabUnit
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','medical lab scientist','lab front_desk'])
 def lab_request_view(request, enc_id):
     encounter = PatientEncounter.objects.get(id=enc_id, active=True)
     patient_id = encounter.patient_id
@@ -23,8 +26,7 @@ def lab_request_view(request, enc_id):
             test_request = selected_test.test_id
             l = len(test_request)
             t = type(test_request)
-            # print("type of:", t)
-            # print("length of:", l)
+
             if (l <= 2): 
                 obj = LabRequest.objects.create(
                         encounter_id    = encounter.id,
@@ -59,10 +61,8 @@ def lab_request_view(request, enc_id):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','medical lab scientist'])
 def dispaly_request_view(request):
-    if not request.user.admin:
-        messages.warning(request, "You do not have access to this page! thanks.")
-        return HttpResponseRedirect('/accounts/logout') 
     lab_request = LabRequest.objects.values('encounter','patient').filter(decline=False, done=False).annotate(total=Count('id'))
     
     template = 'labs/display_request.html'
@@ -71,6 +71,7 @@ def dispaly_request_view(request):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','medical lab scientist'])
 def request_detail_view(request, enc_id):
     request_detail = LabRequest.objects.filter(encounter_id=enc_id, decline=False, done=False)
 

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import (
-	AbstractBaseUser, BaseUserManager
+	AbstractBaseUser, BaseUserManager, Group
 )
 
 
@@ -57,16 +57,17 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-	first_name	= models.CharField(max_length=225)
-	last_name	= models.CharField(max_length=225)
-	other_names	= models.CharField(max_length=225, blank=True, null=True)
-	email 		= models.EmailField(max_length=255, unique=True, blank=True, null=True)
-	username	= models.CharField(max_length=225, unique=True)
-	active 		= models.BooleanField(default=True)
-	staff 		= models.BooleanField(default=False)
-	is_a_patient		= models.BooleanField(default=False)
-	admin		= models.BooleanField(default=False)
-	timestamp 	= models.DateTimeField(auto_now_add=True, auto_now=False)
+	first_name		= models.CharField(max_length=225)
+	last_name		= models.CharField(max_length=225)
+	other_names		= models.CharField(max_length=225, blank=True, null=True)
+	email 			= models.EmailField(max_length=255, unique=True, blank=True, null=True)
+	username		= models.CharField(max_length=225, unique=True)
+	active 			= models.BooleanField(default=True)
+	staff 			= models.BooleanField(default=False)
+	is_a_patient	= models.BooleanField(default=False)
+	admin			= models.BooleanField(default=False)
+	group 			= models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+	timestamp 		= models.DateTimeField(auto_now_add=True, auto_now=False)
 
 	USERNAME_FIELD = 'username' 
 	REQUIRED_FIELDS = ["first_name","last_name"]
@@ -102,14 +103,12 @@ class User(AbstractBaseUser):
 
 
 
-# class GuestEmail(models.Model):
-# 	email 		= models.EmailField()
-# 	active 		= models.BooleanField(default=True)
-# 	timestamp	= models.DateTimeField(auto_now_add=True, auto_now=False)
-# 	updated		= models.DateTimeField(auto_now_add=False, auto_now=True)
-
-# 	def __str__(self):
-# 		return self.email
+# class UserCadre(models.Model):
+#     user 				= models.OneToOneField(User, on_delete=models.CASCADE)
+# 	# group    			= models.ForeignKey(Role)
+#     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+#     date_created        = models.DateTimeField(auto_now_add=True, auto_now=False)
+#     updated             = models.DateTimeField(auto_now_add=False, auto_now=True)
 
 
 

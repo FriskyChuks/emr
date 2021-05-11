@@ -2,18 +2,21 @@ from django import forms
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.contrib import messages
 
 from patients.models import Patient
 from medical_services.models import PatientEncounterService
 from pharmacy.models import Prescription
 from radiology.models import RaiseRadiologyService
 from bills.models import Bill
+from accounts.decorators import unauthenticated_user, allowed_users
 
 from .models import PatientEncounter
 from .forms import EncounterForm, DischargeForm, TransferForm
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','nurse','HIM'])
 def clinic_visits_display_view(request, id):
     qs = PatientEncounter.objects.filter(current_clinic=id, active=True)
     qs_ward = PatientEncounter.objects.filter(current_ward=id, active=True)
@@ -26,6 +29,7 @@ def clinic_visits_display_view(request, id):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','nurse','HIM'])
 def ward_visits_display_view(request, id):
     qs = PatientEncounter.objects.filter(current_ward=id, active=True)
     # qs_ward = PatientEncounter.objects.filter(current_ward=id, active=True)
@@ -38,6 +42,7 @@ def ward_visits_display_view(request, id):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','HIM'])
 def create_new_encounter(request, patient_id):
     form = EncounterForm(request.POST or None)
     if form.is_valid():
@@ -46,7 +51,8 @@ def create_new_encounter(request, patient_id):
         obj.created_by = request.user
         obj.save()
         Patient.objects.filter(id=patient_id).update(new=False) 
-        form = EncounterForm()
+        messages.success(request, "Transfer successful!")
+        return redirect("/patients/registration")
 
     template = "visits/create_encounter.html"
     context = {"form":form}
@@ -54,6 +60,7 @@ def create_new_encounter(request, patient_id):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','nurse'])
 def discharge_patient_view(request, id):
     qs = PatientEncounter.objects.filter(id=id)
     for q in qs:
@@ -78,6 +85,7 @@ def discharge_patient_view(request, id):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','nurse'])
 def transfer_patient_view(request, id):
     qs = PatientEncounter.objects.filter(id=id)
     for q in qs:

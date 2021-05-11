@@ -6,6 +6,8 @@ from django.forms import inlineformset_factory
 
 from visits.models import PatientEncounter
 
+from accounts.decorators import unauthenticated_user, allowed_users
+
 from .forms import PatientEncounterServiceForm, MedicalServiceForm
 from .models import MedicalService, PatientEncounterService
 
@@ -23,6 +25,7 @@ def search_medical_service_view(request):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['doctor'])
 def create_medical_service_view(request):
     form = MedicalServiceForm(request.POST or None)
     if form.is_valid():
@@ -37,6 +40,7 @@ def create_medical_service_view(request):
     
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor', 'nurse'])
 def raise_patient_medical_service_view(request, encounter_id):
     MedicalServiceFormSet = inlineformset_factory(
                                                 PatientEncounter, PatientEncounterService,

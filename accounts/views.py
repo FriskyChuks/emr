@@ -1,15 +1,18 @@
 from django.contrib.auth import authenticate, login, get_user_model, logout
-from django.db.models.aggregates import Count
-from django.views.generic import CreateView, FormView
-from django.http import HttpResponse
 from django.urls import reverse
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.utils.http import is_safe_url
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from .forms import ContactForm, LoginForm, RegisterForm
 
+from .decorators import unauthenticated_user, allowed_users
 
+
+@login_required
+@unauthenticated_user
+@allowed_users(alllowed_roles=['admin'])
 def registration_view(request):
     form = RegisterForm(request.POST or None)
     # profile_form = RegisterForm(request.POST or None)
@@ -24,7 +27,7 @@ def registration_view(request):
     }
     return render(request, 'accounts/register.html', context)
 
-
+# @unauthenticated_user
 def login_view(request):
     form = LoginForm(request.POST or None)
     userlogin = request.user
@@ -40,10 +43,6 @@ def login_view(request):
             else:
                 return HttpResponseRedirect("/home")
 
-        # if user.is_superuser:
-        #     return HttpResponseRedirect("/")
-        # else:
-        #     return HttpResponseRedirect("/logout")
     context = {
         "form": form
     }

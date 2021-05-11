@@ -52,8 +52,8 @@ class TransferForm(forms.ModelForm):
         }
 
         widgets = {
-            'clinic': forms.Select(attrs={'class': 'form-control'}),
-            'ward': forms.Select(attrs={'class': 'form-control'}),
+            'clinic': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Select a clinic'}),
+            'ward': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Select a ward'}),
         }
 
     # def clean_clinic(self):

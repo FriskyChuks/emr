@@ -3,10 +3,13 @@ from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+from accounts.decorators import unauthenticated_user, allowed_users
+
 from .models import Bill, Payment
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['cashier'])
 def pending_bills_view(request, pid):
     if not request.user.admin:
         messages.warning(request, "You do not have access to this page! thanks.")

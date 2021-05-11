@@ -7,6 +7,7 @@ from django.forms import inlineformset_factory
 
 from visits.models import PatientEncounter
 from patients.models import Patient
+from accounts.decorators import unauthenticated_user, allowed_users
 
 from .forms import ItemForm, BrandForm, PrescriptionForm
 from .models import Item, Prescription
@@ -24,8 +25,8 @@ def search_drug_view(request):
 
 
 
-
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['store'])
 def create_item_view(request):
     form = ItemForm(request.POST or None)
     if form.is_valid():
@@ -40,6 +41,7 @@ def create_item_view(request):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['store'])
 def create_brand_view(request):
     form = BrandForm(request.POST or None)
     if form.is_valid():
@@ -54,6 +56,7 @@ def create_brand_view(request):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['pharmacy'])
 def view_prescription_view(request, pid):
     enc_id = (Prescription.objects.values('encounter_no').annotate(dcount=Count('encounter_no')).order_by('encounter_no').reverse())
     prescriptions = Prescription.objects.filter(patient=pid)
@@ -72,6 +75,7 @@ def dispense_prescription_view(request, encounter_id):
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','nurse'])
 def prescription_view(request, encounter_id):
     item = Item.objects.all
     prescriptionFormSet = inlineformset_factory(
