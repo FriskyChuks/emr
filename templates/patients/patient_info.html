@@ -34,29 +34,34 @@
             <hr>
             <div class="nav d-flex justify-content-between">
               {% if patient.new %}
-                {% if request.user.group.name == 'nurse' %}
-                <a href="{% url 'create_new_encounter' patient_id=patient.id %}">Send to Clinic</a>
-                {% endif %}
-              {% else %}
-              {% for p in patient.patientencounter_set.all|dictsortreversed:"id" %}
-                {% if p.active  %}
-                  {% if p.current_clinic  %} 
-                    <a href="{% url 'clinic_visits_display' id=p.current_clinic_id %}">{{ p.current_clinic.clinic }} Clinic</a>
-                  {% else %}
-                    <a href="{% url 'ward_admission_display' id=p.current_ward_id %}">{{ p.current_ward.ward }} Ward</a>            
-                  {% endif %}
-                <a href="#">View Bills</a>
-                {% endif %}
-              {% endfor %}
-        
-              {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
-                {% if not p.active  %}
+                {% if request.user.group.name == 'HIM' or request.user.group.name == 'admin' %}
                   <a href="{% url 'create_new_encounter' patient_id=patient.id %}">Send to Clinic</a>
                 {% endif %}
-              {% endfor %}
+              {% else %}
+                {% for p in patient.patientencounter_set.all|dictsortreversed:"id" %}
+                  {% if p.active  %}
+                    {% if p.current_clinic  %} 
+                      <a href="{% url 'clinic_visits_display' id=p.current_clinic_id %}">{{ p.current_clinic.clinic }} Clinic</a>
+                    {% else %}
+                      <a href="{% url 'ward_admission_display' id=p.current_ward_id %}">{{ p.current_ward.ward }} Ward</a>            
+                    {% endif %}
+                      <a href="#">View Bills</a>
+                  {% endif %}
+                {% endfor %}
               {% endif %}
+              {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
+                {% if not p.active  %}
+                  {% if request.user.group.name == 'HIM' %}
+                    <a href="{% url 'create_new_encounter' patient_id=patient.id %}">Send to Clinic</a>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              {% if request.user.group.name == 'HIM' or request.user.group.name == 'admin' %}
               <a href="#" class="card-link">Update Record</a>
+              {% endif %}
+              {% if request.user.group.name == 'nurse' or request.user.group.name == 'doctor' or request.user.group.name == 'admin' %}
               <a href="{% url 'patient_folder' patient_id=patient.id %}" class="card-link">View Folder</a>
+              {% endif %}
             </div>
             
         <!-- </div>

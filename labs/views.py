@@ -79,3 +79,13 @@ def request_detail_view(request, enc_id):
     context = {"request_detail":request_detail}
     return render(request, template, context)
 
+
+# @login_required(login_url="auth_login")
+# @allowed_users(alllowed_roles=['admin','MLS'])
+def request_display_by_unit_view(request, enc_id):
+    unique_request = LabRequest.objects.values('encounter','patient').filter(decline=False, done=False).annotate(total=Count('id'))
+    request_detail = LabRequest.objects.filter(encounter_id=enc_id,accepted=True, decline=False, done=False)
+    template = 'labs/request_by_unit.html'
+    context = {"unique_request":unique_request, "request_detail":request_detail}
+    return render(request, template, context)
+

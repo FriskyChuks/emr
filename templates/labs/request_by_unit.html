@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% for request in lab_request %}
+    {% if request.test %}
+        {{ request.patient }} <br>
+    {% endif %}
+{% endfor %}
+
+{% endblock %}
