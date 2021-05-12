@@ -12,7 +12,7 @@ from .models import LabRequest, LabTest, LabUnit
 
 
 @login_required(login_url="auth_login")
-@allowed_users(alllowed_roles=['admin','doctor','medical lab scientist','lab front_desk'])
+@allowed_users(alllowed_roles=['admin','doctor','MLS','lab_front_desk'])
 def lab_request_view(request, enc_id):
     encounter = PatientEncounter.objects.get(id=enc_id, active=True)
     patient_id = encounter.patient_id
@@ -61,7 +61,7 @@ def lab_request_view(request, enc_id):
 
 
 @login_required(login_url="auth_login")
-@allowed_users(alllowed_roles=['admin','medical lab scientist'])
+@allowed_users(alllowed_roles=['admin','MLS','lab_front_desk'])
 def dispaly_request_view(request):
     lab_request = LabRequest.objects.values('encounter','patient').filter(decline=False, done=False).annotate(total=Count('id'))
     
@@ -71,7 +71,7 @@ def dispaly_request_view(request):
 
 
 @login_required(login_url="auth_login")
-@allowed_users(alllowed_roles=['admin','medical lab scientist'])
+@allowed_users(alllowed_roles=['admin','MLS'])
 def request_detail_view(request, enc_id):
     request_detail = LabRequest.objects.filter(encounter_id=enc_id, decline=False, done=False)
 
