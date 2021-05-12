@@ -4,12 +4,12 @@
 
 {% for patient in patient_ecounter|slice:":1" %}
   {% if patient.current_clinic %}
-    <a href="{% url 'clinic_visits_display' id=patient.current_clinic.id %}">Back to {{ patient.current_clinic }}</a>
+    <a href="{% url 'clinic_visits_display' id=patient.current_clinic.id %}"><--Back to {{ patient.current_clinic }}</a>
   {% else %}
-  <a href="{% url 'ward_admission_display' id=patient.current_ward.id %}">Back to {{ patient.current_ward }}</a>
+  <a href="{% url 'ward_admission_display' id=patient.current_ward.id %}"><--Back to {{ patient.current_ward }}</a>
   {% endif %}
 {% endfor %}
-
+<br>
 <div>
     <p>
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#notes" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -95,6 +95,36 @@
     <div class="collapse" id="lab">
         <div class="card card-body">
             Investigations here! MLS at work!
+            <table class="table">
+              <h4>Drugs/Consummables</h4>
+              <thead>
+                <tr>
+                  <!-- <th scope="col">Ecounter</th> -->
+                  <!-- <th scope="col">PID</th> -->
+                  <th scope="col">Date</th>
+                  <th scope="col">Test</th>
+                  <th scope="col">Ordered by</th>
+                  <th scope="col">Status</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              {% for patient in patient_ecounter %}
+              {% for investigation in patient.labrequest_set.all|dictsortreversed:"date_created" %} 
+              <tr>
+                  <!-- <td>{{ vitals.date|date:"d-m-y" }} {{ vitals.date|time:"h:i a" }}</td> -->
+                  <td>{{ investigation.date_created }}</td>
+                  <td>
+                    {{ investigation.test }}
+                  </td>
+                  {% if investigation.done == 'False' %}
+                    <td>Pending</td>
+                  {% else %}
+                    <td>Sample collected</td>
+                  {% endif %}
+              </tr>
+              {% endfor %}
+              {% endfor %}
+          </table>
         </div>
     </div>
 
@@ -164,7 +194,14 @@
 
     <div class="collapse" id="notes">
         <div class="card card-body">
-            <h4>Patient Notes </h4><!-- <h6 style="text-align: right;">Add Notes</h6> -->
+          {% for encounter in patient_ecounter|slice:":1" %}
+            <button style="float: right;">
+              <a href="{% url 'patient_notes' id=encounter.id %}" >
+                Add New Note
+              </a>
+            </button>
+           {% endfor %}
+            <h4>Patient Notes </h4> 
             {% for patient in patient_ecounter %}
             {% for notes in patient.patientnotes_set.all|dictsortreversed:"date" %} 
             <table class="table">
