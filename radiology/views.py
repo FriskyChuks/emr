@@ -25,7 +25,7 @@ def create_radiology_service_view(request):
     
 
 @login_required(login_url="auth_login")
-@allowed_users(alllowed_roles=['radiology'])
+@allowed_users(alllowed_roles=['admin', 'doctor','radiology'])
 def raise_patient_radiology_service_view(request, encounter_id):
     MedicalServiceFormSet = inlineformset_factory(
                                                 PatientEncounter, RaiseRadiologyService,

@@ -5,6 +5,7 @@ from .views import (
     dispaly_request_view, 
     request_detail_view,
     request_display_by_unit_view,
+    lab_results_view
 )
 
 urlpatterns = [
@@ -12,4 +13,5 @@ urlpatterns = [
     path("display_request/", dispaly_request_view, name="display_request"),  
     path("request_detail/<enc_id>/", request_detail_view, name="request_detail"), 
     path("request_display_by_unit/", request_display_by_unit_view, name="request_display_by_unit"), 
+    path("lab_results/<enc_id>/", lab_results_view, name="lab_results"),
 ]

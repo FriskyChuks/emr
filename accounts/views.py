@@ -41,7 +41,15 @@ def login_view(request):
             if "next" in request.POST:
                 return redirect(request.POST.get('next'))
             else:
-                return HttpResponseRedirect("/home")
+                clinic_id = request.user.clinic_id
+                group_name = request.user.group.name
+                # print('location: ',location_id)
+                if (clinic_id  and group_name == "doctor") or (clinic_id and group_name == "nurse"):
+                    return redirect("clinic_visits_display", id=clinic_id)
+                elif request.user.group.name == "lab":
+                    return HttpResponseRedirect("/labs/display_request")
+                else:
+                    return HttpResponseRedirect("/home")
 
     context = {
         "form": form

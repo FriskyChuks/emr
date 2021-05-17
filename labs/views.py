@@ -8,7 +8,9 @@ from visits.models import PatientEncounter
 
 from accounts.decorators import allowed_users
 
-from .models import LabRequest, LabTest, LabUnit
+from .models import LabRequest, LabTest, LabUnit, LabResult
+from .forms import LabResultForm
+
 
 
 @login_required(login_url="auth_login")
@@ -87,5 +89,19 @@ def request_display_by_unit_view(request, enc_id):
     request_detail = LabRequest.objects.filter(encounter_id=enc_id,accepted=True, decline=False, done=False)
     template = 'labs/request_by_unit.html'
     context = {"unique_request":unique_request, "request_detail":request_detail}
+    return render(request, template, context)
+
+
+def lab_results_view(request, enc_id):
+    lab_request = LabRequest.objects.filter(encounter_id=enc_id, done=False, decline=False)
+
+    if request.POST.get('test_id'):
+        entered_result = LabRequest()
+        entered_result.result = request.POST.get('test_id')
+        new_result = entered_result.result
+        print("Just = ",new_result)
+
+    template = "labs/lab_results.html"
+    context = {"lab_request":lab_request}
     return render(request, template, context)
 

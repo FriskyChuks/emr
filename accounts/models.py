@@ -3,6 +3,8 @@ from django.contrib.auth.models import (
 	AbstractBaseUser, BaseUserManager, Group
 )
 
+from locations.models import Clinic
+
 
 class UserManager(BaseUserManager):
 	def create_user(self, username, first_name=None, last_name=None, email=None, password=None, is_staff=False, is_admin=False, is_active=True, is_patient=False):
@@ -67,6 +69,7 @@ class User(AbstractBaseUser):
 	is_a_patient	= models.BooleanField(default=False)
 	admin			= models.BooleanField(default=False)
 	group 			= models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+	clinic 			= models.ForeignKey(Clinic, on_delete=models.CASCADE, blank=True, null=True)
 	timestamp 		= models.DateTimeField(auto_now_add=True, auto_now=False)
 
 	USERNAME_FIELD = 'username' 

@@ -6,8 +6,10 @@
 <main class="container">
   <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
     <div class="col-md-8 px-0">
-      <h1 class="display-4 fst-italic">Quick Stats</h1>
+      <h1 class="display-4 fst-italic">Quick Statistics</h1>
       <h2>Total number of Patients: {{ patient_count }}</h2>
+      <h2>Total OutPatients: {{ outpatient_count }}</h2>
+      <h2>Total Admissions: {{ inpatient_count }}</h2>
       <h2>Patients Registered today: {{ today_patient_count }}</h2>
       <h2>Staff Strength: {{ user_count }}</h2>
       
@@ -20,7 +22,7 @@
     <div class="col-md-6">
       <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
         <div class="col p-4 d-flex flex-column position-static">
-          <strong class="d-inline-block mb-2 text-primary">GOPD STATS</strong>
+          <strong class="d-inline-block mb-2 text-primary">GOPD Statistics</strong>
           <h3 class="mb-0">Patients : {{ gopd_encounter }}</h3>
           <div class="mb-1 text-muted">Nov 12</div>
           <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>

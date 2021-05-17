@@ -62,7 +62,7 @@ class LabRequest(models.Model):
 
 
 
-class LabResults(models.Model):
+class LabResult(models.Model):
     lab_request         = models.ForeignKey(LabRequest, on_delete=models.CASCADE, blank=True, null=True)
     result              = models.CharField(max_length=225)
     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)

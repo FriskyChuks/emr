@@ -58,7 +58,3 @@
 </div>
 
 {% endblock %}
-
-{% for request in lab_request %}
-            <a href="{% url 'request_detail' enc_id=request.encounter %}">{{ request.patient }}</a> ({{ request.total }}) <br>
-        {% endfor %}

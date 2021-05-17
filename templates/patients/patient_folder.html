@@ -113,13 +113,12 @@
               <tr>
                   <!-- <td>{{ vitals.date|date:"d-m-y" }} {{ vitals.date|time:"h:i a" }}</td> -->
                   <td>{{ investigation.date_created }}</td>
-                  <td>
-                    {{ investigation.test }}
-                  </td>
-                  {% if investigation.done == 'False' %}
-                    <td>Pending</td>
-                  {% else %}
+                  <td>{{ investigation.test }}</td>
+                  <td>{{ investigation.created_by.first_name }} {{ investigation.created_by.last_name }}</td>
+                  {% if investigation.accepted == 'True' %}
                     <td>Sample collected</td>
+                  {% else %}
+                    <td>Pending</td>
                   {% endif %}
               </tr>
               {% endfor %}

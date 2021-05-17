@@ -66,7 +66,10 @@ def patient_detail_view(request, id):
 
 
 def home(request):
-    patients = Patient.objects.all
+    patients = Patient.objects.all()
+    outpatient_count = PatientEncounter.objects.filter(current_clinic__isnull=False, active=True).count()
+    inpatient_count = PatientEncounter.objects.filter(current_ward__isnull=False, active=True).count()
+        # total_outpatients = patient.patientencounter_set.filter(current_clinic__isnull=False).count()
     patient_count = Patient.objects.filter(active=True).count()
     today_patient_count = Patient.objects.filter(active=True, date_created__gte=datetime.date.today()).count()
     user_count = User.objects.filter(is_a_patient=False).count()
@@ -79,6 +82,8 @@ def home(request):
         "user_count":user_count,
         "today_patient_count":today_patient_count,
         "gopd_encounter":gopd_encounter,
+        "outpatient_count":outpatient_count,
+        "inpatient_count":inpatient_count
         }
     return render(request, template, context)
 
