@@ -30,15 +30,17 @@
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#radiology">
           Radiology History
         </a>
-        {% for encounter in patient_ecounter|slice:":1" %}
-          {% for bill in encounter.bill_set.all|slice:":1" %}
-            {% if bill %}
-              <a class="btn btn-primary" href="{% url 'pending_bills' pid=encounter.patient.id %}" target="_blank">
-                View Patient Bills
-              </a>
-            {% endif %}
+        {% if request.user.group.name == 'cashier' or request.user.group.name == 'admin' %}
+          {% for encounter in patient_ecounter|slice:":1" %}
+            {% for bill in encounter.bill_set.all|slice:":1" %}
+              {% if bill %}
+                <a class="btn btn-primary" href="{% url 'pending_bills' pid=encounter.patient.id %}" target="_blank">
+                  View Patient Bills
+                </a>
+              {% endif %}
+            {% endfor %}
           {% endfor %}
-        {% endfor %}
+        {% endif %}
     </p>
     {% for e in patient_ecounter|slice:":1" %}
      
