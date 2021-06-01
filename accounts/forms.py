@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib import messages
 from django import forms
 
 User = get_user_model()
@@ -79,6 +80,7 @@ class LoginForm(forms.Form):
 		username = self.cleaned_data.get('username')
 		qs = User.objects.filter(username=username)
 		if len(qs) < 1:
+			# messages.success(request, "Sad to see you leave! See you soon please!")
 			raise forms.ValidationError('This USER does not exit!')
 		return username 
 

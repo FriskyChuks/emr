@@ -12,7 +12,6 @@ from .models import LabRequest, LabTest, LabUnit, LabResult
 from .forms import LabResultForm
 
 
-
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','doctor','MLS','lab_front_desk'])
 def lab_request_view(request, enc_id):
@@ -49,8 +48,8 @@ def lab_request_view(request, enc_id):
                     )
                     obj.save()
 
-            messages.success(request, "Lab investigation request successful!.")
-            return redirect("patient_folder", patient_id = patient_id)
+        messages.success(request, "Lab investigation request successful!.")
+        return redirect("patient_folder", patient_id = patient_id)
     else:
         template = "labs/lab_request2.html"
         context = {

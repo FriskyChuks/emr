@@ -7,7 +7,7 @@ from django.forms import inlineformset_factory
 
 from visits.models import PatientEncounter
 from patients.models import Patient
-from accounts.decorators import unauthenticated_user, allowed_users
+from accounts.decorators import allowed_users
 
 from .forms import ItemForm, BrandForm, PrescriptionForm
 from .models import Item, Prescription

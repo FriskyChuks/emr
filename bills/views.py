@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from accounts.decorators import unauthenticated_user, allowed_users
+from accounts.decorators import allowed_users
 
 from .models import Bill, Payment
 

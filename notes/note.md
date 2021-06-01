@@ -35,3 +35,49 @@ var TableData;
             
             return TableData;
         }
+
+
+{% extends 'base.html' %}
+{% block content %}
+
+
+ <!-- <script type="text/javascript">
+$(function(){
+  $("#myVar").change(function(){
+  $("#txtDisplay").val($(this).val());
+  });
+})
+</script> -->
+
+<div class="container">
+    <form method="POST" action="">{% csrf_token %}
+       {% for request in lab_request %}
+        {% if request.test.compound_test.id == 1  %}
+            <h1>FBC</h1>
+        {% endif %}
+        {% if request.test.id == 10  %}
+            {{ request.test }}: 
+              <select class="form-select" aria-label="Default select example" id="myVar" name="variable">
+                <option selected>Select an option</option>
+                <option value="Negative">Negative</option>
+                <option value="Positive">Positive</option>
+              </select>
+        {% elif request.test.id == 15 %}
+            {{ request.test }}:
+            <div class="mb-3">
+                <textarea class="form-control" rows="3" id="myVar" name="variable"></textarea>
+            </div>
+        {% else %}
+            {{ request.test }}: 
+              <div class="mb-3">
+                <input class="form-control" id="myVar" name="variable">
+              </div>
+        {% endif %}
+       {% endfor %} 
+       <!-- <input type="text" id="txtDisplay" name="test_id">  -->
+    <br><br>
+    <input type="submit" id="btnRequest" class="btn btn-success" value="Send Results">
+    </form>
+</div>
+
+{% endblock %}

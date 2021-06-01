@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from visits.models import PatientEncounter
-from accounts.decorators import unauthenticated_user, allowed_users
+from accounts.decorators import allowed_users
 
 from .models import PatientVitalSigns, PatientNotes
 from .forms import VitalSignsForm, PatientNotesForm

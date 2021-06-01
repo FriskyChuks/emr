@@ -8,7 +8,7 @@ from django.contrib import messages
 
 from visits.models import PatientEncounter
 from accounts.models import User
-from accounts.decorators import unauthenticated_user, allowed_users
+from accounts.decorators import allowed_users
 
 from .models import Patient#, NextOfKin, Address
 from .forms import PatientBiodataForm, PatientImageForm#, FotoForm#, AddressForm, NextOfKinForm

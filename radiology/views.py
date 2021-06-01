@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory
 
 from visits.models import PatientEncounter
-from accounts.decorators import unauthenticated_user, allowed_users
+from accounts.decorators import allowed_users
 
 from .forms import RadiologyServiceForm, RaiseRadiologyServiceForm
 from .models import RadiologyService, RaiseRadiologyService

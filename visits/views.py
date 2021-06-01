@@ -9,7 +9,7 @@ from medical_services.models import PatientEncounterService
 from pharmacy.models import Prescription
 from radiology.models import RaiseRadiologyService
 from bills.models import Bill
-from accounts.decorators import unauthenticated_user, allowed_users
+from accounts.decorators import allowed_users
 
 from .models import PatientEncounter
 from .forms import EncounterForm, DischargeForm, TransferForm

@@ -1,44 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<script>
+  function fn()
+  {
+    var myArray = [];
+    var form = document.getElementById("myForm").elements;
+    for(var i=1; i < (form.length-1); i++)
+    {
+      // myArray.key = form[i].id;
+      // myArray.values = form[i].value;
+      myValues = (form[i].id+ ": "+ form[i].value);
+      myArray.push(myValues)
 
- <script type="text/javascript">
-$(function(){
-  $("#myVar").change(function(){
-  $("#txtDisplay").val($(this).val());
-  });
-})
+      // console.log(form[i].id+ ": "+ form[i].value);
+      console.log(myArray);
+    }
+  }
 </script>
 
+
 <div class="container">
-    <form method="POST" action="">{% csrf_token %}
-      <h3 id="po">Input Array Elements</h3>
+    <form id="myForm" method="POST" action="">{% csrf_token %}
        {% for request in lab_request %}
-        {% if request.test.compound_test.id == 1  %}
-            <h1>FBC</h1>
-        {% endif %}
-        {% if request.test.id == 10  %}
-            {{ request.test }}: 
-              <select class="form-select" aria-label="Default select example" id="myVar" name="variable">
-                <option selected>Select an option</option>
-                <option value="Negative">Negative</option>
-                <option value="Positive">Positive</option>
-              </select>
-        {% elif request.test.id == 15 %}
-            {{ request.test }}:
-            <div class="mb-3">
-                <textarea class="form-control" rows="3" id="myVar" name="variable"></textarea>
-            </div>
-        {% else %}
-            {{ request.test }}: 
-              <div class="mb-3">
-                <input class="form-control" id="myVar" name="variable">
-              </div>
-        {% endif %}
+        {{ request.test }}: <input type="text" id="{{ request.test.id }}" name="test_id"> <br>
        {% endfor %} 
-       <input type="text" id="txtDisplay" name="test_id"> 
+       <br>
+       <!-- <input type="text" id="txtDisplay" class="chkbox">  -->
     <br><br>
-    <input type="submit" id="btnRequest" class="btn btn-success" value="Send Results">
+    <button onclick="fn()">Send Result</button>
     </form>
 </div>
 
