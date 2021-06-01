@@ -38,7 +38,7 @@ def login_view(request):
 
         qs = User.objects.filter(username=username_var)
         if len(qs) < 1:
-            messages.warning(request, "Wrong username")
+            messages.warning(request, "This user does not EXIST!")
         
         try:
             user = User.objects.get(username=username_var)
