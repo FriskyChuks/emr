@@ -15,7 +15,7 @@ from .forms import LabResultForm, LabResultFormSet
 
 
 @login_required(login_url="auth_login")
-@allowed_users(alllowed_roles=['admin','doctor','MLS','lab_front_desk'])
+# @allowed_users(alllowed_roles=['admin','doctor','MLS','lab_front_desk'])
 def lab_request_view(request, enc_id):
     encounter = PatientEncounter.objects.get(id=enc_id, active=True)
     patient_id = encounter.patient_id
@@ -31,6 +31,7 @@ def lab_request_view(request, enc_id):
             t = type(test_request)
 
             if (l <= 2): 
+                print ("This is great: ", l)
                 obj = LabRequest.objects.create(
                         encounter_id    = encounter.id,
                         patient_id      = patient_id,
@@ -38,10 +39,12 @@ def lab_request_view(request, enc_id):
                         created_by      = request.user
                     )
                 obj.save()
+
             else:
             # Convert the string(test_request) to a tuple
                 request_list = eval(test_request)
                 for item in request_list:
+                    print ("This is good: ", item)
                     obj = LabRequest.objects.create(
                         encounter_id    = encounter.id,
                         patient_id      = patient_id,
@@ -50,17 +53,17 @@ def lab_request_view(request, enc_id):
                     )
                     obj.save()
 
-            messages.success(request, "Lab investigation request successful!.")
-            return redirect("patient_folder", patient_id = patient_id)
-        else:
-            template = "labs/lab_request2.html"
-            context = {
-                "encounter":encounter,
-                "microbiology_tests":microbiology_tests,
-                "chem_path_tests":chem_path_tests,
-                "hermatology_tests":hermatology_tests
-            }
-            return render(request, template, context)
+        messages.success(request, "Lab investigation request successful!.")
+        return redirect("patient_folder", patient_id = patient_id)
+        
+    template = "labs/lab_request2.html"
+    context = {
+        "encounter":encounter,
+        "microbiology_tests":microbiology_tests,
+        "chem_path_tests":chem_path_tests,
+        "hermatology_tests":hermatology_tests
+    }
+    return render(request, template, context)
 
 
 @login_required(login_url="auth_login")

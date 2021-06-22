@@ -135,7 +135,7 @@
           <a class="p-2 link-secondary" href="{% url 'display_request' %}">Laboratory</a>
         {% endif %}
         {% if request.user.group.name == 'radiology' or request.user.group.name == 'admin' %}
-          <a class="p-2 link-secondary" href="#">radiology</a> 
+          <a class="p-2 link-secondary" href="#">Radiology</a> 
         {% endif %}
         {% if request.user.group.name == 'cashier' or request.user.group.name == 'admin' %}
           <a class="p-2 link-secondary" href="#">Bills</a>

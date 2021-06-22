@@ -2,33 +2,39 @@
 {% block content %}
 
 <script>
-  function fn()
-  {
-    var myArray = [];
-    var form = document.getElementById("myForm").elements;
-    for(var i=1; i < (form.length-1); i++)
-    {
-      // myArray.key = form[i].id;
-      // myArray.values = form[i].value;
-      myValues = (form[i].id+ ": "+ form[i].value);
-      myArray.push(myValues)
 
-      // console.log(form[i].id+ ": "+ form[i].value);
-      console.log(myArray);
-    }
-  }
+    arr=[];
+    $( ".result" ).each(function( index ) {
+        key=$( this ).prop('id');
+        value=$(this).val();
+        arr.push(key+':'+value);   
+    });
+
+      console.log(arr);
+
+      obj={};
+
+    $( ".result" ).each(function( index ) {
+        key=$( this ).prop('id');
+        value=$(this).val();
+
+        obj[key]=value; 
+    });
+
+      console.log(obj);
+
 </script>
 
 
 <div class="container">
     <form id="myForm" method="POST" action="">{% csrf_token %}
        {% for request in lab_request %}
-        {{ request.test }}: <input type="text" id="{{ request.test.id }}" name="test_id"> <br>
+        {{ request.test }}: <input type="text" class="result" id="{{ request.test.id }}" name="{{ request.test.id }}"> <br>
        {% endfor %} 
        <br>
        <!-- <input type="text" id="txtDisplay" class="chkbox">  -->
     <br><br>
-    <button onclick="fn()">Send Result</button>
+    <button>Send Result</button>
     </form>
 </div>
 

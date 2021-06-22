@@ -45,7 +45,9 @@
                     {% else %}
                       <a href="{% url 'ward_admission_display' id=p.current_ward_id %}">{{ p.current_ward.ward }} Ward</a>            
                     {% endif %}
+                    {% if request.user.group.name == 'cashier' %}
                       <a href="#">View Bills</a>
+                    {% endif %}
                   {% endif %}
                 {% endfor %}
               {% endif %}
