@@ -1,5 +1,7 @@
+from django.views.generic import ListView, TemplateView
 from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
 from django.db.models import Count
 from django.contrib import messages
 
@@ -9,7 +11,7 @@ from visits.models import PatientEncounter
 from accounts.decorators import allowed_users
 
 from .models import LabRequest, LabTest, LabUnit, LabResult
-from .forms import LabResultForm
+from .forms import LabResultForm, LabResultFormSet
 
 
 @login_required(login_url="auth_login")
@@ -48,17 +50,17 @@ def lab_request_view(request, enc_id):
                     )
                     obj.save()
 
-        messages.success(request, "Lab investigation request successful!.")
-        return redirect("patient_folder", patient_id = patient_id)
-    else:
-        template = "labs/lab_request2.html"
-        context = {
-            "encounter":encounter,
-            "microbiology_tests":microbiology_tests,
-            "chem_path_tests":chem_path_tests,
-            "hermatology_tests":hermatology_tests
-        }
-        return render(request, template, context)
+            messages.success(request, "Lab investigation request successful!.")
+            return redirect("patient_folder", patient_id = patient_id)
+        else:
+            template = "labs/lab_request2.html"
+            context = {
+                "encounter":encounter,
+                "microbiology_tests":microbiology_tests,
+                "chem_path_tests":chem_path_tests,
+                "hermatology_tests":hermatology_tests
+            }
+            return render(request, template, context)
 
 
 @login_required(login_url="auth_login")
@@ -94,13 +96,40 @@ def request_display_by_unit_view(request, enc_id):
 def lab_results_view(request, enc_id):
     lab_request = LabRequest.objects.filter(encounter_id=enc_id, done=False, decline=False)
 
-    if request.POST.get('test_id'):
-        entered_result = LabRequest()
-        entered_result.result = request.POST.get('test_id')
-        new_result = entered_result.result
-        print("Just = ",new_result)
+    if request.method == "POST":
+            for req_id in request.POST:
+                results = request.POST.get(req_id)
+                print("agwu = ",results)
+        # entered_result = LabRequest()
+        # entered_result.result = request.POST.get('request.test.id')
+        # new_result = entered_result.result
+        # print("Just = ",new_result)
 
     template = "labs/lab_results.html"
     context = {"lab_request":lab_request}
     return render(request, template, context)
+
+
+class LabResultsClassView(TemplateView):
+    # model = LabUnit
+    template_name = "labs/lab_results2.html"
+
+    # Define method to handle GET request
+    def get(self, *args, **kwargs):
+        # encounter = PatientEncounter.objects.filter(active=True, id=enc_id)
+        # Create an instance of the formset
+        formset = LabResultFormSet(queryset=LabResult.objects.none())
+        return self.render_to_response({'result_formset': formset})
+    
+    # Define method to handle POST request
+    def post(self, *args, **kwargs):
+
+        formset = LabResultFormSet(data=self.request.POST)
+
+        # Check if submitted forms are valid
+        if formset.is_valid():
+            formset.save()
+            return redirect(reverse_lazy("display_request"))
+
+        return self.render_to_response({'result_formset': formset})
 
