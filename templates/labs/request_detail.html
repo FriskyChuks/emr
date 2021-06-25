@@ -1,19 +1,44 @@
 {% extends 'base.html' %}
 {% block content %}
 
+
 <form method="POST" action="">{% csrf_token %}
-    <div class="row g-2">    
-        <div id="detail" class="col-md-8">
+    <div class="row g-3">
+        <div id="detail" class="col-md-2">      
+        </div>    
+        <div id="detail" class="col-md-8" style="float:center">
             {% for detail in request_detail|slice:":1" %}
                 <h3>{{ detail.patient.first_name }} {{ detail.patient.last_name }}</h3>
                 <b>{{ detail.patient.date_of_birth|timesince }}; {{ detail.patient.gender|capfirst }}</b>
-            {% endfor %}
-            <hr>
-            {% for detail in request_detail %}
-                * {{ detail.test }} <br>
+            <br><br>
+
+                <table width="100%" id="team-list" class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Test</th>
+                      <th scope="col">Requested by</th>
+                      <th scope="col">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for detail in request_detail %}
+                    <tr>
+                      <th>{{ forloop.counter }}</th>
+                      <td>{{ detail.test }}</td>
+                      <td>{{ detail.created_by.first_name }} {{ detail.created_by.last_name }}</td>
+                      <td>{{ detail.date_created }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                  </tbody>
+                </table>
+            <br>
+
+            <button style="float: right;"><a href="{% url 'lab_results' enc_id=detail.encounter.id  %}">Enter Investigation Result</a></button>
             {% endfor %}
         </div>
-        <div id="detail" class="col-md-4">
+        <div id="detail" class="col-md-2">
             
         </div>
     </div>

@@ -3,11 +3,12 @@
 {% block content %}
 <div class="container">
     <h3>Clinics</h3>
-    <ol>
+    <div class="row g-3">
         {% for clinic in clinics %}
-        <li><a href="{% url 'clinic_visits_display' id=clinic.id %}">{{ clinic.clinic }}</a></li>
+            <div class="col-md-4"><a href="{% url 'clinic_visits_display' id=clinic.id %}">{{ clinic.clinic }}</a>
+            {% cycle "" "" "</div><br/><div>" %}
         {% endfor %}
-    </ol>
+    </div>
 </div>
 
 {% endblock %}

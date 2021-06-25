@@ -25,17 +25,24 @@
 
 </script>
 
-
+{% if lab_request %}
 <div class="container">
     <form id="myForm" method="POST" action="">{% csrf_token %}
        {% for request in lab_request %}
-        {{ request.test }}: <input type="text" class="result" id="{{ request.test.id }}" name="{{ request.test.id }}"> <br>
+        {{ request.test }}: <input type="text" class="result" id="" name="{{ request.id }}"> 
+        <br>
        {% endfor %} 
-       <br>
-       <!-- <input type="text" id="txtDisplay" class="chkbox">  -->
-    <br><br>
+       <br><br>
     <button>Send Result</button>
     </form>
 </div>
-
+{% else %}
+<center>
+    <div style="color: green;">
+        <h1>No pending Investigation for this patient</h1>
+        <br>
+        <h1>Thank You!</h1>
+    </div>
+</center>
+{% endif %}
 {% endblock %}

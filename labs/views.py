@@ -1,9 +1,11 @@
 from django.views.generic import ListView, TemplateView
 from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.db.models import Count
 from django.contrib import messages
+import string
 
 from patients.models import Patient
 from visits.models import PatientEncounter
@@ -69,7 +71,7 @@ def lab_request_view(request, enc_id):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','MLS','lab_front_desk'])
 def dispaly_request_view(request):
-    lab_request = LabRequest.objects.values('encounter','patient').filter(decline=False, done=False).annotate(total=Count('id'))
+    lab_request = LabRequest.objects.values('encounter','patient').filter(done=False).annotate(total=Count('id'))
     
     template = 'labs/display_request.html'
     context = {"lab_request":lab_request}
@@ -91,48 +93,44 @@ def request_detail_view(request, enc_id):
 def request_display_by_unit_view(request, enc_id):
     unique_request = LabRequest.objects.values('encounter','patient').filter(decline=False, done=False).annotate(total=Count('id'))
     request_detail = LabRequest.objects.filter(encounter_id=enc_id,accepted=True, decline=False, done=False)
+    
     template = 'labs/request_by_unit.html'
     context = {"unique_request":unique_request, "request_detail":request_detail}
     return render(request, template, context)
 
 
-def lab_results_view(request, enc_id):
+def send_lab_results_view(request, enc_id):
     lab_request = LabRequest.objects.filter(encounter_id=enc_id, done=False, decline=False)
 
-    if request.method == "POST":
-            for req_id in request.POST:
-                results = request.POST.get(req_id)
-                print("agwu = ",results)
-        # entered_result = LabRequest()
-        # entered_result.result = request.POST.get('request.test.id')
-        # new_result = entered_result.result
-        # print("Just = ",new_result)
+    # if request.method == "POST":
+    #         for req_id in request.POST:
+    #             results = request.POST.get(req_id)
+    #             print("agwu = ",results)
+
+    result = request.POST
+    result_trimmed = dict(result.lists())
+    # del result_trimmed['csrfmiddlewaretoken']
+    result_trimmed.pop('csrfmiddlewaretoken', None)
+
+    for i, j in result_trimmed.items():
+        # remove unwanted characters
+        bad_chars = ['[', ']', "'"]
+        # initializing test string
+        cleaned_result = j 
+        cleaned_result = ''.join((filter(lambda x: x not in bad_chars, cleaned_result)))
+        # print(i, cleaned_result) 
+        if cleaned_result:
+            lab_result = LabResult.objects.create(
+                    lab_request_id = i,
+                    result      = cleaned_result,
+                    created_by  = request.user
+                )
+            lab_result.save()
+            # Update LabResuest table and mark sent results as done
+            LabRequest.objects.filter(id=i).update(done=True)
+    messages.success(request, "Result sent successfully!")
 
     template = "labs/lab_results.html"
     context = {"lab_request":lab_request}
     return render(request, template, context)
-
-
-class LabResultsClassView(TemplateView):
-    # model = LabUnit
-    template_name = "labs/lab_results2.html"
-
-    # Define method to handle GET request
-    def get(self, *args, **kwargs):
-        # encounter = PatientEncounter.objects.filter(active=True, id=enc_id)
-        # Create an instance of the formset
-        formset = LabResultFormSet(queryset=LabResult.objects.none())
-        return self.render_to_response({'result_formset': formset})
-    
-    # Define method to handle POST request
-    def post(self, *args, **kwargs):
-
-        formset = LabResultFormSet(data=self.request.POST)
-
-        # Check if submitted forms are valid
-        if formset.is_valid():
-            formset.save()
-            return redirect(reverse_lazy("display_request"))
-
-        return self.render_to_response({'result_formset': formset})
 
