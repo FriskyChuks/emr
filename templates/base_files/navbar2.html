@@ -52,20 +52,20 @@
   <body>
 
 
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: blue;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <b><a  style="color:white;" class="navbar-brand" href="#">smartCare solutions</a></b>
+        <b><a class="navbar-brand" href="#">smartCare solutions</a></b>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a  style="color:white;" class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+              <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
             </li> &nbsp; &nbsp; &nbsp;
             {% if user.is_authenticated %}
               <li class="nav-item dropdown">
-                <a  style="color:white;" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
                 data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-user" aria-hidden="true"></i> 
                 {{user.first_name}} {{user.last_name}}
                 </a>
