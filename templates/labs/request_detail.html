@@ -8,8 +8,15 @@
         </div>    
         <div id="detail" class="col-md-8" style="float:center">
             {% for detail in request_detail|slice:":1" %}
+            <div class="row g-3">
+                <div class="col-md-8">
                 <h3>{{ detail.patient.first_name }} {{ detail.patient.last_name }} | {{ detail.patient.id }}</h3>
                 {{ detail.patient.date_of_birth|timesince }}; {{ detail.patient.gender|capfirst }}
+                </div>
+                 <div class="col-md-4">
+                    <span style="float: right;"><button style="float: right;"><a href="{% url 'lab_results' enc_id=detail.encounter.id  %}">Enter Investigation Result</a></button></span>
+                </div>
+            </div>
             <br>
 
                 <table width="100%" id="team-list" class="table table-striped table-hover">
