@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{% for request in lab_request %}
-    {% if request.test %}
-        {{ request.patient }} <br>
-    {% endif %}
+{% for request in unit_request %}
+    {{ request.patient }} <br>
 {% endfor %}
 
 {% endblock %}

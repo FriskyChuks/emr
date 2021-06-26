@@ -17,7 +17,7 @@ from .forms import LabResultForm, LabResultFormSet
 
 
 @login_required(login_url="auth_login")
-# @allowed_users(alllowed_roles=['admin','doctor','MLS','lab_front_desk'])
+@allowed_users(alllowed_roles=['admin','doctor','MLS','lab_front_desk'])
 def lab_request_view(request, enc_id):
     encounter = PatientEncounter.objects.get(id=enc_id, active=True)
     patient_id = encounter.patient_id
@@ -68,6 +68,7 @@ def lab_request_view(request, enc_id):
     return render(request, template, context)
 
 
+# View for all Pending Request
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','MLS','lab_front_desk'])
 def dispaly_request_view(request):
@@ -78,6 +79,8 @@ def dispaly_request_view(request):
     return render(request, template, context)
 
 
+
+# View for Details of all Pending Request
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','MLS'])
 def request_detail_view(request, enc_id):
@@ -88,25 +91,21 @@ def request_detail_view(request, enc_id):
     return render(request, template, context)
 
 
+
 # @login_required(login_url="auth_login")
 # @allowed_users(alllowed_roles=['admin','MLS'])
-def request_display_by_unit_view(request, enc_id):
-    unique_request = LabRequest.objects.values('encounter','patient').filter(decline=False, done=False).annotate(total=Count('id'))
-    request_detail = LabRequest.objects.filter(encounter_id=enc_id,accepted=True, decline=False, done=False)
+def request_display_by_unit_view(request):
+    unit_request = LabRequest.objects.values('encounter','patient').filter(decline=False, done=False).annotate(total=Count('id'))
+    # request_detail = LabRequest.objects.filter(encounter_id=enc_id,accepted=True, decline=False, done=False)
     
     template = 'labs/request_by_unit.html'
-    context = {"unique_request":unique_request, "request_detail":request_detail}
+    context = {"unit_request":unit_request}#, "request_detail":request_detail
     return render(request, template, context)
 
 
 def send_lab_results_view(request, enc_id):
     lab_request = LabRequest.objects.filter(encounter_id=enc_id, done=False, decline=False)
-
-    # if request.method == "POST":
-    #         for req_id in request.POST:
-    #             results = request.POST.get(req_id)
-    #             print("agwu = ",results)
-
+    
     result = request.POST
     result_trimmed = dict(result.lists())
     # del result_trimmed['csrfmiddlewaretoken']
@@ -128,7 +127,7 @@ def send_lab_results_view(request, enc_id):
             lab_result.save()
             # Update LabResuest table and mark sent results as done
             LabRequest.objects.filter(id=i).update(done=True)
-    messages.success(request, "Result sent successfully!")
+    # messages.success(request, "Result sent successfully!")
 
     template = "labs/lab_results.html"
     context = {"lab_request":lab_request}
