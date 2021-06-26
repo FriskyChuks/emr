@@ -26,8 +26,8 @@
 </script>
 
 {% if lab_request %}
-<div style="background-color: lightgray; text-align: center; color: white;">
-    <h4>Medical Lab.Result Sheet</h4>
+<div style="background-color: royalblue; text-align: center; color: white;">
+    <h4>Medical Lab Result Sheet</h4>
 </div>
 <div class="container">
     {% for detail in lab_request|slice:":1" %}
@@ -58,7 +58,7 @@
             {% endfor %} 
         </div>
         <br><br>
-        <button type="submit" class="btn btn-success" style="float: right;">Send Result</button>
+        <button type="submit" class="btn btn-primary" style="float: right;">Send Result</button>
     </form>
 </div>
 {% else %}
