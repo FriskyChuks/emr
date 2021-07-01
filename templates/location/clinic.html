@@ -3,10 +3,9 @@
 {% block content %}
 <div class="container">
     <h3>Clinics</h3>
-    <div class="row g-3">
+    <div>
         {% for clinic in clinics %}
-            <div class="col-md-4"><a href="{% url 'clinic_visits_display' id=clinic.id %}">{{ clinic.clinic }}</a>
-            {% cycle "" "" "</div><br/><div>" %}
+            <div><a href="{% url 'clinic_visits_display' id=clinic.id %}">{{ clinic.clinic }}</a>
         {% endfor %}
     </div>
 </div>

@@ -7,7 +7,7 @@ from .views import create_item_view, create_brand_view, prescription_view, searc
 urlpatterns = [
     path("create_item/", create_item_view, name="create_item"),
     path("create_brand/", create_brand_view, name="create_brand"),
-    path("prescription/<encounter_id>", prescription_view, name="prescription"),
+    path("prescription/<enc_id>", prescription_view, name="prescription"),
     path("search_drug/", csrf_exempt(search_drug_view), name="search_drug_view"),
     path("view_prescription/<pid>", view_prescription_view, name="view_prescription"),
     path("dispense_prescription/<encounter_id>", dispense_prescription_view, name="dispense_prescription"),

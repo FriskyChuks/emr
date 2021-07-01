@@ -46,7 +46,7 @@
                   <!-- <td>{{ qs.updated|time:"h:i a" }}</td> -->
                   <td><a href="{% url 'take_vital_signs' id=qs.id %}">Vitals</a></td>
                   <td><a href="{% url 'patient_notes' id=qs.id %}">Notes</a></td>
-                  <td><a href="{% url 'patient_folder' patient_id=qs.patient.id  %}">Folder</a></td>
+                  <td><a href="{% url 'patient_folder' enc_id=qs.id  %}">Folder</a></td>
                   <td><a href="{% url 'transfer_patient' id=qs.id %}">Transfer</a></td>
                   <td><a href="{% url 'discharge_patient' id=qs.id %}">Discharge</a></td>
               </tr>       

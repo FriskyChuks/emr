@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<--<a href="{% url 'patient_folder' patient_id=encounter.patient.id %}">{{ encounter.patient.first_name }}'s Folder</a>
+<--<a href="{% url 'patient_folder' enc_id=encounter.id %}">{{ encounter.patient.first_name }}'s Folder</a>
 <br>
 <--{% if encounter.current_clinic %}
     <a href="{% url 'clinic_visits_display' id=encounter.current_clinic.id %}">Back to {{ encounter.current_clinic }}</a>

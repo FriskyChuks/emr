@@ -16,23 +16,24 @@ from .forms import PatientBiodataForm, PatientImageForm#, FotoForm#, AddressForm
 
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','doctor','nurse'])
-def patient_folder_view(request, patient_id):
-    patient_ecounter = PatientEncounter.objects.filter(patient_id=patient_id).order_by("-id")
-    current_encounter = Patient.objects.filter(id=patient_id)
-    print(patient_ecounter)
+def patient_folder_view(request, enc_id):
+    current_encounter = PatientEncounter.objects.filter(id=enc_id, active=True).order_by("-id")
+    
     template = "patients/patient_folder.html"
-    context = {"patient_ecounter":patient_ecounter, "current_encounter":current_encounter}
+    context = {"current_encounter":current_encounter}
     return render (request, template, context)
+
 
 
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','doctor','nurse'])
-def current_patient_folder_view(request, id):
-    current_patient_ecounter = PatientEncounter.objects.filter(id=id).order_by("-id")
-    print(current_patient_ecounter)
-    template = "patients/folder_body.html"
-    context = {"current_patient_ecounter":current_patient_ecounter}
+def patient_archives_view(request, patient_id):
+    patient_ecounter = PatientEncounter.objects.filter(patient_id=patient_id).order_by("-id")
+    
+    template = "patients/archives.html" # Change this template with patient_folder_view
+    context = {"patient_ecounter":patient_ecounter}
     return render (request, template, context)
+
 
 
 @login_required(login_url="auth_login")

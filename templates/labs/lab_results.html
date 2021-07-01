@@ -30,15 +30,16 @@
     <h4>Medical Lab Result Sheet</h4>
 </div>
 <div class="container">
-    {% for detail in lab_request|slice:":1" %}
-        <h3>{{ detail.patient.first_name }} {{ detail.patient.last_name }} | {{ detail.patient.id }}</h3>
-        {{ detail.patient.date_of_birth|timesince }}; {{ detail.patient.gender|capfirst }}
+    {% for patient_detail in lab_request|slice:":1" %}
+        <h3>{{ patient_detail.patient.first_name }} {{ patient_detail.patient.last_name }} | 
+        {{ patient_detail.patient.id }}</h3>
+        {{ patient_detail.patient.date_of_birth|timesince }}; {{ depatient_detailtail.patient.gender|capfirst }}
         <hr>
     {% endfor %}
     <form id="myForm" method="POST" action="">{% csrf_token %} 
         <div class="row lg-2">
             {% for request in lab_request %}
-              {% if not request.test.compound_test %}
+              {% if request.test.compound_test %}
                   <div class="col-md-6">
                     {% if request.test.title == 'Pregnancy Test'  %}
                         {{ request.test }}:

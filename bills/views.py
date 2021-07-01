@@ -9,7 +9,7 @@ from .models import Bill, Payment
 
 
 @login_required(login_url="auth_login")
-@allowed_users(alllowed_roles=['cashier'])
+@allowed_users(alllowed_roles=['admin','cashier'])
 def pending_bills_view(request, pid):
     if not request.user.admin:
         messages.warning(request, "You do not have access to this page! thanks.")

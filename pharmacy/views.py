@@ -76,19 +76,18 @@ def dispense_prescription_view(request, encounter_id):
 
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','doctor','nurse'])
-def prescription_view(request, encounter_id):
+def prescription_view(request, enc_id):
     item = Item.objects.all
     prescriptionFormSet = inlineformset_factory(
                                 PatientEncounter, Prescription, fields=(
                                     'item', 'route','qty_per_take','times_daily','no_of_days'
                                     ), extra=5
                                 )
-    encounter = PatientEncounter.objects.get(active=True, id=encounter_id)
+    encounter = PatientEncounter.objects.get(active=True, id=enc_id)
     formset = prescriptionFormSet(queryset=Prescription.objects.none(), instance=encounter)
     if request.method == "POST":
         formset = prescriptionFormSet(request.POST, instance=encounter)
         if formset.is_valid():
-            # formset.save()
             instance = formset.save(commit=False) 
             for obj in instance:
                 obj.patient_id = encounter.patient.id

@@ -21,9 +21,9 @@ from .forms import LabResultForm, LabResultFormSet
 def lab_request_view(request, enc_id):
     encounter = PatientEncounter.objects.get(id=enc_id, active=True)
     patient_id = encounter.patient_id
-    microbiology_tests = LabTest.objects.filter(lab_unit=3)
-    chem_path_tests = LabTest.objects.filter(lab_unit=2)
-    hermatology_tests = LabTest.objects.filter(lab_unit=1)
+    microbiology_tests = LabTest.objects.filter(lab_unit=3).order_by('-compound_test_id')
+    chem_path_tests = LabTest.objects.filter(lab_unit=2).order_by('-compound_test_id')
+    hermatology_tests = LabTest.objects.filter(lab_unit=1).order_by('-compound_test_id')
     if request.method == "POST":
         if request.POST.get("test_id"):
             selected_test = LabRequest()
