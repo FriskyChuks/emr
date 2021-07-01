@@ -288,7 +288,7 @@
           <div class="card">
             <div class="card-body">
               {% for e in current_encounter|slice:":1" %}
-              <a href="{% url 'prescription' enc_id=20 %}" class=""><h5>Prescription</h5></a>
+              <a href="{% url 'prescription' enc_id=e.id %}" class=""><h5>Prescription</h5></a>
               <h6 class="card-title">Recent Prescriptions</h6>
               <p class="card-text">List of recent prescriptions here.</p>
               
