@@ -56,7 +56,7 @@ def lab_request_view(request, enc_id):
                     obj.save()
 
         messages.success(request, "Lab investigation request successful!.")
-        return redirect("patient_folder", patient_id = patient_id)
+        return redirect("patient_folder", enc_id = enc_id)
         
     template = "labs/lab_request2.html"
     context = {
