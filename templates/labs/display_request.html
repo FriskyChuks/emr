@@ -19,7 +19,7 @@
             <form action="">{% csrf_token %}
                 <h4>Pending Lab Requests</h4>                     
                 {% for request in unique_request %} 
-                    <a href="{% url 'request_detail' enc_id=request.encounter %}">
+                    <a href="{% url 'request_detail' enc_id=request.encounter.id %}">
                      
                            # {{ request.patient }} ({{ request.patient.id }})<br>
                     
