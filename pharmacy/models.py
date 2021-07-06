@@ -40,9 +40,10 @@ DRUG_ROUTE = (
 
 TIMES_DAILY = (
     ('bd','BD'),
-    # ('iv','IV'),
-    # ('injectibles','Injectibles'),
-    # ('syrup','Syrup'),
+    ('tds','TDS'),
+    ('od','OD'),
+    ('qds','QDS'),
+    ('prn','PRN'),
 )
 
 
@@ -96,6 +97,7 @@ class Prescription(models.Model):
     times_daily         = models.CharField(max_length=20, choices=TIMES_DAILY)
     no_of_days          = models.IntegerField()
     route               = models.CharField(max_length=20, choices=DRUG_ROUTE)
+    note                = models.CharField(max_length=225, null=True, blank=True)
     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     timestamp           = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated             = models.DateTimeField(auto_now_add=False, auto_now=True)

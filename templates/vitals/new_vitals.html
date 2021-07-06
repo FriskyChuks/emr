@@ -4,7 +4,7 @@
 
 <div class="container">
 {% for p in p_encounter|slice:":1" %}
-<--<a href="{% url 'patient_folder' patient_id=p.patient.id %}">Open {{ p.patient.first_name }}'s <b>Folder</b></a>
+<--<a href="{% url 'patient_folder' enc_id=p.id %}">Open {{ p.patient.first_name }}'s <b>Folder</b></a>
 <br>
   {% if p.current_clinic %}
     <--<a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}">Back to {{ p.current_clinic }}</a>

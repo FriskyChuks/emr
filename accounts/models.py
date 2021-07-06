@@ -112,7 +112,3 @@ class User(AbstractBaseUser):
 #     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 #     date_created        = models.DateTimeField(auto_now_add=True, auto_now=False)
 #     updated             = models.DateTimeField(auto_now_add=False, auto_now=True)
-
-
-
-

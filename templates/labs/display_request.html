@@ -13,18 +13,23 @@
 </script> -->
 <div class="container">
     <div class="row g-2">
+        <h2>Central Laboratory</h2>
+        <hr>
         <div id="detail" class="col-md-4">
             <form action="">{% csrf_token %}
-                <h4>Pending Lab Requests</h4>     
-                {% for request in lab_request %}
-                # <a href="{% url 'request_detail' enc_id=request.encounter %}">{{ request.patient }}</a> ({{ request.total }})<br>
+                <h4>Pending Lab Requests</h4>                     
+                {% for request in unique_request %} 
+                    <a href="{% url 'request_detail' enc_id=request.encounter %}">
+                     
+                           # {{ request.patient }} ({{ request.patient.id }})<br>
+                    
+                    </a>         
                 {% endfor %}
             </form>
         </div>
         <div class="col-md-8">
             <h4>Lab Units</h4>
-            {% include 'labs/lab_units.html' %}
-            
+            {% include 'labs/lab_units.html' %}         
         </div>
     </div>
 </div>

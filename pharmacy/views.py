@@ -56,7 +56,7 @@ def create_brand_view(request):
 
 
 @login_required(login_url="auth_login")
-@allowed_users(alllowed_roles=['pharmacy'])
+@allowed_users(alllowed_roles=['admin','pharmacy'])
 def view_prescription_view(request, pid):
     enc_id = (Prescription.objects.values('encounter_no').annotate(dcount=Count('encounter_no')).order_by('encounter_no').reverse())
     prescriptions = Prescription.objects.filter(patient=pid)
@@ -80,7 +80,7 @@ def prescription_view(request, enc_id):
     item = Item.objects.all
     prescriptionFormSet = inlineformset_factory(
                                 PatientEncounter, Prescription, fields=(
-                                    'item', 'route','qty_per_take','times_daily','no_of_days'
+                                    'item', 'route','qty_per_take','times_daily','no_of_days','note'
                                     ), extra=5
                                 )
     encounter = PatientEncounter.objects.get(active=True, id=enc_id)
@@ -97,4 +97,14 @@ def prescription_view(request, enc_id):
 
     template = "pharmacy/prescribe.html"
     context = {"formset":formset, "encounter":encounter, "item":item}
+    return render(request, template,context)
+
+
+
+
+def prescription_view1(request, enc_id):
+    prescribed = request.POST
+
+    template = "pharmacy/prescription.html"
+    context = {}
     return render(request, template,context)

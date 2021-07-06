@@ -17,17 +17,22 @@
 
 <h5>Prescription Sheet for <b>{{ encounter.patient.first_name }} {{ encounter.patient.last_name }}</b> </h5> 
 <br>    
-<form class="row g-3" id="form" method="POST" action="">{% csrf_token %} 
+<form id="form" method="POST" action="">{% csrf_token %} 
     {{ formset.management_form }}
     {% for form in formset %}
-        <div class="col-md-2">Item: {{ form.item }}</div> &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-        <div class="col-md-2">Qty per intake: {{ form.qty_per_take }}</div> &nbsp; &nbsp; &nbsp;&nbsp;
-        <div class="col-md-2">Times daily: {{ form.times_daily }}</div>  
-        <div class="col-md-2">No. of days: {{ form.no_of_days }}</div> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; 
-        <div class="col-md-2">No. of days: {{ form.route }}</div> &nbsp;
+        Select Item: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.item }}<br><br>
+        Qty per intake: {{ form.qty_per_take }} &nbsp;&nbsp;&nbsp;
+        Frequency: {{ form.times_daily }} &nbsp;&nbsp;&nbsp;
+        No of days: {{ form.no_of_days }} &nbsp;&nbsp;&nbsp;
+        Route: {{ form.route }} <br><br>
+        <div class="form-control">
+        note: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        {{ form.note }} 
+        </div>
+        <!-- {{ form }} -->
          <hr>
     {% endfor %}
-    <input type="submit" class="btn btn-success", value="Save">
+    <input type="submit" class="btn btn-success", value="Prescribe">
 </form>
 
 
