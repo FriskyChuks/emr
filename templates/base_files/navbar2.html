@@ -120,7 +120,7 @@
           <a class="p-2 link-secondary" href="#">Pharmacy</a>
         {% endif %}
         {% if request.user.group.name == 'MLS' or request.user.group.name == 'admin' %}
-          <a class="p-2 link-secondary" href="{% url 'display_request' %}">Laboratory</a>
+          <a class="p-2 link-secondary" href="{% url 'request_list_view' %}">Laboratory</a>
         {% endif %}
         {% if request.user.group.name == 'radiology' or request.user.group.name == 'admin' %}
           <a class="p-2 link-secondary" href="#">Radiology</a> 

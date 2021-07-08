@@ -59,7 +59,7 @@ def login_view(request):
                 if (clinic_id  and group_name == "doctor") or (clinic_id and group_name == "nurse"):
                     return redirect("clinic_visits_display", id=clinic_id)
                 elif group_name == "MLS":
-                    return HttpResponseRedirect("/labs/display_request")
+                    return HttpResponseRedirect("/labs/request_list_view")
                 else:
                     return HttpResponseRedirect("/home")
 

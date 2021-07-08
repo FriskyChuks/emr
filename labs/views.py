@@ -68,21 +68,10 @@ def lab_request_view(request, enc_id):
     return render(request, template, context)
 
 
-def lab_units_view(request):
-    units = LabUnit.objects.all()
-
-    template = "labs/lab_units.html"
-    context = {"units":units}
-    return render(request, template, context)
-
-
 # View for all Pending Request || CENTRAL LAB
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','MLS','lab_front_desk'])
-def dispaly_request_by_unit_view(request):
-    user_id = request.user.lab_unit.id
-    unit_id = LabUnit.objects.get(id=user_id)
-
+def request_list_view(request):
     lab_request = LabRequest.objects.filter(done=False).values\
                 ('encounter','patient', 'test', 'test__lab_unit').annotate(total=Count('id'))
     unique_request = LabRequest.objects.all().distinct('encounter').filter(done=False).order_by('-encounter')
@@ -92,6 +81,7 @@ def dispaly_request_by_unit_view(request):
                "unique_request":unique_request,
               }
     return render(request, template, context)
+
 
 
 # Details of all Pending Request
@@ -105,18 +95,8 @@ def request_detail_view(request, enc_id):
     return render(request, template, context)
 
 
-
-# @login_required(login_url="auth_login")
-# @allowed_users(alllowed_roles=['admin','MLS'])
-def request_display_by_unit_view(request):
-    unit_request = LabRequest.objects.values('encounter','patient').filter(decline=False, done=False).annotate(total=Count('id'))
-    # request_detail = LabRequest.objects.filter(encounter_id=enc_id,accepted=True, decline=False, done=False)
-    
-    template = 'labs/request_by_unit.html'
-    context = {"unit_request":unit_request}#, "request_detail":request_detail
-    return render(request, template, context)
-
-
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['MLS'])
 def send_lab_results_view(request, enc_id):
     lab_request = LabRequest.objects.filter(encounter_id=enc_id, done=False, decline=False)
     
