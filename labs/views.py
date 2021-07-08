@@ -68,20 +68,33 @@ def lab_request_view(request, enc_id):
     return render(request, template, context)
 
 
-# View for all Pending Request || CENTRAL LAB
-@login_required(login_url="auth_login")
-@allowed_users(alllowed_roles=['admin','MLS','lab_front_desk'])
-def dispaly_request_view(request):
-    lab_request = LabRequest.objects.filter(done=False).values\
-                ('encounter','patient', 'test', 'test__lab_unit').annotate(total=Count('id'))
-    unique_request = LabRequest.objects.all().distinct('encounter').order_by('-encounter')
-    
-    template = 'labs/display_request.html'
-    context = {"lab_request":lab_request, 'unique_request':unique_request}
+def lab_units_view(request):
+    units = LabUnit.objects.all()
+
+    template = "labs/lab_units.html"
+    context = {"units":units}
     return render(request, template, context)
 
 
-# View for Details of all Pending Request
+# View for all Pending Request || CENTRAL LAB
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','MLS','lab_front_desk'])
+def dispaly_request_by_unit_view(request):
+    user_id = request.user.lab_unit.id
+    unit_id = LabUnit.objects.get(id=user_id)
+
+    lab_request = LabRequest.objects.filter(done=False).values\
+                ('encounter','patient', 'test', 'test__lab_unit').annotate(total=Count('id'))
+    unique_request = LabRequest.objects.all().distinct('encounter').filter(done=False).order_by('-encounter')
+    
+    template = 'labs/display_request.html'
+    context = {"lab_request":lab_request, 
+               "unique_request":unique_request,
+              }
+    return render(request, template, context)
+
+
+# Details of all Pending Request
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','MLS'])
 def request_detail_view(request, enc_id):
@@ -133,4 +146,7 @@ def send_lab_results_view(request, enc_id):
     template = "labs/lab_results.html"
     context = {"lab_request":lab_request}
     return render(request, template, context)
+
+
+
 

@@ -4,6 +4,7 @@ from django.contrib.auth.models import (
 )
 
 from locations.models import Clinic
+from labs.models import LabUnit
 
 
 class UserManager(BaseUserManager):
@@ -69,6 +70,7 @@ class User(AbstractBaseUser):
 	is_a_patient	= models.BooleanField(default=False)
 	admin			= models.BooleanField(default=False)
 	group 			= models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+	lab_unit		= models.ForeignKey(LabUnit, on_delete=models.CASCADE, blank=True, null=True, help_text="For MedLab staff only")
 	clinic 			= models.ForeignKey(Clinic, on_delete=models.CASCADE, blank=True, null=True)
 	timestamp 		= models.DateTimeField(auto_now_add=True, auto_now=False)
 
