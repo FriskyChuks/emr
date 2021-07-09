@@ -11,14 +11,14 @@
 
         <div class="card-body">
           {% for test in unique_request %}
-          
+                
                 <a href="{% url 'request_detail' enc_id=test.encounter.id %}" class="btn btn-outline-dark">
                   {{ test.patient }} | {{ test.patient.id }} 
                   {% if test.encounter.current_clinic %}
-                    | {{ test.encounter.current_clinic }}
+                    | {{ test.encounter.current_clinic }} Clinic
                   {% else %}
-                    | {{ test.encounter.current_ward }}
-                  {% endif %}
+                    | {{ test.encounter.current_ward }} Ward
+                  {% endif %} 
                 </a><br>
             
           {% endfor %}
