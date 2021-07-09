@@ -77,9 +77,7 @@ def request_list_view(request):
     unique_request = LabRequest.objects.filter(done=False).distinct('encounter').order_by('-encounter')
 
     template = 'labs/display_request.html'
-    context = {"lab_request":lab_request, 
-               # "unique_request":unique_request,
-              }
+    context = {"unique_request":unique_request}
     return render(request, template, context)
 
 
