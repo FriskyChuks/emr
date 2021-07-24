@@ -38,7 +38,7 @@ class PatientBiodataForm(forms.ModelForm):
             'phone_2': forms.NumberInput(attrs={'class': 'form-control'}),
             'country': forms.Select(attrs={'class': 'form-control'}),
             'state': forms.Select(attrs={'class': 'form-control'}),
-            'l_g_a': forms.TextInput(attrs={'class': 'form-control'}),
+            'l_g_a': forms.Select(attrs={'class': 'form-control'}),
             'address': forms.TextInput(attrs={'class': 'form-control'}),
             'next_of_kin_relationship': forms.Select(attrs={'class': 'form-control'}),
             'full_name': forms.TextInput(attrs={'class': 'form-control'}),

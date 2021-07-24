@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.db.models.expressions import F
 from django.urls import reverse
 from django.db import models
 # from django.contrib.auth.models import User
@@ -48,6 +49,28 @@ COUNTRY = (
 STATE = (
 		('lagos', 'Lagos'),
 		('nasarawa', 'Nasarawa'),
+		('abia', 'Abia'),
+		('adamawa', 'Adamawa'),
+		('anambra', 'Anambra'),
+		('akwa-ibom', 'Akwa-Ibom'),
+		('delta', 'Delta'),
+		('edo', 'Edo'),
+		('enugu', 'Enugu'),
+		('jigawa', 'Jigawa'),
+		('ondo', 'Ondo'),
+		('imo', 'Imo'),
+		('bauchi', 'Bauchi'),
+		('plateau', 'Plateau'),
+		('ogun', 'Ogun'),
+		('kaduna', 'Kaduna'),
+		('katsina', 'Katsina'),
+		('sokoto', 'Sokoto'),
+		('osun', 'Osun'),
+		('benue', 'Benue'),
+		('kogi', 'Kogi'),
+		('fct(Abuja)', 'FCT(Abuja)'),
+		('ebonyi', 'Ebonyi'),
+		('cross-rivers', 'Cross-Rivers'),
 	)
 
 
@@ -73,6 +96,23 @@ RELATIONSHIP = (
 		('son', 'Son'),
 	)
 
+
+class State(models.Model):
+	state = models.CharField(max_length=20, choices=STATE, unique=True)
+	country = models.CharField(max_length=50)
+
+	def __str__(self):
+		return str(self.state)
+
+
+class LGA(models.Model):
+	state = models.ForeignKey(State, on_delete=models.CASCADE)
+	lga   = models.CharField(max_length=50)
+
+	def __str__(self):
+		return str(self.lga)
+
+
 class Patient(models.Model):
 	foto			= models.ImageField(null=True, blank=True, upload_to="image/", default="image/male.jpg")
 	first_name      = models.CharField(max_length=50)
@@ -84,8 +124,8 @@ class Patient(models.Model):
 	phone_1         = models.CharField(max_length=11, unique=True)
 	phone_2         = models.CharField(max_length=11, null=True, blank=True)
 	country         = models.CharField(max_length=100, choices=COUNTRY, default="Nigeria")
-	state           = models.CharField(max_length=100, choices=STATE)
-	l_g_a           = models.CharField(max_length=100)
+	state           = models.ForeignKey(State, on_delete=models.CASCADE)
+	l_g_a           = models.ForeignKey(LGA, on_delete=models.CASCADE)
 	address         = models.TextField(null=True, blank=True)
 	next_of_kin_relationship  = models.CharField(max_length=50, choices=RELATIONSHIP)
 	full_name           = models.CharField(max_length=150)
