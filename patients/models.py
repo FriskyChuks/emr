@@ -81,7 +81,7 @@ class Patient(models.Model):
 	gender          = models.CharField(max_length=10, choices=GENDER)
 	date_of_birth   = models.DateField()
 	marital_status  = models.CharField(max_length=10, choices=MARITAL_STATUS)
-	phone_1         = models.CharField(max_length=11)
+	phone_1         = models.CharField(max_length=11, unique=True)
 	phone_2         = models.CharField(max_length=11, null=True, blank=True)
 	country         = models.CharField(max_length=100, choices=COUNTRY, default="Nigeria")
 	state           = models.CharField(max_length=100, choices=STATE)
@@ -106,31 +106,5 @@ class Patient(models.Model):
 	def get_absolute_url(self):
 		return reverse("patient_detail", kwargs={"id": self.id})
 
-
-# class PatientImage(models.Model):
-# 	patient 		= models.OneToOneField(Patient, on_delete=models.CASCADE, blank=True, null=True)
-# 	foto			= models.ImageField(null=True, blank=True, upload_to="image/")
-# 	created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-
-# 	def __str__(self):
-# 		return str(self.patient)
-
-
-
-# class NextOfKin(models.Model):
-#     patient             = models.OneToOneField(Patient, on_delete=models.CASCADE)
-#     relationship        = models.CharField(max_length=50, choices=RELATIONSHIP)
-#     full_name           = models.CharField(max_length=150)
-#     phone               = models.PositiveIntegerField()
-#     next_of_kin_address = models.TextField()
-
-
-# class Address(models.Model):
-#     patient         = models.OneToOneField(Patient, on_delete=models.CASCADE)
-#     phone_1         = models.PositiveIntegerField()
-#     phone_2         = models.PositiveIntegerField()
-#     country         = models.CharField(max_length=100)
-#     state           = models.CharField(max_length=100)
-#     l_g_a           = models.CharField(max_length=100)
-#     address         = models.TextField()
-
+	class Meta:
+		unique_together = ('first_name', 'last_name', 'date_of_birth')
