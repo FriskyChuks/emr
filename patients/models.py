@@ -47,31 +47,31 @@ COUNTRY = (
 	)
 
 STATE = (
-		('lagos', 'Lagos'),
-		('nasarawa', 'Nasarawa'),
-		('abia', 'Abia'),
-		('adamawa', 'Adamawa'),
-		('anambra', 'Anambra'),
-		('akwa-ibom', 'Akwa-Ibom'),
-		('delta', 'Delta'),
-		('edo', 'Edo'),
-		('enugu', 'Enugu'),
-		('jigawa', 'Jigawa'),
-		('ondo', 'Ondo'),
-		('imo', 'Imo'),
-		('bauchi', 'Bauchi'),
-		('plateau', 'Plateau'),
-		('ogun', 'Ogun'),
-		('kaduna', 'Kaduna'),
-		('katsina', 'Katsina'),
-		('sokoto', 'Sokoto'),
-		('osun', 'Osun'),
-		('benue', 'Benue'),
-		('kogi', 'Kogi'),
-		('fct(Abuja)', 'FCT(Abuja)'),
-		('ebonyi', 'Ebonyi'),
-		('cross-rivers', 'Cross-Rivers'),
-	)
+			('lagos', 'Lagos'),
+			('nasarawa', 'Nasarawa'),
+			('abia', 'Abia'),
+			('adamawa', 'Adamawa'),
+			('anambra', 'Anambra'),
+			('akwa-ibom', 'Akwa-Ibom'),
+			('delta', 'Delta'),
+			('edo', 'Edo'),
+			('enugu', 'Enugu'),
+			('jigawa', 'Jigawa'),
+			('ondo', 'Ondo'),
+			('imo', 'Imo'),
+			('bauchi', 'Bauchi'),
+			('plateau', 'Plateau'),
+			('ogun', 'Ogun'),
+			('kaduna', 'Kaduna'),
+			('katsina', 'Katsina'),
+			('sokoto', 'Sokoto'),
+			('osun', 'Osun'),
+			('benue', 'Benue'),
+			('kogi', 'Kogi'),
+			('fct(Abuja)', 'FCT(Abuja)'),
+			('ebonyi', 'Ebonyi'),
+			('cross-rivers', 'Cross-Rivers'),
+		)
 
 
 GENDER = (
@@ -124,8 +124,10 @@ class Patient(models.Model):
 	phone_1         = models.CharField(max_length=11, unique=True)
 	phone_2         = models.CharField(max_length=11, null=True, blank=True)
 	country         = models.CharField(max_length=100, choices=COUNTRY, default="Nigeria")
-	state           = models.ForeignKey(State, on_delete=models.CASCADE, blank=True, null=True)
-	l_g_a           = models.ForeignKey(LGA, on_delete=models.CASCADE, blank=True, null=True)
+	state           = models.CharField(max_length=100, choices=STATE, default='nasarawa')
+	# state           = models.ForeignKey(State, on_delete=models.CASCADE)
+	l_g_a           = models.CharField(max_length=100, default='keffi')
+	# l_g_a           = models.ForeignKey(LGA, on_delete=models.CASCADE)
 	address         = models.TextField(null=True, blank=True)
 	next_of_kin_relationship  = models.CharField(max_length=50, choices=RELATIONSHIP)
 	full_name           = models.CharField(max_length=150)
