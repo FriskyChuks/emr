@@ -6,7 +6,8 @@ from .forms import PatientBiodataForm
 from .preview import PatientBiodataFormPreview
 
 from .views import(
-    patient_registration_form,  
+    patient_registration_form, 
+    load_lga_view,
     patient_detail_view, 
     search_patient_view,
     patient_folder_view,
@@ -16,6 +17,7 @@ from .views import(
 )  
 
 urlpatterns = [
+    path('load_lga_view/', load_lga_view, name='load_lga_view'),
     path('registration/', patient_registration_form, name='registration'),
     path('search/', search_patient_view, name='search_patient'),
     path('patient_info/<id>/', patient_detail_view, name='patient_detail'),

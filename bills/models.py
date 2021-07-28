@@ -35,6 +35,14 @@ class Bill(models.Model):
     date_created        = models.DateTimeField(auto_now_add=False, auto_now=True)
     last_updated        = models.DateTimeField(auto_now_add=True, auto_now=False)
 
+    def __str__(self):
+        if self.medical_service:
+            return f"{self.medical_service} | {self.encounter.patient.id}"
+        elif self.radiology_service:
+            return f"{self.radiology_service} | {self.encounter.patient.id}"
+        else:
+            return f"{self.prescription} | {self.encounter.patient.id}"
+
 
 class Payment(models.Model):
     bill            = models.ForeignKey(Bill, on_delete=models.CASCADE)

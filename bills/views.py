@@ -16,22 +16,22 @@ def pending_bills_view(request, pid):
         return HttpResponseRedirect('/accounts/logout/') 
     # bills = Bill.objects.filter(patient=pid, status="pending") | Bill.objects.filter(patient=pid, status="billed") | Bill.objects.filter(patient=pid, status="paid")
     bills = Bill.objects.filter(patient=pid, status="billed") | Bill.objects.filter(patient=pid, status="pending")
-    services_bill = Bill.objects.filter(patient=pid, medical_service__isnull=False)
-    radiology_bill = Bill.objects.filter(patient=pid, radiology_service__isnull=False)
-    pharmacy_bill = Bill.objects.filter(patient=pid, prescription__isnull=False)
+    services_bills = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='pending')
+    radiology_bills = Bill.objects.filter(patient=pid, radiology_service__isnull=False)
+    pharmacy_bills = Bill.objects.filter(patient=pid, prescription__isnull=False)
 
     medical_service_total_bill = 0
     radiology_total_bill = 0
     pharmacy_total_bill = 0
 
     # Medical Service Bill
-    for obj in services_bill:
+    for obj in services_bills:
         qty = obj.medical_service.unit 
         service_subtotal = obj.medical_service.medical_service.price * qty
         medical_service_total_bill += service_subtotal
     
     # Radiology Bill
-    for obj in radiology_bill: 
+    for obj in radiology_bills: 
         qty = obj.radiology_service.unit 
         radiology_subtotal = obj.radiology_service.radiology_service.price * qty
         radiology_total_bill += radiology_subtotal 
@@ -50,9 +50,9 @@ def pending_bills_view(request, pid):
     template = "bills/bills.html"
     context = {
                 "bills":bills,
-                "services_bill":services_bill,
-                "radiology_bill":radiology_bill,
-                "pharmacy_bill":pharmacy_bill,
+                "services_bills":services_bills,
+                "radiology_bills":radiology_bills,
+                "pharmacy_bills":pharmacy_bills,
                 'med_total':med_total,
                 'rad_total':rad_total,
                 'total_bill':total_bill

@@ -52,7 +52,7 @@ def create_new_encounter(request, patient_id):
         obj.save()
         Patient.objects.filter(id=patient_id).update(new=False) 
         messages.success(request, "Transfer successful!")
-        return redirect("/patients/registration")
+        return redirect("/patients/patient_registration")
 
     template = "visits/create_encounter.html"
     context = {"form":form}

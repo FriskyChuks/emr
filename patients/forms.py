@@ -3,7 +3,7 @@ from django.contrib.admin import options
 from django.forms import widgets
 from bootstrap_datepicker_plus import DatePickerInput
 
-from .models import Patient#, PatientImage#,NextOfKin, Address
+from .models import LGA, Patient#, PatientImage#,NextOfKin, Address
 
 
 # for DateTime input use
@@ -25,6 +25,10 @@ class PatientBiodataForm(forms.ModelForm):
         model = Patient
         # fields = ["first_name", "last_name", "other_names", "gender", "date_of_birth", "marital_status"]
         exclude = ["date_created", "last_updated","active","created_by","new"]
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['l_g_a'].queryset = LGA.objects.none()
 
 
         widgets = {

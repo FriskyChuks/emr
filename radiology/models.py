@@ -35,7 +35,7 @@ class RaiseRadiologyService(models.Model):
     patient             = models.ForeignKey(Patient, on_delete=models.CASCADE)
     radiology_service   = models.ForeignKey(RadiologyService, on_delete=models.CASCADE)
     subtotal	        = models.DecimalField(default=0.00, max_digits=50, decimal_places=2)
-    unit                = models.IntegerField()
+    unit                = models.PositiveIntegerField(default=1)
     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     date                = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated             = models.DateTimeField(auto_now_add=False, auto_now=True)

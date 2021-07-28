@@ -15,7 +15,7 @@
 <div class="container" id="form">
   <div class="container">
     <h4>Patient Regisitration</h4><br>
-    <form class="row g-3" method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <form id="registration-form" class="row g-3" method="POST" data-lga-url="{% url 'load_lga_view' %}" enctype="multipart/form-data">{% csrf_token %}
         <div class="col-md-12"><b>*Personal Info</b> </div>
         <div class="col-md-12">Image: {{ form.foto }}</div>
         <div class="col-md-4">Firstname: {{ form.first_name }}</div>
@@ -47,15 +47,20 @@
 </div>
 </div>
 
-      <!-- <form>
-         <div class="ui selection dropdown">
-          <input type="hidden" name="gender">
-          <i class="dropdown icon"></i>
-          <div class="default text">Gender</div>
-          <div class="menu">
-            <div class="item" data-value="1">Male</div>
-            <div class="item" data-value="0">Female</div>
-          </div>
-        </div>
-      </form> -->
+<script>
+  // $('id_state').change(function(){
+  //   const url = $('#registration-form').attr('data-lga-url');
+  //   const stateId = $(this).val();
+
+  //   $.ajax({
+  //     url: url,
+  //     data: {
+  //       state_id = stateId
+  //     },
+  //     success: function(data){
+  //         $('id_lga').html(data)
+  //     }
+  //   })
+  // })
+</script>
 {% endblock %}
