@@ -13,7 +13,7 @@ from .decorators import allowed_users
 
 @login_required
 # @unauthenticated_user
-# @allowed_users(alllowed_roles=['admin'])
+@allowed_users(alllowed_roles=['admin'])
 def registration_view(request):
     form = RegisterForm(request.POST or None)
     # profile_form = RegisterForm(request.POST or None)
@@ -54,15 +54,14 @@ def login_view(request):
             if "next" in request.POST:
                 return redirect(request.POST.get('next'))
             else:
-                return HttpResponseRedirect("/home")
-                # clinic_id = request.user.clinic_id
-                # group_name = request.user.group.name
-                # if (clinic_id  and group_name == "doctor") or (clinic_id and group_name == "nurse"):
-                #     return redirect("clinic_visits_display", id=clinic_id)
-                # elif group_name == "MLS":
-                #     return HttpResponseRedirect("/labs/request_list_view")
-                # else:
-                #     return HttpResponseRedirect("/home")
+                clinic_id = request.user.clinic_id
+                group_name = request.user.group.name
+                if (clinic_id  and group_name == "doctor") or (clinic_id and group_name == "nurse"):
+                    return redirect("clinic_visits_display", id=clinic_id)
+                elif group_name == "MLS":
+                    return HttpResponseRedirect("/labs/request_list_view")
+                else:
+                    return HttpResponseRedirect("/home")
 
     context = {}
     return render(request, 'accounts/login2.html', context)
