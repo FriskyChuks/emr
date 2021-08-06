@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="" method="POST">{% csrf_token %}
+   Amount of Deposit (N)<input class="form-control" type="number" name="amount" id="amount" placeholder="Enter amount (in Naira)"> <br>
+    <button class="btn btn-success">Load Wallet</button>
+</form>
+{% endblock %}

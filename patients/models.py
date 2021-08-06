@@ -97,20 +97,20 @@ RELATIONSHIP = (
 	)
 
 
-class State(models.Model):
-	state = models.CharField(max_length=20, choices=STATE, unique=True)
-	country = models.CharField(max_length=50)
+# class State(models.Model):
+# 	state = models.CharField(max_length=20, choices=STATE, unique=True)
+# 	country = models.CharField(max_length=50)
 
-	def __str__(self):
-		return str(self.state)
+# 	def __str__(self):
+# 		return str(self.state)
 
 
-class LGA(models.Model):
-	state = models.ForeignKey(State, on_delete=models.CASCADE)
-	lga   = models.CharField(max_length=50)
+# class LGA(models.Model):
+# 	state = models.ForeignKey(State, on_delete=models.CASCADE)
+# 	lga   = models.CharField(max_length=50)
 
-	def __str__(self):
-		return str(self.lga)
+# 	def __str__(self):
+# 		return str(self.lga)
 
 
 class Patient(models.Model):
@@ -125,9 +125,7 @@ class Patient(models.Model):
 	phone_2         = models.CharField(max_length=11, null=True, blank=True)
 	country         = models.CharField(max_length=100, choices=COUNTRY, default="Nigeria")
 	state           = models.CharField(max_length=100, choices=STATE, default='nasarawa')
-	# state           = models.ForeignKey(State, on_delete=models.CASCADE)
 	l_g_a           = models.CharField(max_length=100, default='keffi')
-	# l_g_a           = models.ForeignKey(LGA, on_delete=models.CASCADE)
 	address         = models.TextField(null=True, blank=True)
 	next_of_kin_relationship  = models.CharField(max_length=50, choices=RELATIONSHIP)
 	full_name           = models.CharField(max_length=150)
@@ -142,7 +140,7 @@ class Patient(models.Model):
 	objects = PatientManager()
 
 	def __str__(self):
-		return self.first_name + " " + self.last_name
+		return f"{self.first_name} {self.last_name}"
 
 
 	def get_absolute_url(self):

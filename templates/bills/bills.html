@@ -2,164 +2,157 @@
 {% block content %}
 
 <style>
-  div.hidden
-  {
-     display: none
-  }
-
   tr
   {
-    line-height: 5px;
+    line-height: 15px;
   }
 </style>
 
-<div class="container">
-  <div class="row g-3">
-      <div class="col-md-5">
-          <table class="table table-bordered border-primary">
-            <tr>
-                <th scope="row">1</th>
-                <td>Medical Service Bill:</td>
-                <td>N{{ med_total }}</td>
-                <td><a href="#" onclick='show(1);'>View Detail</a></td>
-            </tr>
+<script>
+//   function checkAll(ele) {
+//      var checkboxes = document.getElementsByTagName('input');
+//      if (ele.checked) {
+//          for (var i = 0; i < checkboxes.length; i++) {
+//              if (checkboxes[i].type == 'checkbox') {
+//                  checkboxes[i].checked = true;
+//              }
+//          }
+//      } else {
+//          for (var i = 0; i < checkboxes.length; i++) {
+//              console.log(i)
+//              if (checkboxes[i].type == 'checkbox') {
+//                  checkboxes[i].checked = false;
+//              }
+//          }
+//      }
+//  }
+
+  
+
+    $(document).ready(function()
+    {
+        document.getElementById("txtDisplay").style.display="block";
+        $('.chkbox').click(function()
+        {
+            var selectedValue = "";
+            var myArray = [];
+            $('.chkbox:checked').each(function()
+            {
+                selectedValue += $(this).val()+",";
+                myArray.push(selectedValue)
+            });
+            selectedValue = selectedValue.substring(0,selectedValue.length-1);
+            $('#txtDisplay').val(selectedValue);
+            console.log(selectedValue)
             
-            <tr>
-              <th scope="row">2</th>
-              <td>Radiology Bill:</td>
-              <td>N{{ rad_total }}</td>
-              <td><a href="#" onclick='show(2);'>View Detail</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td><b>Total Bill</b></td>
-              <td><b>N{{ total_bill }}</b></td>
-              <td><a href="#" onclick='show(3);'>View Detail</td>
-            </tr>
-          </table>  
-      </div>
-
-      <div class="col-md-1"> 
-      </div>
+        });
+ 
+    });
+</script>
 
 
-      <!-- Tables -->
-      <div class="col-md-6">
-        <div id="extraControls" class="hidden">
-          <table id="1" class="table">
-            <thead>
-              <tr>
-                <th scope="col">Item/Service</th>
-                <th scope="col">Unit Price</th>
-                <th scope="col">Qty</th>
-                <th scope="col">Sub_Total</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            {% for bill in bills %}
-              {% if bill.status != "paid" %}
-              {% if bill.medical_service %}
-                <tr>
-                  <!-- <td>{{ bill.medical_service }}--N{{ bill.medical_service.medical_service.price }}</td> -->
-                  <td>{{ bill.medical_service.medical_service }}</td>
-                  <td>N{{ bill.medical_service.medical_service.price }}</td>
-                  <td>{{ bill.medical_service.unit }}</td>
-                  <td>N{{ bill.medical_service.subtotal }}</td>
-                  <td>{{ bill.status }}</td>
-                </tr>
-              {% endif %}
-              {% endif %}
-            {% endfor %}
-          </table>
-      
-          <table id="2" class="table">
-            <thead>
-              <tr>
-                <th scope="col">Item/Service</th>
-                <th scope="col">Unit Price</th>
-                <th scope="col">Qty</th>
-                <th scope="col">Sub_Total</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            {% for bill in bills %}
-              {% if bill.status != "paid" %}
-                {% if bill.radiology_service %}
+
+<div class="container">
+  <form name="myForm" id="myForms" action="" method="POST">{% csrf_token %}
+  <!-- Detail of bills -->
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">  
+        <div class="card">
+          <div class="card-header">
+            <h5 style="color: blue;">{{patient.first_name}} {{patient.last_name}} <small>|| {{patient.id}}</small></h5>
+          </div>
+          <div class="col-md-12">
+            <div id="extraControls" class="hidden">
+              <table id="myTable" class="table" name="myTable" width="100%">
+                <thead>
                   <tr>
-                    <td>{{ bill.radiology_service }}</td>
-                    <td>N{{ bill.radiology_service.radiology_service.price }}</td>
-                    <td>{{ bill.radiology_service.unit }}</td>
-                    <td>N{{ bill.radiology_service.subtotal }}</td>
-                    <td>{{ bill.status }}</td>
+                    <th scope="col">Category</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Service</th>
+                    <th scope="col">Unit Price</th>
+                    <th width="50" scope="col">Qty</th>
+                    <th style="text-align:right" scope="col">Sub_Total</th>
+                    <td><INPUT type="checkbox" onchange="checkAll(this)" name="chk[]" /><b> Select All</b> </td>
                   </tr>
-                {% endif %}
-              {% endif %}
-            {% endfor %}
-          </table>
+                </thead>
+                  {% for lab in lab_bills|slice:":1" %}
+                  <td style="background-color: lightgray;">LAB Services</td>
+                  {% endfor %}
+                  {% for lab in lab_bills %}
+                    <tr>
+                      <td></td>
+                      <td>{{ lab.lab_request.test.date_created }}</td>
+                      <td>{{ lab.lab_request.test.title }}</td>
+                      <td style="text-align:right">N{{ lab.lab_request.test.price }}</td>
+                      <td style="text-align:center">1</td>
+                      <td style="text-align:right">N{{ lab.lab_request.test.price }}</td>
+                      <td><input style="text-align:center" type="checkbox" checked value="{{ lab.id }}" class="chkbox" name="check_list"></td>         
+                    </tr>
+                  {% endfor %}
+                  {% for services_bill in services_bills|slice:":1" %}
+                    <td style="background-color: lightgray;">Medical Services</td>
+                  {% endfor %}
+                  {% for services_bill in services_bills %}
+                    <tr>
+                      <td></td>
+                      <td>{{ services_bill.medical_service.date }}</td>
+                      <td>{{ services_bill.medical_service.medical_service }}</td>
+                      <td style="text-align:right">N{{ services_bill.medical_service.medical_service.price }}</td>
+                      <td style="text-align:center">{{ services_bill.medical_service.unit }}</td>
+                      <td style="text-align:right">N{{ services_bill.medical_service.subtotal }}</td>
+                      <td><input style="text-align:center" type="checkbox" checked value="{{ services_bill.id }}" class="chkbox" name="check_list"></td>         
+                    </tr>
+                  {% endfor %}
+                  {% for rad in radiology_bills|slice:":1" %}
+                    <td style="background-color: lightgray;">Radiology Services</td>
+                  {% endfor %}
+                  {% for rad in radiology_bills %}
+                    <tr>
+                      <td></td>
+                      <td>{{ rad.date_created }}</td>
+                      <td>{{ rad.radiology_service }}</td>
+                      <td style="text-align:right">N{{ rad.radiology_service.radiology_service.price }}</td>
+                      <td style="text-align:center">{{ rad.radiology_service.unit }}</td>
+                      <td style="text-align:right">N{{ rad.radiology_service.subtotal }}</td>
+                      <td><input style="text-align:center" type="checkbox" checked value="{{ rad.id }}" class="chkbox" name="check_list"></td>           
+                    </tr>
+                  {% endfor %}
+                  <tr>
+                    <td><b>Total Bill</b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right;"><b>N{{ total_bill }}0</b></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><b>Outstanding bill</b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="color: red; text-align: right;"><b>N{{ outstanding_bills }}0</b></td>
+                    <td></td>
+                  </tr>           
+              </table>
+              Pay Now:<input style="text-align:right; float: right;" type="number" name="paid_amount" placeholder="N{{ pay_now }}0">
+            </div>
+          </div>
+          <hr>
+          <input type="text" id="txtDisplay" name="bill_ID">
+          <center><input type="submit" id="btnRequest" class="btn btn-success" value="Pay"></center>
+
+          </div>
+          <div class="card-header">
+          
+          </div>
         </div>
-    </div>
-
-  </div>
-<hr>
-
-  <div class="col-md-10">
-    <div id="extraControls" class="hidden">
-      <table id="3" class="table" width="100%">
-        <thead>
-          <tr>
-            <th scope="col">Category</th>
-            <th scope="col">Service</th>
-            <th scope="col">Unit Price</th>
-            <th scope="col">Qty</th>
-            <th scope="col">Sub_Total</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-          {% for services_bill in services_bills|slice:":1" %}
-            <td style="background-color: lightgray;">Medical Services</td>
-          {% endfor %}
-            {% for services_bill in services_bills %}
-              <tr>
-                <td></td>
-                <td>{{ services_bill.medical_service.medical_service }}</td>
-                <td>N{{ services_bill.medical_service.medical_service.price }}</td>
-                <td>{{ services_bill.medical_service.unit }}</td>
-                <td>N{{ services_bill.medical_service.subtotal }}</td>
-                <td>{{ services_bill.status }}</td>          
-              </tr>
-            {% endfor %}
-          {% for rad in radiology_bills|slice:":1" %}
-            <td style="background-color: lightgray;">Radiology Services</td>
-          {% endfor %}
-          {% for rad in radiology_bills %}
-            <tr>
-              <td></td>
-              <td>{{ rad.radiology_service }}</td>
-              <td>N{{ rad.radiology_service.radiology_service.price }}</td>
-              <td>{{ rad.radiology_service.unit }}</td>
-              <td>N{{ rad.radiology_service.subtotal }}</td>
-              <td>{{ rad.status }}</td>            
-            </tr>
-          {% endfor %}
-      </table>
+      </div>
     </div>
   </div>
-
+</form>
 </div>
 
-<script>
-  $(document).ready(function()
-  {
-    document.getElementById("1").style.display="none";
-    document.getElementById("2").style.display="none";
-    document.getElementById("3").style.display="none";
-  });
-  function show(nr) {
-    $("div#extraControls").removeClass("hidden");
-    document.getElementById("1").style.display="none";
-    document.getElementById("2").style.display="none";
-    document.getElementById("3").style.display="none";
-    document.getElementById(nr).style.display="block";
-}
-</script>
 {% endblock %}

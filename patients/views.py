@@ -10,7 +10,7 @@ from visits.models import PatientEncounter
 from accounts.models import User
 from accounts.decorators import allowed_users
 
-from .models import LGA, Patient#, NextOfKin, Address
+from .models import Patient#, NextOfKin, Address
 from .forms import PatientBiodataForm, PatientImageForm#, FotoForm#, AddressForm, NextOfKinForm
 
 
@@ -101,19 +101,11 @@ def patient_registration_form(request):
         id = last_id.id
         foto = last_id.foto
         messages.success(request, "PID: "+str(id))
-        # messages.success(request, "PID is:"+str(last_id))
-        return render(request, 'patients/success.html', {})
-        # form_biodata = PatientBiodataForm()                     
+        return render(request, 'patients/success.html', {})                    
 
     template = "patients/registration.html"
     context = {"form": form}
 
-
-def load_lga_view(request):
-    state_id = request.GET.get('state_id')
-    lga = LGA.objects.filter(state_id=state_id)
-
-    return render(request, 'patients/lga_dropdown.html', {"lga":lga})
 
 
 @login_required(login_url="auth_login")

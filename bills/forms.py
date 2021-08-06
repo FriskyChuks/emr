@@ -1,10 +1,14 @@
 from django import forms
 from django.db import models
 
-from .models import Bill, Payment
+from .models import Bill, Payment, Wallet
 
 
-# class PaymentForm(forms.ModelForm):
-#     class Meta:
-#         model = Payment
-#         fields = ['']
+class WalletForm(forms.ModelForm):
+    class Meta:
+        model = Wallet
+        fields = ['amount']
+
+        widgets = {
+            'amount': forms.NumberInput(attrs={'class': 'form-control'}),           
+        } 

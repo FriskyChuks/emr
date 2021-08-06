@@ -4,25 +4,52 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from accounts.decorators import allowed_users
+from patients.models import Patient
 
-from .models import Bill, Payment
+from .models import Bill, Payment, Wallet
 
 
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','cashier'])
-def pending_bills_view(request, pid):
-    if not request.user.admin:
-        messages.warning(request, "You do not have access to this page! thanks.")
-        return HttpResponseRedirect('/accounts/logout/') 
+def pending_bills_view(request, pid): 
     # bills = Bill.objects.filter(patient=pid, status="pending") | Bill.objects.filter(patient=pid, status="billed") | Bill.objects.filter(patient=pid, status="paid")
     bills = Bill.objects.filter(patient=pid, status="billed") | Bill.objects.filter(patient=pid, status="pending")
     services_bills = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='pending')
-    radiology_bills = Bill.objects.filter(patient=pid, radiology_service__isnull=False)
+    radiology_bills = Bill.objects.filter(patient=pid, radiology_service__isnull=False, status='pending')
+    lab_bills = Bill.objects.filter(patient=pid, lab_request__isnull=False, status='pending')
     pharmacy_bills = Bill.objects.filter(patient=pid, prescription__isnull=False)
+
+    # OUTSTANDING BILLS
+    billed_med_serv = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
+    billed_rad_serv = Bill.objects.filter(patient=pid, radiology_service__isnull=False, status='billed')
+    billed_lab_serv = Bill.objects.filter(patient=pid, lab_request__isnull=False, status='billed')
+    
+    # OUTSATANDING MEDICAL SERVICES
+    outstanding_med_serv = 0.00
+    outstanding_rad_serv = 0.00
+    outstanding_lab_serv = 0.00
+
+    for billed_med_serv in billed_med_serv:
+        med_serv_qty = billed_med_serv.medical_service.unit
+        med_serv_price = billed_med_serv.medical_service.medical_service.price
+        outstanding_med_serv = float(med_serv_price * med_serv_qty)
+    # OUTSATANDING RADIOLOGY BILLS
+    for billed_rad_serv in billed_rad_serv:
+        rad_qty = billed_rad_serv.radiology_service.unit
+        rad_price = billed_rad_serv.radiology_service.radiology_service.price
+        outstanding_rad_serv = float(rad_price * rad_qty)
+    # OUTSATANDING LAB BILLS
+    for billed_lab_serv in billed_lab_serv:
+        print("billed_lab_serv", billed_lab_serv)
+        lab_price = billed_lab_serv.lab_request.test.price
+        outstanding_lab_serv += float(lab_price)
+
+    outstanding_bills = outstanding_med_serv + outstanding_rad_serv + outstanding_lab_serv
 
     medical_service_total_bill = 0
     radiology_total_bill = 0
     pharmacy_total_bill = 0
+    lab_total_bill = 0
 
     # Medical Service Bill
     for obj in services_bills:
@@ -34,7 +61,13 @@ def pending_bills_view(request, pid):
     for obj in radiology_bills: 
         qty = obj.radiology_service.unit 
         radiology_subtotal = obj.radiology_service.radiology_service.price * qty
-        radiology_total_bill += radiology_subtotal 
+        radiology_total_bill += radiology_subtotal
+
+     # LAB Bill
+    for obj in lab_bills:
+        lab_subtotal = obj.lab_request.test.price
+        lab_total_bill += lab_subtotal 
+        print(lab_total_bill)
     
     # Pharmacy Bill
     # for obj in pharmacy_bill: 
@@ -45,21 +78,77 @@ def pending_bills_view(request, pid):
     med_total = medical_service_total_bill
     rad_total = radiology_total_bill
     # pharm_total = pharmacy_total_bill
-    total_bill = med_total + rad_total# + pharm_total
+    lab_total = lab_total_bill
+    total_bill = float(med_total + rad_total + lab_total)# + pharm_total
+    pay_now = float(total_bill) + float(outstanding_bills)
+
+    patient = Patient.objects.get(id=pid)
+    if request.method == "POST":
+        if request.POST.get("bill_ID"):
+            selected_bill = Payment()
+            selected_bill.bill_id = request.POST.get("bill_ID")
+            paid_amount = request.POST.get("paid_amount")
+            pay_bill = selected_bill.bill_id
+            print("Payments: ",pay_bill)
+            l = len(pay_bill)
+            t = type(pay_bill)
+
+            if (l <= 2): 
+                print ("This is great: ", l)
+                obj = Payment.objects.create(
+                        bill_id         = pay_bill,
+                        amount_paid     = paid_amount,
+                        action          = 'receipt',
+                        created_by      = request.user
+                    )
+                obj.save()
+
+            else:
+            # Convert the string(pay_bill) to a tuple
+                bill_list = eval(pay_bill)
+                for item in bill_list:
+                    print ("This is good: ", item)
+                    obj = Payment.objects.create(
+                            bill_id         = item,
+                            amount_paid     = paid_amount,
+                            action          = 'receipt',
+                            created_by      = request.user
+                        )
+                    obj.save()
 
     template = "bills/bills.html"
     context = {
+                "outstanding_bills":outstanding_bills,
                 "bills":bills,
                 "services_bills":services_bills,
                 "radiology_bills":radiology_bills,
                 "pharmacy_bills":pharmacy_bills,
+                'lab_bills':lab_bills,
                 'med_total':med_total,
                 'rad_total':rad_total,
-                'total_bill':total_bill
+                'lab_total':lab_total,
+                'total_bill':total_bill,
+                "pay_now":pay_now,
+                'patient':patient
               }
     return render(request, template, context)
 
 
-# @login_required(login_url="auth_login")
-# def bill_payment_view(request):
+
+@login_required(login_url="auth_login")
+def load_wallet_view(request, pid):
+    patient = Patient.objects.get(id=pid)
+    patient_wallet = Wallet.objects.get(patient_id=pid)
+    initial_balance = patient_wallet.account_balance
+    print(initial_balance)
+    if request.method == 'POST':
+        deposit_amount = request.POST.get('amount')
+        new_balance = int(initial_balance) + int(deposit_amount)
+        object = Wallet.objects.filter(patient_id=pid).update(account_balance=new_balance, created_by=request.user)
+
+    template = "bills/wallet.html"
+    context = {"patient":patient}
+    return render(request, template, context)
+
+    
     

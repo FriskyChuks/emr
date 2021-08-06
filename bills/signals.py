@@ -6,8 +6,10 @@ from visits.models import PatientEncounter
 from medical_services.models import PatientEncounterService
 from pharmacy.models import Prescription
 from radiology.models import RaiseRadiologyService
+from labs.models import LabRequest
+from patients.models import Patient
 
-from .models import Bill
+from .models import Bill, Wallet
 
 # Radiology Bill
 @receiver(post_save, sender=RaiseRadiologyService)
@@ -60,3 +62,22 @@ def post_save_pharmacy_bill(sender, instance, created, **kwargs):
             status = "pending",
             created_by_id = instance.created_by_id           
         )
+
+
+# LAB Bill
+@receiver(post_save, sender=LabRequest)
+def post_save_lab_request_bill(sender, instance, created, **kwargs):
+    if created:
+        Bill.objects.create(
+            encounter_id = instance.encounter_id,
+            patient_id = instance.patient_id,
+            lab_request_id = instance.id,
+            status = "pending",
+            created_by_id = instance.created_by_id           
+        )
+
+
+@receiver(post_save, sender=Patient)
+def post_save_load_wallet(sender, instance, created, **kwargs):
+    if created:
+        Wallet.objects.create(patient_id=instance.id)

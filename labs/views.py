@@ -24,6 +24,7 @@ def lab_request_view(request, enc_id):
     microbiology_tests = LabTest.objects.filter(lab_unit=3).order_by('-compound_test_id')
     chem_path_tests = LabTest.objects.filter(lab_unit=2).order_by('-compound_test_id')
     hermatology_tests = LabTest.objects.filter(lab_unit=1).order_by('-compound_test_id')
+    
     if request.method == "POST":
         if request.POST.get("test_id"):
             selected_test = LabRequest()
@@ -46,7 +47,6 @@ def lab_request_view(request, enc_id):
             # Convert the string(test_request) to a tuple
                 request_list = eval(test_request)
                 for item in request_list:
-                    print ("This is good: ", item)
                     obj = LabRequest.objects.create(
                         encounter_id    = encounter.id,
                         patient_id      = patient_id,
