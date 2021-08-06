@@ -13,7 +13,7 @@ from .decorators import allowed_users
 
 @login_required
 # @unauthenticated_user
-@allowed_users(alllowed_roles=['admin'])
+# @allowed_users(alllowed_roles=['admin'])
 def registration_view(request):
     form = RegisterForm(request.POST or None)
     # profile_form = RegisterForm(request.POST or None)
