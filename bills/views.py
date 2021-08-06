@@ -115,6 +115,7 @@ def pending_bills_view(request, pid):
                             created_by      = request.user
                         )
                     obj.save()
+            bill_obj = Bill.objects.update()
 
     template = "bills/bills.html"
     context = {
