@@ -172,6 +172,8 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static', 'static_files')
 STATICFILES_DIRS = (
     STATIC_DIR,
 )
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
   
 
 
