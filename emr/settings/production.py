@@ -70,7 +70,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True     # opional, as this will log you out when browser is closed
@@ -172,11 +171,7 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static', 'static_files')
 
 STATICFILES_DIRS = (
     STATIC_DIR,
-)
-
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-  
+) 
 
 
 CORS_REPLACE_HTTPS_REFERER      = True
