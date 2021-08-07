@@ -98,10 +98,10 @@ def patient_registration_form(request):
         obj.created_by = request.user
         obj.save()
         last_id = Patient.objects.last()
-        id = last_id.id
+        pid = last_id.id
         foto = last_id.foto
-        messages.success(request, "PID: "+str(id))
-        return render(request, 'patients/success.html', {})                    
+        messages.success(request, "PID: "+str(pid))
+        return render(request, 'patients/success.html', {"pid":pid})                    
 
     template = "patients/registration.html"
     context = {"form": form}

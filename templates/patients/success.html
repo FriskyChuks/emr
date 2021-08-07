@@ -9,6 +9,15 @@
   {% endfor %}
   {% endif %}
   <!-- <button type="submit">Attach Foto</button> -->
+  <div>
+    <!-- Send to Clinic -->
+    <button type="submit">
+      <a href="{% url 'create_new_encounter' patient_id=pid %}" >
+      Send to Clinic
+      </a>
+    </button>
+    <br>
+  </div>
   <button type="submit">
     <a href="{% url 'registration' %}" >
       Attach Foto
@@ -21,4 +30,5 @@
     </a>
   </button>
 </div>
+
 {% endblock %}
