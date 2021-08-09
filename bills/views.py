@@ -78,7 +78,12 @@ def pending_bills_view(request, pid):
     # pharm_total = pharmacy_total_bill
     lab_total = lab_total_bill
     total_bill = float(med_total + rad_total + lab_total)# + pharm_total
-    pay_now = float(total_bill) + float(outstanding_bills)
+
+    wallet = Wallet.objects.get(patient_id=pid)
+    wallet_balance = wallet.account_balance
+
+    pay_now = float(wallet_balance) - float(total_bill) + float(outstanding_bills)
+
 
     patient = Patient.objects.get(id=pid)
     if request.method == "POST":
@@ -99,7 +104,6 @@ def pending_bills_view(request, pid):
                 payment_obj.save()
                 if payment_obj:
                     instance = payment_obj
-                    print("instance:", instance)
                     obj = PaymentDetail.objects.create(
                             bill_id         = pay_bill,
                             payment_id      = instance.id,
@@ -138,7 +142,8 @@ def pending_bills_view(request, pid):
                 'lab_total':lab_total,
                 'total_bill':total_bill,
                 "pay_now":pay_now,
-                'patient':patient
+                'patient':patient,
+                'wallet_balance':wallet_balance
               }
     return render(request, template, context)
 

@@ -34,13 +34,22 @@ def post_save_radiology_bill(sender, instance, created, **kwargs):
 def post_save_medical_service_bill(sender, instance, created, **kwargs):
     if created:
         if instance.medical_service.medical_service == "Consultation":
-            Bill.objects.create(
-                encounter_id = instance.encounter_no_id,
-                patient_id = instance.patient_id,
-                medical_service_id = instance.id,
-                status = "billed",
-                created_by_id = instance.created_by_id           
-            )
+            new_bill = Bill.objects.create(
+                        encounter_id = instance.encounter_no_id,
+                        patient_id = instance.patient_id,
+                        medical_service_id = instance.id,
+                        status = "billed",
+                        created_by_id = instance.created_by_id           
+                    )
+            bill_id = new_bill.id
+            consultation_price = instance.medical_service.price
+
+            wallet = Wallet.objects.get(patient_id=instance.patient_id)
+            wallet_balance = wallet.account_balance
+            wallet_balance -= consultation_price
+            wallet = Wallet.objects.filter(patient_id=instance.patient_id).update(account_balance=wallet_balance)
+            if wallet_balance >= 0.0:
+                bill = Bill.objects.filter(id=bill_id).update(status = "paid")
         else:
             Bill.objects.create(
             encounter_id = instance.encounter_no_id,
@@ -78,6 +87,7 @@ def post_save_lab_request_bill(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Patient)
-def post_save_load_wallet(sender, instance, created, **kwargs):
+def post_save_create_wallet(sender, instance, created, **kwargs):
     if created:
         Wallet.objects.create(patient_id=instance.id)
+

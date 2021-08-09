@@ -75,7 +75,7 @@ class PaymentDetail(models.Model):
 
 
 class Wallet(models.Model):
-    patient         = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True, blank=True)
+    patient         = models.OneToOneField(Patient, on_delete=models.CASCADE, null=True, blank=True)
     account_balance = models.DecimalField(decimal_places=2, default='00.00', max_digits=20)
     created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date_created    = models.DateTimeField(auto_now_add=False, auto_now=True)
