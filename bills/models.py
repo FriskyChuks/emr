@@ -49,18 +49,29 @@ class Bill(models.Model):
 
 
 class Payment(models.Model):
-    bill            = models.ForeignKey(Bill, on_delete=models.CASCADE)
     amount_paid     = models.DecimalField(decimal_places=2, default='00.00', max_digits=20)
     action          = models.CharField(max_length=20, choices=PAY_ACTION)
+    created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    date_created    = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    def __str__(self):
+        return self.amount_paid
+
+
+class PaymentDetail(models.Model):
+    bill            = models.ForeignKey(Bill, on_delete=models.CASCADE)
+    payment         = models.ForeignKey(Payment, on_delete=models.CASCADE)
     created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date_created    = models.DateTimeField(auto_now_add=False, auto_now=True)
     last_updated    = models.DateTimeField(auto_now_add=True, auto_now=False)
 
     def __str__(self):
-        if self.bill.medical_service:
-            return f"{self.bill.medical_service} {self.amount_paid}"
+        if self.bill.lab_request:
+            return f"{self.bill.lab_request} {self.bill.lab_request.test.price}"
+        elif self.bill.medical_service:
+            return f"{self.bill.medical_service} {self.bill.medical_service.medical_service.price}"
         else:
-            return f"{self.bill.radiology_service} {self.amount_paid}"
+            return f"{self.bill.radiology_service} {self.bill.radiology_service.radiology_service.price}"
 
 
 class Wallet(models.Model):

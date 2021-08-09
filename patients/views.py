@@ -100,7 +100,7 @@ def patient_registration_form(request):
         last_id = Patient.objects.last()
         pid = last_id.id
         foto = last_id.foto
-        messages.success(request, "PID: "+str(pid))
+        messages.success(request, "Your registration was successful, your PID is: "+str(pid))
         return render(request, 'patients/success.html', {"pid":pid})                    
 
     template = "patients/registration.html"

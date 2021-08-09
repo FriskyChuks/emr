@@ -31,7 +31,7 @@
 
     $(document).ready(function()
     {
-        document.getElementById("txtDisplay").style.display="block";
+        document.getElementById("txtDisplay").style.display="none";
         $('.chkbox').click(function()
         {
             var selectedValue = "";
@@ -73,7 +73,7 @@
                     <th scope="col">Unit Price</th>
                     <th width="50" scope="col">Qty</th>
                     <th style="text-align:right" scope="col">Sub_Total</th>
-                    <td><INPUT type="checkbox" onchange="checkAll(this)" name="chk[]" /><b> Select All</b> </td>
+                    <!-- <td><INPUT type="checkbox" onchange="checkAll(this)" name="chk[]" /><b> Select All</b> </td> -->
                   </tr>
                 </thead>
                   {% for lab in lab_bills|slice:":1" %}
@@ -87,7 +87,7 @@
                       <td style="text-align:right">N{{ lab.lab_request.test.price }}</td>
                       <td style="text-align:center">1</td>
                       <td style="text-align:right">N{{ lab.lab_request.test.price }}</td>
-                      <td><input style="text-align:center" type="checkbox" checked value="{{ lab.id }}" class="chkbox" name="check_list"></td>         
+                      <td><input style="text-align:center" type="checkbox" value="{{ lab.id }}" class="chkbox" name="check_list"></td>         
                     </tr>
                   {% endfor %}
                   {% for services_bill in services_bills|slice:":1" %}
@@ -101,7 +101,7 @@
                       <td style="text-align:right">N{{ services_bill.medical_service.medical_service.price }}</td>
                       <td style="text-align:center">{{ services_bill.medical_service.unit }}</td>
                       <td style="text-align:right">N{{ services_bill.medical_service.subtotal }}</td>
-                      <td><input style="text-align:center" type="checkbox" checked value="{{ services_bill.id }}" class="chkbox" name="check_list"></td>         
+                      <td><input style="text-align:center" type="checkbox" value="{{ services_bill.id }}" class="chkbox" name="check_list"></td>         
                     </tr>
                   {% endfor %}
                   {% for rad in radiology_bills|slice:":1" %}
@@ -115,7 +115,7 @@
                       <td style="text-align:right">N{{ rad.radiology_service.radiology_service.price }}</td>
                       <td style="text-align:center">{{ rad.radiology_service.unit }}</td>
                       <td style="text-align:right">N{{ rad.radiology_service.subtotal }}</td>
-                      <td><input style="text-align:center" type="checkbox" checked value="{{ rad.id }}" class="chkbox" name="check_list"></td>           
+                      <td><input style="text-align:center" type="checkbox" value="{{ rad.id }}" class="chkbox" name="check_list"></td>           
                     </tr>
                   {% endfor %}
                   <tr>
@@ -137,13 +137,13 @@
                     <td></td>
                   </tr>           
               </table>
-              Pay Now:<input style="text-align:right; float: right;" type="number" name="paid_amount" placeholder="N{{ pay_now }}0">
+             &nbsp;<b>Pay Now:</b><input style="text-align:right; float: right;" type="number" name="paid_amount" placeholder="N{{ pay_now }}0">
             </div>
           </div>
           <hr>
           <input type="text" id="txtDisplay" name="bill_ID">
-          <center><input type="submit" id="btnRequest" class="btn btn-success" value="Pay"></center>
-
+          <center><input type="submit" id="btnRequest" class="btn btn-success" value="Process Payment"></center>
+          <br>
           </div>
           <div class="card-header">
           

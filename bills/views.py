@@ -6,7 +6,7 @@ from django.contrib import messages
 from accounts.decorators import allowed_users
 from patients.models import Patient
 
-from .models import Bill, Payment, Wallet
+from .models import Bill, Payment, PaymentDetail, Wallet
 
 
 @login_required(login_url="auth_login")
@@ -40,7 +40,6 @@ def pending_bills_view(request, pid):
         outstanding_rad_serv = float(rad_price * rad_qty)
     # OUTSATANDING LAB BILLS
     for billed_lab_serv in billed_lab_serv:
-        print("billed_lab_serv", billed_lab_serv)
         lab_price = billed_lab_serv.lab_request.test.price
         outstanding_lab_serv += float(lab_price)
 
@@ -67,7 +66,6 @@ def pending_bills_view(request, pid):
     for obj in lab_bills:
         lab_subtotal = obj.lab_request.test.price
         lab_total_bill += lab_subtotal 
-        print(lab_total_bill)
     
     # Pharmacy Bill
     # for obj in pharmacy_bill: 
@@ -88,34 +86,44 @@ def pending_bills_view(request, pid):
             selected_bill = Payment()
             selected_bill.bill_id = request.POST.get("bill_ID")
             paid_amount = request.POST.get("paid_amount")
+            if paid_amount != "":
+                paid_amount = float(paid_amount)
+            else:
+                messages.error(request, "Pls enter payment amount!")
             pay_bill = selected_bill.bill_id
-            print("Payments: ",pay_bill)
             l = len(pay_bill)
             t = type(pay_bill)
 
-            if (l <= 2): 
-                print ("This is great: ", l)
-                obj = Payment.objects.create(
-                        bill_id         = pay_bill,
-                        amount_paid     = paid_amount,
-                        action          = 'receipt',
-                        created_by      = request.user
-                    )
-                obj.save()
-
-            else:
-            # Convert the string(pay_bill) to a tuple
-                bill_list = eval(pay_bill)
-                for item in bill_list:
-                    print ("This is good: ", item)
-                    obj = Payment.objects.create(
-                            bill_id         = item,
-                            amount_paid     = paid_amount,
-                            action          = 'receipt',
+            if (l > 0 and  l <= 2): 
+                payment_obj = Payment.objects.create(amount_paid=paid_amount,action='receipt',created_by=request.user)
+                payment_obj.save()
+                if payment_obj:
+                    instance = payment_obj
+                    print("instance:", instance)
+                    obj = PaymentDetail.objects.create(
+                            bill_id         = pay_bill,
+                            payment_id      = instance.id,
                             created_by      = request.user
                         )
                     obj.save()
-            bill_obj = Bill.objects.update()
+                    bill_obj = Bill.objects.filter(id=pay_bill).update(status="paid")
+                messages.success(request, "Payment processed successfully!")
+            else:
+                payment_obj = Payment.objects.create(amount_paid=paid_amount,action='receipt',created_by=request.user)
+                payment_obj.save()
+                if payment_obj:
+                    instance = payment_obj
+                    # Convert the string(pay_bill) to a tuple
+                    bill_list = eval(pay_bill)
+                    for item in bill_list:
+                        obj = PaymentDetail.objects.create(
+                                bill_id         = item,
+                                payment_id      = instance.id,
+                                created_by      = request.user
+                            )
+                        obj.save()
+                        bill_obj = Bill.objects.filter(id=item).update(status="paid")
+                    messages.success(request, "Payment processed successfully!")
 
     template = "bills/bills.html"
     context = {
