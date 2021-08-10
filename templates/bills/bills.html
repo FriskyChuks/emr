@@ -51,13 +51,37 @@
 </script>
 
 <div class="container">
-  <!-- Buttons -->
+  <br>
+  {% if not lab_bills and not radiology_bills and not services_bills %}      
+    <center>  
+      <h2>No pending bill for {{patient.first_name}} {{patient.last_name}} ! </h2>
+      <br><br>
+      <div class="container">
+        <a href="{% url 'wallet' pid=patient.id %}">
+          <button type="button" class="btn btn-success">Load Wallet</button>
+        </a>
+        {% if outstanding_bills %}
+        <a href="{% url 'outstanding_bills' pid=patient.id %}">
+          <button type="button" class="btn btn-danger">Clear outstanding Bills</button>
+        </a>
+        {% endif %}
+      </div>
+      <br>
+    </center>
+  {% else %}
+
   <div class="container">
     <a href="{% url 'wallet' pid=patient.id %}">
-      <button type="button" class="btn btn-primary">Load Wallet</button>
+      <button type="button" class="btn btn-success">Load Wallet</button>
     </a>
+    {% if outstanding_bills %}
+      <a href="{% url 'outstanding_bills' pid=patient.id %}">
+        <button type="button" class="btn btn-danger">Clear outstanding Bills</button>
+      </a>
+    {% endif %}
   </div>
   <br>
+
   <!-- Form -->
   <form name="myForm" id="myForms" action="" method="POST">{% csrf_token %}
   <!-- Detail of bills -->
@@ -66,14 +90,12 @@
       <div class="col-sm-12">  
         <div class="card">
           <div class="card-header">
-            <h4 style="color: blue;">{{patient.first_name}} {{patient.last_name}} 
-              <small>|| {{patient.id}}</small> ||
-              Account Balance: N{{ wallet_balance }}
-            </h4>
+            {% include 'bills/card/temp.html' with initial_balance=wallet_balance %}
           </div>
           <div class="col-md-12">
+            <div class="table-responsive">
             <div id="extraControls" class="hidden">
-              <table id="myTable" class="table" name="myTable" width="100%">
+              <table id="myTable" class="table table-striped table-sm" name="myTable" width="100%">
                 <thead>
                   <tr>
                     <th scope="col">Category</th>
@@ -82,6 +104,7 @@
                     <th scope="col">Unit Price(N)</th>
                     <th width="50" scope="col">Qty</th>
                     <th style="text-align:right" scope="col">Sub_Total(N)</th>
+                    <th>[ ]</th>
                     <!-- <td><INPUT type="checkbox" onchange="checkAll(this)" name="chk[]" /><b> Select All</b> </td> -->
                   </tr>
                 </thead>
@@ -127,8 +150,9 @@
                       <td><input style="text-align:center" type="checkbox" value="{{ rad.id }}" class="chkbox" name="check_list"></td>           
                     </tr>
                   {% endfor %}
+                  <hr>
                   <tr>
-                    <td><b>Pending Bills: (N)</b></td>
+                    <td><b>Total Pending Bills: (N)</b></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -136,6 +160,7 @@
                     <td style="text-align: right;"><b>{{ total_bill }}0</b></td>
                     <td></td>
                   </tr>
+                  {% if outstanding_bills %}
                   <tr>
                     <td><b>Outstanding bill: (N)</b></td>
                     <td></td>
@@ -144,8 +169,27 @@
                     <td></td>
                     <td style="color: red; text-align: right;"><b>{{ outstanding_bills }}0</b></td>
                     <td></td>
-                  </tr>           
+                  </tr>
+                  {% endif %} 
+                  <!-- <tfoot>
+                    <tr>
+                        <th class="empty" colspan="3"></th>
+                        <th>OUTSTANDING BILLS</th>
+                        <th style="color: red; text-align: right;">{{ outstanding_bills }}</th>
+                    </tr>
+                    <tr>
+                         <th class="empty" colspan="3"></th>
+                        <th>SHIPING</th>
+                        <td colspan="2">Free Shipping</td> -->
+                    <!-- </tr>
+                    <tr>
+                        <th class="empty" colspan="3"></th>
+                        <th>PAY NOW</th>
+                        <th colspan="2" class="total"><input class="form-control" type="number" name="paid_amount" placeholder="{{ pay_now }}" aria-label="Amount (to the nearest Naira)"></th>
+                    </tr>
+                    </tfoot>           -->
               </table>
+            </div>
              <!-- &nbsp; <b> Pay Now:</b><input style="text-align:right; float: right;" type="number" name="paid_amount" placeholder="N{{ pay_now }}0"> -->
              <div class="input-group mb-5">
                 <div class="input-group-prepend">
@@ -177,6 +221,7 @@
     </div>
   </div>
 </form>
+{% endif %}
 </div>
 
 {% endblock %}

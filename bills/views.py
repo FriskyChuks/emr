@@ -9,6 +9,40 @@ from patients.models import Patient
 from .models import Bill, Payment, PaymentDetail, Wallet
 
 
+
+@login_required(login_url="auth_login")
+def clear_outstanding_bills_view(request, pid):
+    user = request.user
+    patient = Patient.objects.get(id=pid)
+    patient_wallet = Wallet.objects.get(patient_id=pid)
+    initial_balance = patient_wallet.account_balance
+    med_serv_outstanding_bill = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
+    if len(med_serv_outstanding_bill) > 0:
+        for ms_bill in med_serv_outstanding_bill:
+            ms_os_bill = float(ms_bill.medical_service.medical_service.price)
+    else:
+        ms_os_bill = float(0.00)
+    outstanding_bill = ms_os_bill
+
+    patient_wallet = Wallet.objects.get(patient_id=pid) 
+    initial_balance = patient_wallet.account_balance
+
+    # Form input to clear outstanding
+    if request.method == 'POST':
+        os_amount = request.POST.get('amount')
+        payment = Payment.objects.create(amount_paid=os_amount, action='receipt', created_by=user)
+        payment_detail = PaymentDetail.objects.create(bill_id=ms_bill.id, payment_id=payment.id, created_by=user)
+        bill_update = Bill.objects.filter(id=ms_bill.id).update(status="paid")
+    
+    template = "bills/outstanding_bills.html"
+    context = {"outstanding_bill":outstanding_bill, 
+                "patient":patient, 
+                "initial_balance":initial_balance,
+                "ms_os_bill":ms_os_bill
+              }
+    return render(request, template, context)
+
+
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','cashier'])
 def pending_bills_view(request, pid): 
@@ -82,8 +116,10 @@ def pending_bills_view(request, pid):
     wallet = Wallet.objects.get(patient_id=pid)
     wallet_balance = wallet.account_balance
 
-    pay_now = float(wallet_balance) - float(total_bill) + float(outstanding_bills)
-
+    if wallet_balance >= 0:
+        pay_now = float(wallet_balance) - (float(total_bill) + float(outstanding_bills))
+    else:
+        pay_now = (float(total_bill) + float(outstanding_bills))
 
     patient = Patient.objects.get(id=pid)
     if request.method == "POST":
@@ -151,17 +187,28 @@ def pending_bills_view(request, pid):
 
 @login_required(login_url="auth_login")
 def load_wallet_view(request, pid):
+    user = request.user
     patient = Patient.objects.get(id=pid)
     patient_wallet = Wallet.objects.get(patient_id=pid)
     initial_balance = patient_wallet.account_balance
-    print(initial_balance)
+
+    med_serv_outstanding_bill = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
+    if len(med_serv_outstanding_bill) > 0:
+        for ms_bill in med_serv_outstanding_bill:
+            ms_os_bill = float(ms_bill.medical_service.medical_service.price)
+            outstanding_bill = ms_os_bill
+    else:
+        ms_os_bill = float(0.00)
+        outstanding_bill = ms_os_bill
+
     if request.method == 'POST':
         deposit_amount = request.POST.get('amount')
-        new_balance = int(initial_balance) + int(deposit_amount)
-        object = Wallet.objects.filter(patient_id=pid).update(account_balance=new_balance, created_by=request.user)
+        initial_balance = float(initial_balance) + float(deposit_amount)
+        object = Wallet.objects.filter(patient_id=pid).update(account_balance=initial_balance, created_by=request.user)
+        payment = Payment.objects.create(amount_paid=deposit_amount, action='deposit', created_by=user)
 
     template = "bills/wallet.html"
-    context = {"patient":patient}
+    context = {"patient":patient, "initial_balance":initial_balance, "outstanding_bill":outstanding_bill}
     return render(request, template, context)
 
     

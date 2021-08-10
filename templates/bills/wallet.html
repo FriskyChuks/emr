@@ -2,21 +2,39 @@
 {% block content %}
 
 <div class="container">
-    <button type="button" class="btn btn-primary">Clear Bills</button>
-    <!-- <button type="button" class="btn btn-secondary">Secondary</button>
-    <button type="button" class="btn btn-success">Success</button>
-    <button type="button" class="btn btn-danger">Danger</button>
-    <button type="button" class="btn btn-warning">Warning</button>
-    <button type="button" class="btn btn-info">Info</button>
-    <button type="button" class="btn btn-light">Light</button>
-    <button type="button" class="btn btn-dark">Dark</button>
-  
-    <button type="button" class="btn btn-link">Link</button> -->
-  </div>
+  <a href="{% url 'pending_bills' pid=patient.id %}">
+    <button type="button" class="btn btn-primary">Pay Bills</button>
+  </a>
+  {% if outstanding_bills %}
+    <a href="{% url 'outstanding_bills' pid=patient.id %}">
+      <button type="button" class="btn btn-danger">Clear outstanding Bills</button>
+    </a>
+  {% endif %}
+</div>
   <br>
 
-<form action="" method="POST">{% csrf_token %}
-   Amount of Deposit (N)<input class="form-control" type="number" name="amount" id="amount" placeholder="Enter amount (in Naira)"> <br>
-    <button class="btn btn-success">Load Wallet</button>
-</form>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">  
+        <div class="card">
+          <div class="card-header">
+            {% include 'bills/card/temp.html' %}
+          </div>
+          <div class="col-md-12">
+            <div id="extraControls" class="hidden">
+              <br>
+              <form action="" method="POST">{% csrf_token %}
+                Amount of Deposit (N)<input class="form-control" type="number" name="amount" id="amount" placeholder="Enter amount (in Naira)"> <br>
+                  <button class="btn btn-success">Load Wallet</button>
+              </form>
+
+              <div class="card-header">
+              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {% endblock %}
