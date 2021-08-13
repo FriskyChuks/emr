@@ -31,6 +31,7 @@ def registration_view(request):
 # @unauthenticated_user
 def login_view(request):
     userlogin = request.user
+    # print(userlogin.id)
     if request.method == "POST":
         username_var = request.POST.get('username')
         password_var = request.POST.get('password')
@@ -60,6 +61,8 @@ def login_view(request):
                     return redirect("clinic_visits_display", id=clinic_id)
                 elif group_name == "MLS":
                     return HttpResponseRedirect("/labs/request_list_view")
+                elif group_name == "cashier":
+                    return HttpResponseRedirect("/bills/billing_home")
                 else:
                     return HttpResponseRedirect("/home")
 

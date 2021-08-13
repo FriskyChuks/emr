@@ -1,4 +1,5 @@
 from django.http import request
+from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -11,6 +12,15 @@ from .models import Bill, Payment, PaymentDetail, Wallet
 
 
 @login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','cashier'])
+def billing_home_view(request):
+    template = "bills/billing_home.html"
+    context = {}
+    return render(request, template, context)
+
+
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','cashier'])
 def clear_outstanding_bills_view(request, pid):
     user = request.user
     patient = Patient.objects.get(id=pid)
@@ -27,18 +37,31 @@ def clear_outstanding_bills_view(request, pid):
     patient_wallet = Wallet.objects.get(patient_id=pid) 
     initial_balance = patient_wallet.account_balance
 
+    balance_os = float(outstanding_bill) - float(initial_balance)
+
     # Form input to clear outstanding
     if request.method == 'POST':
         os_amount = request.POST.get('amount')
-        payment = Payment.objects.create(amount_paid=os_amount, action='receipt', created_by=user)
-        payment_detail = PaymentDetail.objects.create(bill_id=ms_bill.id, payment_id=payment.id, created_by=user)
-        bill_update = Bill.objects.filter(id=ms_bill.id).update(status="paid")
-    
+        if float(os_amount) == balance_os:
+            payment = Payment.objects.create(amount_paid=os_amount, action='receipt', created_by=user)
+            payment_detail = PaymentDetail.objects.create(bill_id=ms_bill.id, payment_id=payment.id, created_by=user)
+            bill_update = Bill.objects.filter(id=ms_bill.id).update(status="paid")
+            wallet_update = Wallet.objects.filter(patient=pid).update(account_balance=0.00)
+            messages.success(request, "Payment successful!")
+            return redirect('outstanding_bills', pid=pid)
+        elif float(os_amount) > balance_os:
+            messages.error(request, "You're required to pay N" + str(balance_os) + '' + " only")
+            return redirect('outstanding_bills', pid=pid)
+        else: 
+            messages.error(request, "Please clear the outstanding bill")
+            return redirect('outstanding_bills', pid=pid)
+        
     template = "bills/outstanding_bills.html"
     context = {"outstanding_bill":outstanding_bill, 
                 "patient":patient, 
                 "initial_balance":initial_balance,
-                "ms_os_bill":ms_os_bill
+                "ms_os_bill":ms_os_bill,
+                "balance_os":balance_os
               }
     return render(request, template, context)
 
@@ -116,17 +139,15 @@ def pending_bills_view(request, pid):
     wallet = Wallet.objects.get(patient_id=pid)
     wallet_balance = wallet.account_balance
 
-    if wallet_balance >= 0:
-        pay_now = float(wallet_balance) - (float(total_bill) + float(outstanding_bills))
-    else:
-        pay_now = (float(total_bill) + float(outstanding_bills))
+    pay_now = (float(total_bill) + float(outstanding_bills))
 
     patient = Patient.objects.get(id=pid)
     if request.method == "POST":
         if request.POST.get("bill_ID"):
             selected_bill = Payment()
             selected_bill.bill_id = request.POST.get("bill_ID")
-            paid_amount = request.POST.get("paid_amount")
+            paid_amount = request.POST.get("pay_amount")
+            # print(paid_amount)
             if paid_amount != "":
                 paid_amount = float(paid_amount)
             else:
@@ -148,6 +169,7 @@ def pending_bills_view(request, pid):
                     obj.save()
                     bill_obj = Bill.objects.filter(id=pay_bill).update(status="paid")
                 messages.success(request, "Payment processed successfully!")
+                return redirect('pending_bills', pid=pid)
             else:
                 payment_obj = Payment.objects.create(amount_paid=paid_amount,action='receipt',created_by=request.user)
                 payment_obj.save()
@@ -164,6 +186,7 @@ def pending_bills_view(request, pid):
                         obj.save()
                         bill_obj = Bill.objects.filter(id=item).update(status="paid")
                     messages.success(request, "Payment processed successfully!")
+                    return redirect('pending_bills', pid=pid)
 
     template = "bills/bills.html"
     context = {
@@ -203,9 +226,12 @@ def load_wallet_view(request, pid):
 
     if request.method == 'POST':
         deposit_amount = request.POST.get('amount')
-        initial_balance = float(initial_balance) + float(deposit_amount)
-        object = Wallet.objects.filter(patient_id=pid).update(account_balance=initial_balance, created_by=request.user)
-        payment = Payment.objects.create(amount_paid=deposit_amount, action='deposit', created_by=user)
+        if float(deposit_amount) > float(0):
+            initial_balance = float(initial_balance) + float(deposit_amount)
+            object = Wallet.objects.filter(patient_id=pid).update(account_balance=initial_balance, created_by=request.user)
+            payment = Payment.objects.create(amount_paid=deposit_amount, action='deposit', created_by=user)
+        else:
+            messages.error(request, "Please enter POSITIVE VALUES only, Thanks!")
 
     template = "bills/wallet.html"
     context = {"patient":patient, "initial_balance":initial_balance, "outstanding_bill":outstanding_bill}

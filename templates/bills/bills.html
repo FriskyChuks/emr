@@ -2,6 +2,10 @@
 {% block content %}
 
 <style>
+  /* th
+  {
+    text-align: center;
+  } */
   tr
   {
     line-height: 15px;
@@ -32,6 +36,7 @@
     $(document).ready(function()
     {
         document.getElementById("txtDisplay").style.display="none";
+        document.getElementById("pay_hidden").style.display="none";
         $('.chkbox').click(function()
         {
             var selectedValue = "";
@@ -43,11 +48,57 @@
             });
             selectedValue = selectedValue.substring(0,selectedValue.length-1);
             $('#txtDisplay').val(selectedValue);
-            console.log(selectedValue)
+            // console.log(selectedValue)
             
         });
  
     });
+
+
+    $(document).ready(function() {
+      function calculateSum(){
+        var subTotal=0;
+        var sumTotal=0;
+        var tax = $("#tax").val()
+        // var outstanding = $("#outstanding").val()
+            $('table tbody tr').each(function() {
+              var $tr = $(this);
+
+              if ($tr.find('input[type="checkbox"]').is(':checked')) {   
+                var $td = $tr.find("td");
+                var price = $td.eq(3).text();
+                var qty = $td.eq(4).text();
+                var pending = price*qty;
+                // sumTotal+=billTotal;
+                subTotal+=pending;
+                newSubTotal = parseFloat(subTotal).toFixed(2)
+                var billTotal = subTotal + parseInt(tax);
+                sumTotal=parseFloat(billTotal).toFixed(2);
+              }
+            });
+            
+            $("#sub-total").val(newSubTotal); 
+            $("#pay_amount").val(sumTotal);
+            $("#pay_hidden").val(sumTotal);
+                         
+        }
+
+          $('#sum').on('click', function() {
+            
+            calculateSum();
+          });
+
+          $("input[type='text']").keyup(function() {
+            calculateSum();
+
+          });
+          
+          $("input[type='checkbox']").change(function() {
+            calculateSum();
+
+          });
+      }); 
+
 </script>
 
 <div class="container">
@@ -60,11 +111,7 @@
         <a href="{% url 'wallet' pid=patient.id %}">
           <button type="button" class="btn btn-success">Load Wallet</button>
         </a>
-        {% if outstanding_bills %}
-        <a href="{% url 'outstanding_bills' pid=patient.id %}">
-          <button type="button" class="btn btn-danger">Clear outstanding Bills</button>
-        </a>
-        {% endif %}
+          
       </div>
       <br>
     </center>
@@ -102,7 +149,7 @@
                     <th scope="col">Date</th>
                     <th scope="col">Service</th>
                     <th scope="col">Unit Price(N)</th>
-                    <th width="50" scope="col">Qty</th>
+                    <th style="text-align:center" scope="col">Qty</th>
                     <th style="text-align:right" scope="col">Sub_Total(N)</th>
                     <th>[ ]</th>
                     <!-- <td><INPUT type="checkbox" onchange="checkAll(this)" name="chk[]" /><b> Select All</b> </td> -->
@@ -116,8 +163,8 @@
                       <td></td>
                       <td>{{ lab.lab_request.test.date_created }}</td>
                       <td>{{ lab.lab_request.test.title }}</td>
-                      <td style="text-align:right">{{ lab.lab_request.test.price }}</td>
-                      <td style="text-align:center">1</td>
+                      <td name="price" style="text-align:right">{{ lab.lab_request.test.price }}</td>
+                      <td class="qty" style="text-align:center">1</td>
                       <td style="text-align:right">{{ lab.lab_request.test.price }}</td>
                       <td><input style="text-align:center" type="checkbox" value="{{ lab.id }}" class="chkbox" name="check_list"></td>         
                     </tr>
@@ -130,8 +177,8 @@
                       <td></td>
                       <td>{{ services_bill.medical_service.date }}</td>
                       <td>{{ services_bill.medical_service.medical_service }}</td>
-                      <td style="text-align:right">{{ services_bill.medical_service.medical_service.price }}</td>
-                      <td style="text-align:center">{{ services_bill.medical_service.unit }}</td>
+                      <td name="price" style="text-align:right">{{ services_bill.medical_service.medical_service.price }}</td>
+                      <td class="qty" style="text-align:center">{{ services_bill.medical_service.unit }}</td>
                       <td style="text-align:right">{{ services_bill.medical_service.subtotal }}</td>
                       <td><input style="text-align:center" type="checkbox" value="{{ services_bill.id }}" class="chkbox" name="check_list"></td>         
                     </tr>
@@ -144,15 +191,15 @@
                       <td></td>
                       <td>{{ rad.date_created }}</td>
                       <td>{{ rad.radiology_service }}</td>
-                      <td style="text-align:right">{{ rad.radiology_service.radiology_service.price }}</td>
-                      <td style="text-align:center">{{ rad.radiology_service.unit }}</td>
-                      <td style="text-align:right">N{{ rad.radiology_service.subtotal }}</td>
+                      <td class="price" style="text-align:right">{{ rad.radiology_service.radiology_service.price }}</td>
+                      <td class="qty" style="text-align:center">{{ rad.radiology_service.unit }}</td>
+                      <td style="text-align:right">{{ rad.radiology_service.subtotal }}</td>
                       <td><input style="text-align:center" type="checkbox" value="{{ rad.id }}" class="chkbox" name="check_list"></td>           
                     </tr>
                   {% endfor %}
                   <hr>
                   <tr>
-                    <td><b>Total Pending Bills: (N)</b></td>
+                    <td><b>Pending Bills: (N)</b></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -160,56 +207,39 @@
                     <td style="text-align: right;"><b>{{ total_bill }}0</b></td>
                     <td></td>
                   </tr>
-                  {% if outstanding_bills %}
-                  <tr>
-                    <td><b>Outstanding bill: (N)</b></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td style="color: red; text-align: right;"><b>{{ outstanding_bills }}0</b></td>
-                    <td></td>
-                  </tr>
-                  {% endif %} 
-                  <!-- <tfoot>
+                  <tfoot>
+                    {% if outstanding_bills %}
                     <tr>
-                        <th class="empty" colspan="3"></th>
-                        <th>OUTSTANDING BILLS</th>
-                        <th style="color: red; text-align: right;">{{ outstanding_bills }}</th>
+                        <th class="empty" colspan="4"></th>
+                        <th>OUTSTANDING(N)</th>
+                        <!-- <th colspan="2" style="text-align: right;"><input style="color: red; text-align: right;" id="outstanding" type="text" value="{{ outstanding_bills }}0"></th> -->
+                        <th id="outstanding" style="color: red; text-align: right;" colspan="2" class="sub-total">{{ outstanding_bills }}0</th>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th class="empty" colspan="4"></th>
+                        <th>SUBTOTAL (N)</th>
+                        <th colspan="2" style="text-align: right;"><input style="color: red; text-align: right;" id="sub-total" type="text" disabled></th>
+                        <!-- <th style="text-align:right" colspan="2" class="sub-total">{{ total_bill }}0</th> -->
                     </tr>
                     <tr>
-                         <th class="empty" colspan="3"></th>
-                        <th>SHIPING</th>
-                        <td colspan="2">Free Shipping</td> -->
-                    <!-- </tr>
-                    <tr>
-                        <th class="empty" colspan="3"></th>
-                        <th>PAY NOW</th>
-                        <th colspan="2" class="total"><input class="form-control" type="number" name="paid_amount" placeholder="{{ pay_now }}" aria-label="Amount (to the nearest Naira)"></th>
+                        <th class="empty" colspan="4"></th>
+                        <th>TAX (N)</th>
+                        <th colspan="2" style="text-align: right;"><input style="text-align: right;" id="tax" value="10.00" type="text" disabled></th>
+                        <!-- <td style="text-align:right" colspan="2">00.00</td> -->
                     </tr>
-                    </tfoot>           -->
+                    <tr>
+                        <th class="empty" colspan="4"></th>
+                        <th>PAY NOW (NGN)</th>
+                        <th colspan="2" class="total" ><h3><p><input style="text-align:right" type="text" name="pay_amount" id="pay_amount" disabled/></p></h3></th>
+                    </tr>
+                   </tfoot>          
               </table>
-            </div>
-             <!-- &nbsp; <b> Pay Now:</b><input style="text-align:right; float: right;" type="number" name="paid_amount" placeholder="N{{ pay_now }}0"> -->
-             <div class="input-group mb-5">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><b> Pay Now:</b></span>
-                </div>
-                <div class="input-group-prepend">
-                  <span class="input-group-text">N</span>
-                </div>
-                <input class="form-control" type="number" name="paid_amount" placeholder="{{ pay_now }}" aria-label="Amount (to the nearest Naira)">
-                <div class="input-group-append">
-                  <span class="input-group-text">.00</span>
-                </div>
-                <div class="input-group-append">
-                  <span class="input-group-text"></span>
-                </div>
-             </div>
             </div>
           </div>
           <hr>
           <input type="text" id="txtDisplay" name="bill_ID">
+          <input type="text" id="pay_hidden" name="pay_amount">
           <center><input type="submit" id="btnRequest" class="btn btn-success" value="Process Payment"></center>
           <br>
           </div>

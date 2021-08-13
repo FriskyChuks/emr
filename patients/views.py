@@ -57,7 +57,7 @@ def search_patient_view(request):
 
 
 @login_required(login_url="auth_login")
-@allowed_users(alllowed_roles=['HIM','admin','doctor','nurse'])
+@allowed_users(alllowed_roles=['HIM','admin','doctor','nurse','cashier'])
 def patient_detail_view(request, id):
     patient = Patient.objects.filter(id=id, active=True)
     # print(patient)

@@ -110,9 +110,9 @@
         {% if request.user.group.name == 'radiology' or request.user.group.name == 'admin' %}
           <a class="p-2 link-secondary" href="#">Radiology</a> 
         {% endif %}
-        <!-- {% if request.user.group.name == 'cashier' or request.user.group.name == 'admin' %}
-          <a class="p-2 link-secondary" href="#">Bills</a>
-        {% endif %} -->
+        {% if request.user.group.name == 'cashier' or request.user.group.name == 'admin' %}
+          <a class="p-2 link-secondary" href="{% url 'billing_home' %}">Bills</a>
+        {% endif %}
       </nav>
     </div>
   </div>

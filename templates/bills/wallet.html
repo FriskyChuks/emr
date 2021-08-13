@@ -3,7 +3,7 @@
 
 <div class="container">
   <a href="{% url 'pending_bills' pid=patient.id %}">
-    <button type="button" class="btn btn-primary">Pay Bills</button>
+    <button type="button" class="btn btn-primary">Pay Pending Bills</button>
   </a>
   {% if outstanding_bills %}
     <a href="{% url 'outstanding_bills' pid=patient.id %}">

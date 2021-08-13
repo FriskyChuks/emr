@@ -9,7 +9,7 @@
                 <button type="button" class="btn btn-success">Load Wallet</button>
             </a>
             <a href="{% url 'pending_bills' pid=patient.id %}">
-                <button type="button" class="btn btn-primary">Pay Bills</button>
+                <button type="button" class="btn btn-primary">Pay Pending Bills</button>
             </a>
             </div>
           </center>
@@ -26,7 +26,7 @@
         <button type="button" class="btn btn-success">Load Wallet</button>
     </a>
     <a href="{% url 'pending_bills' pid=patient.id %}">
-        <button type="button" class="btn btn-primary">Pay Bills</button>
+        <button type="button" class="btn btn-primary">Pay Pending Bills</button>
     </a>
     </div>
     <br>
@@ -47,7 +47,7 @@
                     1. Consultation bill: {{ ms_os_bill }}
                     {% endif %}
                     <br><br>
-                    Pay Now (N)<input class="form-control" type="number" name="amount" id="amount" placeholder="{{ outstanding_bill }}"> <br>
+                    Pay Now (N)<input class="form-control" type="number" name="amount" id="amount" placeholder="{{ balance_os }}"> <br>
                     <button class="btn btn-success">Offset Bills</button>
                 </form>
   

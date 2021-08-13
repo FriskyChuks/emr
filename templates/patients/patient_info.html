@@ -17,7 +17,7 @@
 {% for patient in patient %}
 
   <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
-    <a href="{% url 'schedule_appointment' patient_id=patient.id %}"><button type="button" class="btn btn-primary col-md-12">Schedule Appointment</button></a>
+    <a href="{% url 'schedule_appointment' patient_id=patient.id %}"><button type="button" class="btn btn-primary col-md-12">Click here to Schedule Appointment</button></a>
   </div>
   <br>
   <div class="row">
@@ -36,7 +36,7 @@
     <div class="col-sm-9">
       <!-- <div class="card">
         <div class="card-body"> -->
-          <h5 class="card-title">{{ patient.first_name }} {{ patient.last_name }} {{ patient.other_name }} ({{ patient.id }})</h5>
+          <h4 class="card-title">{{ patient.first_name }} {{ patient.last_name }} {{ patient.other_name }} || {{ patient.id }}</h4>
           <p class="card-text">
             Phone:&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.phone_1 }} <br>
             Age:&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.date_of_birth|timesince }} old <br>
@@ -57,12 +57,13 @@
                 {% for p in patient.patientencounter_set.all|dictsortreversed:"id" %}
                   {% if p.active  %}
                     {% if p.current_clinic  %} 
-                      <a href="{% url 'clinic_visits_display' id=p.current_clinic_id %}">{{ p.current_clinic.clinic }} Clinic</a>
+                      {% if request.user.group.name == 'HIM' or request.user.group.name == 'admin' %}
+                        <a href="{% url 'clinic_visits_display' id=p.current_clinic_id %}">{{ p.current_clinic.clinic }} Clinic</a>
+                      {% endif %}
                     {% else %}
-                      <a href="{% url 'ward_admission_display' id=p.current_ward_id %}">{{ p.current_ward.ward }} Ward</a>            
-                    {% endif %}
-                    {% if request.user.group.name == 'cashier' %}
-                      <a href="#">View Bills</a>
+                      {% if request.user.group.name == 'HIM' or request.user.group.name == 'admin' %}
+                        <a href="{% url 'ward_admission_display' id=p.current_ward_id %}">{{ p.current_ward.ward }} Ward</a>            
+                      {% endif %}
                     {% endif %}
                   {% endif %}
                 {% endfor %}
@@ -78,9 +79,14 @@
               <a href="#" class="card-link">Update Record</a>
               {% endif %}
               {% if request.user.group.name == 'nurse' or request.user.group.name == 'doctor' or request.user.group.name == 'admin' %}
-              {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
-                <a href="{% url 'patient_folder' enc_id=p.id %}" class="card-link">View Folder</a>
-              {% endfor %}
+                {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
+                  <a href="{% url 'patient_folder' enc_id=p.id %}" class="card-link">View Folder</a>
+                {% endfor %}
+              {% endif %}
+              {% if request.user.group.name == 'cashier' %}
+                {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
+                  <a href="{% url 'pending_bills' pid=patient.id %}" class="card-link">Pay Bills</a>
+                {% endfor %}
               {% endif %}
             </div>
             
