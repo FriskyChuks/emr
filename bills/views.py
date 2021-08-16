@@ -147,11 +147,14 @@ def pending_bills_view(request, pid):
             selected_bill = Payment()
             selected_bill.bill_id = request.POST.get("bill_ID")
             paid_amount = request.POST.get("pay_amount")
-            # print(paid_amount)
-            if paid_amount != "":
-                paid_amount = float(paid_amount)
+            if float(wallet_balance) < float(paid_amount):
+                paid_amount = float(paid_amount) - float(wallet_balance)
+                wallet = Wallet.objects.filter(patient_id=pid).update(account_balance=0.00)
             else:
-                messages.error(request, "Pls enter payment amount!")
+                paid_amount = paid_amount
+                wallet_balance = float(wallet_balance) - float(paid_amount)
+                wallet = Wallet.objects.filter(patient_id=pid).update(account_balance=wallet_balance)
+                
             pay_bill = selected_bill.bill_id
             l = len(pay_bill)
             t = type(pay_bill)
@@ -187,6 +190,8 @@ def pending_bills_view(request, pid):
                         bill_obj = Bill.objects.filter(id=item).update(status="paid")
                     messages.success(request, "Payment processed successfully!")
                     return redirect('pending_bills', pid=pid)
+        else:
+            messages.error(request, "Please check items to pay for!")
 
     template = "bills/bills.html"
     context = {

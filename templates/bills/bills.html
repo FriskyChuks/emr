@@ -60,6 +60,7 @@
         var subTotal=0;
         var sumTotal=0;
         var tax = $("#tax").val()
+        $("#pay_hidden").val(0);
         // var outstanding = $("#outstanding").val()
             $('table tbody tr').each(function() {
               var $tr = $(this);
@@ -78,7 +79,7 @@
             });
             
             $("#sub-total").val(newSubTotal); 
-            $("#pay_amount").val(sumTotal);
+            $("#pay_amount_visible").val(sumTotal);
             $("#pay_hidden").val(sumTotal);
                          
         }
@@ -219,7 +220,7 @@
                     <tr>
                         <th class="empty" colspan="4"></th>
                         <th>SUBTOTAL (N)</th>
-                        <th colspan="2" style="text-align: right;"><input style="color: red; text-align: right;" id="sub-total" type="text" disabled></th>
+                        <th colspan="2" style="text-align: right;"><input style="color: red; text-align: right;" id="sub-total" type="text" value="0.00" disabled></th>
                         <!-- <th style="text-align:right" colspan="2" class="sub-total">{{ total_bill }}0</th> -->
                     </tr>
                     <tr>
@@ -231,7 +232,7 @@
                     <tr>
                         <th class="empty" colspan="4"></th>
                         <th>PAY NOW (NGN)</th>
-                        <th colspan="2" class="total" ><h3><p><input style="text-align:right" type="text" name="pay_amount" id="pay_amount" disabled/></p></h3></th>
+                        <th colspan="2" class="total" ><h3><p><input style="text-align:right" type="text" name="pay_amount" id="pay_amount_visible" value="0.00" disabled/></p></h3></th>
                     </tr>
                    </tfoot>          
               </table>
@@ -239,7 +240,7 @@
           </div>
           <hr>
           <input type="text" id="txtDisplay" name="bill_ID">
-          <input type="text" id="pay_hidden" name="pay_amount">
+          <input type="text" id="pay_hidden" name="pay_amount" value="0.00">
           <center><input type="submit" id="btnRequest" class="btn btn-success" value="Process Payment"></center>
           <br>
           </div>
