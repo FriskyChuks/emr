@@ -6,32 +6,48 @@
     <option value="{{ i.id }}">{{ i.title }}-{{ i.type }}</option>
     {% endfor %}
     </select> -->
+<div class="container">
+    <--<a href="{% url 'patient_folder' enc_id=encounter.id %}">{{ encounter.patient.first_name }}'s Folder</a>
+    <br>
+        <--{% if encounter.current_clinic %}
+        <a href="{% url 'clinic_visits_display' id=encounter.current_clinic.id %}"> {{ encounter.current_clinic }}</a>
+    {% else %}
+        <a href="{% url 'ward_admission_display' id=encounter.current_ward.id %}"> {{ encounter.current_ward }}</a>
+    {% endif %} 
 
-<--<a href="{% url 'patient_folder' enc_id=encounter.id %}">{{ encounter.patient.first_name }}'s Folder</a>
-<br>
-    <--{% if encounter.current_clinic %}
-    <a href="{% url 'clinic_visits_display' id=encounter.current_clinic.id %}"> {{ encounter.current_clinic }}</a>
-{% else %}
-    <a href="{% url 'ward_admission_display' id=encounter.current_ward.id %}"> {{ encounter.current_ward }}</a>
-{% endif %}
+    <div class="row">
+      <div class="col-sm-12">  
+        <div class="card">
+          <div class="card-header">
+            <h5>Prescription Sheet for <b>{{ encounter.patient.first_name }} {{ encounter.patient.last_name }} <small> </small></h5>
+          </div>
+  
+          <div class="card-body">
 
-<h5>Prescription Sheet for <b>{{ encounter.patient.first_name }} {{ encounter.patient.last_name }}</b> </h5> 
-<br>    
-<form id="form" method="POST" action="">{% csrf_token %} 
-    {{ formset.management_form }}
-    {% for form in formset %}
-        Select Item: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.item }}<br><br>
-        Qty per intake: {{ form.qty_per_take }} &nbsp;&nbsp;&nbsp;
-        Frequency: {{ form.times_daily }} &nbsp;&nbsp;&nbsp;
-        No of days: {{ form.no_of_days }} &nbsp;&nbsp;&nbsp;
-        Route: {{ form.route }} <br><br>
-        note: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-        {{ form.note }} 
-        <!-- {{ form }} -->
-         <hr>
-    {% endfor %}
-    <input type="submit" class="btn btn-success", value="Prescribe">
-</form>
+            <form id="form" method="POST" action="">{% csrf_token %} 
+                <input type="submit" class="btn btn-success", value="Prescribe" style="float: right;">
+                <br>
+                {{ formset.management_form }}
+                {% for form in formset %}
+                    Select Item: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.item }}<br><br>
+                    Qty per intake: {{ form.qty_per_take }} &nbsp;&nbsp;&nbsp;
+                    Frequency: {{ form.times_daily }} &nbsp;&nbsp;&nbsp;
+                    No of days: {{ form.no_of_days }} &nbsp;&nbsp;&nbsp;
+                    Route: {{ form.route }} <br><br>
+                    note: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                    {{ form.note }} 
+                    <!-- {{ form }} -->
+                    <hr>
+                {% endfor %}
+                <input type="submit" class="btn btn-success", value="Prescribe">
+            </form>
+        </div>
+        <div class="card-header">  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 {% endblock %}

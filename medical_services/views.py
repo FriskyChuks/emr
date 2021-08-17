@@ -1,6 +1,6 @@
-
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 import json
 from django.http import JsonResponse
 from django.forms import inlineformset_factory
@@ -60,6 +60,8 @@ def raise_patient_medical_service_view(request, encounter_id):
                 obj.created_by = request.user
                 obj.save()
                 formset = MedicalServiceFormSet()
+        messages.success(request, "Lab investigation request successful!.")
+        return redirect("patient_folder", enc_id = encounter_id)
 
     template = "medical_services/raise_patient_medical_service.html"
     context = {"formset":formset, "encounter":encounter}

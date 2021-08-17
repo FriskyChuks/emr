@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 import json
 from django.http import JsonResponse
 from django.forms import inlineformset_factory
+from django.contrib import messages
 
 from visits.models import PatientEncounter
 from patients.models import Patient
@@ -94,6 +95,8 @@ def prescription_view(request, enc_id):
                 obj.created_by = request.user
                 obj.save()
                 formset = prescriptionFormSet()
+        messages.success(request, "Lab investigation request successful!.")
+        return redirect("patient_folder", enc_id = enc_id)
 
     template = "pharmacy/prescribe.html"
     context = {"formset":formset, "encounter":encounter, "item":item}

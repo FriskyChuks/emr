@@ -156,40 +156,23 @@ def pending_bills_view(request, pid):
                 wallet = Wallet.objects.filter(patient_id=pid).update(account_balance=wallet_balance)
                 
             pay_bill = selected_bill.bill_id
-            l = len(pay_bill)
-            t = type(pay_bill)
-
-            if (l > 0 and  l <= 2): 
-                payment_obj = Payment.objects.create(amount_paid=paid_amount,action='receipt',created_by=request.user)
-                payment_obj.save()
-                if payment_obj:
-                    instance = payment_obj
+            my_list = []
+            my_list.append(pay_bill)
+           
+            payment_obj = Payment.objects.create(amount_paid=paid_amount,action='receipt',created_by=request.user)
+            payment_obj.save()
+            if payment_obj:
+                instance = payment_obj
+                for item in my_list:
                     obj = PaymentDetail.objects.create(
-                            bill_id         = pay_bill,
+                            bill_id         = item,
                             payment_id      = instance.id,
                             created_by      = request.user
                         )
                     obj.save()
-                    bill_obj = Bill.objects.filter(id=pay_bill).update(status="paid")
+                    bill_obj = Bill.objects.filter(id=item).update(status="paid")
                 messages.success(request, "Payment processed successfully!")
                 return redirect('pending_bills', pid=pid)
-            else:
-                payment_obj = Payment.objects.create(amount_paid=paid_amount,action='receipt',created_by=request.user)
-                payment_obj.save()
-                if payment_obj:
-                    instance = payment_obj
-                    # Convert the string(pay_bill) to a tuple
-                    bill_list = eval(pay_bill)
-                    for item in bill_list:
-                        obj = PaymentDetail.objects.create(
-                                bill_id         = item,
-                                payment_id      = instance.id,
-                                created_by      = request.user
-                            )
-                        obj.save()
-                        bill_obj = Bill.objects.filter(id=item).update(status="paid")
-                    messages.success(request, "Payment processed successfully!")
-                    return redirect('pending_bills', pid=pid)
         else:
             messages.error(request, "Please check items to pay for!")
 

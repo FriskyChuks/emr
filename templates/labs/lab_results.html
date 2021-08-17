@@ -26,41 +26,53 @@
 </script>
 
 {% if lab_request %}
-<div style="background-color: lightgray; text-align: center; color: black;">
-    <h4>Medical Lab Result Sheet</h4>
-</div>
 <div class="container">
-    {% for patient_detail in lab_request|slice:":1" %}
-        <h3>{{ patient_detail.patient.first_name }} {{ patient_detail.patient.last_name }} | 
-        {{ patient_detail.patient.id }}</h3>
-        {{ patient_detail.patient.date_of_birth|timesince }}; {{ depatient_detailtail.patient.gender|capfirst }}
-        <hr>
-    {% endfor %}
-    <form id="myForm" method="POST" action="">{% csrf_token %} 
-        <div class="row lg-2">
-            {% for request in lab_request %}
-              {% if request.test.compound_test %}
-                  <div class="col-md-6">
-                    {% if request.test.title == 'Pregnancy Test'  %}
-                        {{ request.test }}:
-                            <select class="form-select" aria-label="Default select example">
-                              <option value="Negative">Negative</option>
-                              <option value="Positive">Positive</option>
-                            </select>
+    <div class="row">
+      <div class="col-sm-12">  
+        <div class="card">
+          <div class="card-header">
+            <h5>Medical Lab Result Sheet: <small>Enter your results here </small></h5>
+          </div>
+  
+          <div class="card-body">
+
+            {% for patient_detail in lab_request|slice:":1" %}
+                <h3>{{ patient_detail.patient.first_name }} {{ patient_detail.patient.last_name }} | 
+                {{ patient_detail.patient.id }}</h3>
+                {{ patient_detail.patient.date_of_birth|timesince }}; {{ depatient_detailtail.patient.gender|capfirst }}
+                <hr>
+            {% endfor %}
+            <form id="myForm" method="POST" action="">{% csrf_token %} 
+                <div class="row lg-2">
+                    {% for request in lab_request %}
+                    {% if request.test.compound_test %}
+                        <div class="col-md-6">
+                            {% if request.test.title == 'Pregnancy Test'  %}
+                                {{ request.test }}:
+                                    <select class="form-select" aria-label="Default select example">
+                                    <option value="Negative">Negative</option>
+                                    <option value="Positive">Positive</option>
+                                    </select>
+                            {% else %}
+                                {{ request.test }}:<input type="text" class="form-control" id="" name="{{ request.id }}">
+                            {% endif %}
+                        </div>
                     {% else %}
-                        {{ request.test }}:<input type="text" class="form-control" id="" name="{{ request.id }}">
+                        <div class="col-md-6">
+                                {{ request.test }}:<input type="text" class="form-control" id="" name="{{ request.id }}">
+                        </div>
                     {% endif %}
-                  </div>
-              {% else %}
-                  <div class="col-md-6">
-                        {{ request.test }}:<input type="text" class="form-control" id="" name="{{ request.id }}">
-                  </div>
-              {% endif %}
-            {% endfor %} 
+                    {% endfor %} 
+                </div>
+                <br><br>
+                <button type="submit" class="btn btn-primary" style="float: right;">Send Result</button>
+            </form>
         </div>
-        <br><br>
-        <button type="submit" class="btn btn-primary" style="float: right;">Send Result</button>
-    </form>
+        <div class="card-header">  
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% else %}
 <center>

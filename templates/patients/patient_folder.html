@@ -296,7 +296,7 @@
               {% for e in current_encounter|slice:":1" %}
               <a href="{% url 'prescription' enc_id=e.id %}" class=""><h5>Prescription</h5></a>
               <h6 class="card-title">Recent Prescriptions</h6>
-              <p class="card-text">List of recent prescriptions here.</p>
+              <p class="card-text">Patients drug allergy shows up here!</p>
               
             </div>
           </div>
@@ -308,7 +308,7 @@
             <div class="card-body">
               <a href="{% url 'lab_request' enc_id=e.id %}" class=""><h5>Lab Investigation</h5></a>
               <h6 class="card-title">Recent Investigations</h6>
-              <p class="card-text">List of recent Investigations here..</p>
+              <p class="card-text">Flagged investigations show up here!</p>
             </div>
           </div>
         </div>
@@ -322,7 +322,7 @@
             <div class="card-body">
               <a href="{% url 'raise_patient_radiology_service' encounter_id=e.id %}" class=""><h5>Radiology Investigation</h5></a>  
               <h6 class="card-title">Recent Investigations</h6>
-              <p class="card-text">List of recent Investigations appear here.</p>
+              <p class="card-text">Flagged investigations show up here!</p>
             </div>
           </div>
         </div>
@@ -330,12 +330,10 @@
         <!-- Card for Medical Services -->
         <div class="col-sm-6">
           <div class="card">
-            <div class="card-body">
-              
+            <div class="card-body">              
               <a href="{% url 'raise_patient_medical_service' encounter_id=e.id %}" class=""><h5>Medical Services</h5></a>
-              <h6 class="card-title">Recent Services</6>
-              <p class="card-text">List of recent services offered here.</p>
-              
+              <h6 class="card-title">Recent Investigations</h6>
+              <p class="card-text">Flagged services show up here!</p>              
             </div>
           </div>
         </div>
