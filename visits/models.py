@@ -43,7 +43,6 @@ class EncounterRoute(models.Model):
     clinic          = models.ForeignKey(Clinic, on_delete=models.CASCADE, blank=True, null=True)
     ward            = models.ForeignKey(Ward, on_delete=models.CASCADE, blank=True, null=True)
     active          = models.BooleanField(default=True)
-    date_created    = models.DateTimeField(auto_now_add=True, auto_now=False)
     created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date_created    = models.DateTimeField(auto_now_add=True, auto_now=False)
 

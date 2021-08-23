@@ -46,7 +46,7 @@ def raise_patient_radiology_service_view(request, encounter_id):
                 obj.created_by = request.user
                 obj.save()
                 formset = MedicalServiceFormSet()
-        messages.success(request, "Lab investigation request successful!.")
+        messages.success(request, "Radiology investigation request successful!.")
         return redirect("patient_folder", enc_id = encounter_id)
 
     template = "radiology/raise_radiology_service.html"

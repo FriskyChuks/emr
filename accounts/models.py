@@ -105,12 +105,3 @@ class User(AbstractBaseUser):
 	@property
 	def is_active(self):
 		return self.active
-
-
-
-# class UserCadre(models.Model):
-#     user 				= models.OneToOneField(User, on_delete=models.CASCADE)
-# 	# group    			= models.ForeignKey(Role)
-#     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-#     date_created        = models.DateTimeField(auto_now_add=True, auto_now=False)
-#     updated             = models.DateTimeField(auto_now_add=False, auto_now=True)

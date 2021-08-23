@@ -95,7 +95,7 @@ def prescription_view(request, enc_id):
                 obj.created_by = request.user
                 obj.save()
                 formset = prescriptionFormSet()
-        messages.success(request, "Lab investigation request successful!.")
+        messages.success(request, "Prescription was successful!.")
         return redirect("patient_folder", enc_id = enc_id)
 
     template = "pharmacy/prescribe.html"
