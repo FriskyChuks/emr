@@ -69,7 +69,6 @@ def clear_outstanding_bills_view(request, pid):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','cashier'])
 def pending_bills_view(request, pid): 
-    # bills = Bill.objects.filter(patient=pid, status="pending") | Bill.objects.filter(patient=pid, status="billed") | Bill.objects.filter(patient=pid, status="paid")
     bills = Bill.objects.filter(patient=pid, status="billed") | Bill.objects.filter(patient=pid, status="pending")
     services_bills = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='pending')
     radiology_bills = Bill.objects.filter(patient=pid, radiology_service__isnull=False, status='pending')
@@ -156,11 +155,11 @@ def pending_bills_view(request, pid):
                 wallet = Wallet.objects.filter(patient_id=pid).update(account_balance=wallet_balance)
                 
             pay_bill = selected_bill.bill_id
-            my_list = []
-            my_list.append(pay_bill)
+            pay_bill = str(pay_bill)
+            # convert Comma separated string to a python list
+            my_list = pay_bill.split(",")
            
             payment_obj = Payment.objects.create(amount_paid=paid_amount,action='receipt',created_by=request.user)
-            payment_obj.save()
             if payment_obj:
                 instance = payment_obj
                 for item in my_list:
@@ -173,6 +172,8 @@ def pending_bills_view(request, pid):
                     bill_obj = Bill.objects.filter(id=item).update(status="paid")
                 messages.success(request, "Payment processed successfully!")
                 return redirect('pending_bills', pid=pid)
+            
+            print(payment_obj)
         else:
             messages.error(request, "Please check items to pay for!")
 
