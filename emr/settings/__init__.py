@@ -1,5 +1,8 @@
 # from .base import * #mysql
 
-# from .production import * # Heroku
+from .production import * # Heroku
 
-from .local import * #PG ADMIN 4
+try:
+    from .local import * #PG ADMIN 4
+except:
+    pass
