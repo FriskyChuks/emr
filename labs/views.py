@@ -30,30 +30,19 @@ def lab_request_view(request, enc_id):
             selected_test = LabRequest()
             selected_test.test_id = request.POST.get("test_id")
             test_request = selected_test.test_id
-            l = len(test_request)
-            t = type(test_request)
 
-            if (l <= 2): 
-                print ("This is great: ", l)
+            test_request = str(test_request)
+            # convert Comma separated string to a python list
+            request_list = test_request.split(",")
+
+            for item in request_list:
                 obj = LabRequest.objects.create(
-                        encounter_id    = encounter.id,
-                        patient_id      = patient_id,
-                        test_id         = test_request,
-                        created_by      = request.user
-                    )
+                    encounter_id    = encounter.id,
+                    patient_id      = patient_id,
+                    test_id         = item,
+                    created_by      = request.user
+                )
                 obj.save()
-
-            else:
-            # Convert the string(test_request) to a tuple
-                request_list = eval(test_request)
-                for item in request_list:
-                    obj = LabRequest.objects.create(
-                        encounter_id    = encounter.id,
-                        patient_id      = patient_id,
-                        test_id         = item,
-                        created_by      = request.user
-                    )
-                    obj.save()
 
         messages.success(request, "Lab investigation request successful!.")
         return redirect("patient_folder", enc_id = enc_id)
