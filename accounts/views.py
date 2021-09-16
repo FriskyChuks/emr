@@ -67,7 +67,7 @@ def login_view(request):
                     return HttpResponseRedirect("/home")
 
     context = {}
-    return render(request, 'accounts/login2.html', context)
+    return render(request, 'accounts/login.html', context)
 
 
 def logout_view(request):

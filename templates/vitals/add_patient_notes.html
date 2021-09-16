@@ -1,6 +1,13 @@
-{% extends 'base.html' %}
+{% extends "layouts/base.html" %}
+
+{% block title %} Add notes {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<br>
+
 {% for p in p_encounter|slice:":1" %}
 <--<a href="{% url 'patient_folder' enc_id=p.id %}">Open {{ p.patient.first_name }}'s <b>Folder</b></a>
 <br>

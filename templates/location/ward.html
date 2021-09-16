@@ -1,13 +1,25 @@
-{% extends 'base.html' %}
+{% extends "layouts/base.html" %}
+
+{% block title %} Wards {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<hr>
 <div class="container">
-    <h3>Wards</h3>
-    <ol>
+    <div class="row col-md-12">
+        <h3>Wards</h3>
         {% for ward in wards %}
-        <li><a href="{% url 'ward_admission_display' id=ward.id %}">{{ ward.ward }}</a></li>
+            <div class="card" style="width: 12rem;">
+                <!-- <img src="..." class="card-img-top" alt="..."> -->
+                <div class="card-body">
+                <h5 class="card-title">{{ ward.ward }}</h5>
+                <p class="card-text">Today's Stats</p>
+                <a href="{% url 'ward_admission_display' id=ward.id %}" class="btn btn-primary">visit</a>
+                </div>
+            </div>
         {% endfor %}
-    </ol>
+    </div>
 </div>
-
 {% endblock %}

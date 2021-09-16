@@ -1,13 +1,25 @@
-{% extends 'base.html' %}
+{% extends "layouts/base.html" %}
+
+{% block title %} Clinics {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<hr>
 <div class="container">
-    <h3>Clinics</h3>
-    <div>
+    <div class="row col-md-12">
+        <h3>Clinics</h3>
         {% for clinic in clinics %}
-            <div><a href="{% url 'clinic_visits_display' id=clinic.id %}">{{ clinic.clinic }}</a>
+            <div class="card" style="width: 12rem;">
+                <!-- <img src="..." class="card-img-top" alt="..."> -->
+                <div class="card-body">
+                <h5 class="card-title">{{ clinic.clinic }}</h5>
+                <p class="card-text">Today's Stats</p>
+                <a href="{% url 'clinic_visits_display' id=clinic.id %}" class="btn btn-primary">visit</a>
+                </div>
+            </div>
         {% endfor %}
     </div>
 </div>
-
 {% endblock %}

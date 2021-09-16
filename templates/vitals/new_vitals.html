@@ -1,6 +1,11 @@
-{% extends 'base.html' %}
+{% extends "layouts/base.html" %}
 
-{% block content %}
+{% block title %} New Vital Signs {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
 
 <div class="container">
 {% for p in p_encounter|slice:":1" %}

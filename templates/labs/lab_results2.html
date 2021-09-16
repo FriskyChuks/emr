@@ -1,5 +1,11 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends "layouts/base.html" %}
+
+{% block title %} Lab Results {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
 
 
 <form id="form-container" method="POST">{% csrf_token %}

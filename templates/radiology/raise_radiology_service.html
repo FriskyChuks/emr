@@ -1,5 +1,11 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "layouts/base.html" %}
+
+{% block title %} Raise Rad. Service {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
 
 <--<a href="{% url 'patient_folder' enc_id=encounter.id %}">{{ encounter.patient.first_name }}'s Folder</a>
 <br>

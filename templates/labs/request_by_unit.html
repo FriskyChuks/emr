@@ -1,5 +1,11 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends "layouts/base.html" %}
+
+{% block title %} Unit Request {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
 
 {% for request in unit_request %}
     {{ request.patient }} <br>

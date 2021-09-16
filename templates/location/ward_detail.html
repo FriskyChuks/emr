@@ -1,6 +1,12 @@
-{% extends 'base.html' %}
+{% extends "layouts/base.html" %}
+
+{% block title %} Wards {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<br>
 <div class="container">    
     
         {% for ward in ward %}

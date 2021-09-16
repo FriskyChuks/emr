@@ -1,6 +1,11 @@
-{% extends 'base.html' %}
+{% extends "layouts/base.html" %}
 
-{% block content %}
+{% block title %} Sample {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
 
 <div class="modal" tabindex="-1" id="{% url 'take_vital_signs' id=qs.id %}">
     <div class="modal-dialog">

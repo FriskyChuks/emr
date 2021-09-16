@@ -76,7 +76,7 @@ def home(request):
     user_count = User.objects.filter(is_a_patient=False).count()
     gopd_encounter =  PatientEncounter.objects.filter(current_clinic=1, active=True).count()
 
-    template = "home.html"
+    template = "home/dashboard.html"
     context = {
         "patients": patients, 
         "patient_count":patient_count,

@@ -1,12 +1,14 @@
+{% extends "layouts/base.html" %}
 
+{% block title %} Clinics {% endblock %} 
 
-{% extends 'base.html' %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<br>
 <div class="container">
     {% for qs in qs|slice:":1" %}   
-        <!-- {% if forloop.counter > 1 %}<h3>{{ qs.current_clinic.clinic }} Clinic</h3>
-        {% endif %} -->
         <h3>{{ qs.current_clinic.clinic }} Clinic</h3>
     {% endfor %}
 

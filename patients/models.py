@@ -114,7 +114,7 @@ RELATIONSHIP = (
 
 
 class Patient(models.Model):
-	foto			= models.ImageField(null=True, blank=True, upload_to="image/", default="image/male.jpg")
+	foto			= models.ImageField(null=True, blank=True, upload_to="users/")
 	first_name      = models.CharField(max_length=50)
 	last_name       = models.CharField(max_length=50)
 	other_names     = models.CharField(max_length=50)
