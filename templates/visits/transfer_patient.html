@@ -7,6 +7,8 @@
 
 {% block content %} <br>
 
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
 {% for q in qs %}
   <h4>Transfering <i>{{ q.patient.first_name }} {{ q.patient.last_name }}</i></h4>
   <h5>from {{ q.current_clinic }} to:</h5>
@@ -39,36 +41,6 @@
           </form>
         </div>  
       </div>
-<script>
-    function showClinic()
-    {
-      $('#current_clinic').css("display","block");
-      $('#current_ward').css("display","none");
-    };
-
-    function showWard()
-    {
-      $('#current_clinic').css("display","none");
-      $('#current_ward').css("display","block");
-    }
-
-    // $(function showClinic() 
-    //      {
-    //         $("#btnSubmit").click(function () 
-    //         {
-    //           var selectClinic = $("#current_clinic");
-    //           var selectWard = $("#current_ward");
-    //           if ((selectClinic.val() == " ") && (selectWard.val() == "")) 
-    //           {
-    //             alert("Please select a location!");
-    //             console.log("Not ok")
-    //             return false;
-    //           }
-    //           console.log("Beautiful")
-    //           return true;
-    //         });
-    //     });
-</script>
       
     {% else %}
       <form id="a" class="create-patient-encounter" method="POST">{% csrf_token %}
@@ -79,5 +51,20 @@
     {% endif %}
   </div>  
 </div>
+
+
+<script>
+  function showClinic()
+  {
+    $('#current_clinic').css("display","block");
+    $('#current_ward').css("display","none");
+  };
+
+  function showWard()
+  {
+    $('#current_clinic').css("display","none");
+    $('#current_ward').css("display","block");
+  }
+</script>
 
 {% endblock %}

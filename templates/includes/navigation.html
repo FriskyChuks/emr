@@ -16,13 +16,15 @@
                       {% else %}
                       <a href="{% url 'auth_login' %}">Login</a>
                       {% endif %}
-                      <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center mt-2 py-0">
+
+                      <!-- NOTIFICATION STARTS HERE -->
+                      <!-- <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center mt-2 py-0">
                         <div class="list-group list-group-flush">
                           <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">Notifications</a>
                           <a href="#" class="list-group-item list-group-item-action border-bottom">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                  <!-- Avatar -->
+                                  ]
                                   <img alt="Image placeholder" src="/static/assets/img/team/profile-picture-1.jpg" class="avatar-md rounded">
                                 </div>
                                 <div class="col ps-0 ms-2">
@@ -41,7 +43,7 @@
                           <a href="#" class="list-group-item list-group-item-action border-bottom">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                  <!-- Avatar -->
+                                  
                                   <img alt="Image placeholder" src="/static/assets/img/team/profile-picture-2.jpg" class="avatar-md rounded">
                                 </div>
                                 <div class="col ps-0 ms-2">
@@ -60,7 +62,7 @@
                           <a href="#" class="list-group-item list-group-item-action border-bottom">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                  <!-- Avatar -->
+                                  
                                   <img alt="Image placeholder" src="/static/assets/img/team/profile-picture-3.jpg" class="avatar-md rounded">
                                 </div>
                                 <div class="col ps-0 m-2">
@@ -79,7 +81,7 @@
                           <a href="#" class="list-group-item list-group-item-action border-bottom">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                  <!-- Avatar -->
+                                  
                                   <img alt="Image placeholder" src="/static/assets/img/team/profile-picture-4.jpg" class="avatar-md rounded">
                                 </div>
                                 <div class="col ps-0 ms-2">
@@ -98,7 +100,7 @@
                           <a href="#" class="list-group-item list-group-item-action border-bottom">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                  <!-- Avatar -->
+                                  
                                   <img alt="Image placeholder" src="/static/assets/img/team/profile-picture-5.jpg" class="avatar-md rounded">
                                 </div>
                                 <div class="col ps-0 ms-2">
@@ -120,7 +122,9 @@
                           </a>
                         </div>
                       </div>
-                    </li>
+                    </li> -->
+                    <!-- NOTIFICATIONS ENDS HERE -->
+
                     <li class="nav-item dropdown ms-lg-3">
                       <a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="media d-flex align-items-center">
@@ -143,11 +147,11 @@
                         </div>
                       </a>
                       <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
-                        <a class="dropdown-item d-flex align-items-center" href="">
+                        <a class="dropdown-item d-flex align-items-center" href="{% url 'account_setting' user_id=user.id %}">
                           <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path></svg>
-                          My Transactions
+                          My Profile
                         </a>
-                        <a class="dropdown-item d-flex align-items-center" href="">
+                        <a class="dropdown-item d-flex align-items-center" href="{% url 'password_change' %}">
                           <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
                           Change Password
                         </a>

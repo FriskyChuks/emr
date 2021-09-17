@@ -33,6 +33,7 @@
       {% if not appointments %}
         <h4>No pending Appointments!</h4>
       {% else %}
+      <div class="table-responsive">
         <table class="table">
           <thead>
             <tr>
@@ -65,6 +66,7 @@
           </tbody>
           {% endfor %}
         </table>
+      </div>
       {% endif %}
     </div>
   </div>   

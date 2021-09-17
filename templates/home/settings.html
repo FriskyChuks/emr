@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Settings {% endblock %} 
+{% block title %} My Profile Settings {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -9,7 +9,7 @@
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
         <div>
-            <div class="dropdown">
+            <!-- <div class="dropdown">
                 <button class="btn btn-secondary d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                     New
@@ -33,9 +33,9 @@
                         My Plan
                     </a>
                 </div>
-            </div>
+            </div> -->
         </div>
-        <div>
+        <!-- <div>
             <button type="button" class="btn btn-gray-800 d-inline-flex align-items-center me-2">
                 <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
             </button>
@@ -67,7 +67,7 @@
                     All Reports
                 </a>
             </div>
-        </div>
+        </div> -->
     </div>
     <div class="row">
         <div class="col-12 col-xl-8">
@@ -78,13 +78,13 @@
                         <div class="col-md-6 mb-3">
                             <div>
                                 <label for="first_name">First Name</label>
-                                <input class="form-control" id="first_name" type="text" placeholder="Enter your first name" required>
+                                <input class="form-control" id="first_name" type="text" value="{{request.user.first_name}}" placeholder="{{request.user.first_name}}" required>
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <div>
                                 <label for="last_name">Last Name</label>
-                                <input class="form-control" id="last_name" type="text" placeholder="Also your last name" required>
+                                <input class="form-control" id="last_name" type="text" value="{{request.user.last_name}}" placeholder="Also your last name" required>
                             </div>
                         </div>
                     </div>
@@ -102,8 +102,8 @@
                             <label for="gender">Gender</label>
                             <select class="form-select mb-0" id="gender" aria-label="Gender select example">
                                 <option selected>Gender</option>
-                                <option value="1">Female</option>
-                                <option value="2">Male</option>
+                                <option value="male">Female</option>
+                                <option value="female">Male</option>
                             </select>
                         </div>
                     </div>
@@ -111,13 +111,13 @@
                         <div class="col-md-6 mb-3">
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input class="form-control" id="email" type="email" placeholder="name@company.com" value="{{ request.user.email }}" readonly>
+                                <input class="form-control" id="email" type="email"  placeholder="Enter your email account" value="{{ request.user.email }}" readonly>
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <div class="form-group">
                                 <label for="phone">Phone</label>
-                                <input class="form-control" id="phone" type="number" placeholder="+12-345 678 910" required>
+                                <input class="form-control" id="phone" type="number" value="{{request.user.phone1}}" placeholder="Enter phone number" required>
                             </div>
                         </div>
                     </div>
@@ -147,57 +147,25 @@
                             <label for="state">State</label>
                             <select class="form-select w-100 mb-0" id="state" name="state" aria-label="State select example">
                                 <option selected>State</option>
-                                <option value="AL">Alabama</option>
-                                <option value="AK">Alaska</option>
-                                <option value="AZ">Arizona</option>
-                                <option value="AR">Arkansas</option>
-                                <option value="CA">California</option>
-                                <option value="CO">Colorado</option>
-                                <option value="CT">Connecticut</option>
-                                <option value="DE">Delaware</option>
-                                <option value="DC">District Of Columbia</option>
-                                <option value="FL">Florida</option>
-                                <option value="GA">Georgia</option>
-                                <option value="HI">Hawaii</option>
-                                <option value="ID">Idaho</option>
-                                <option value="IL">Illinois</option>
-                                <option value="IN">Indiana</option>
-                                <option value="IA">Iowa</option>
-                                <option value="KS">Kansas</option>
-                                <option value="KY">Kentucky</option>
-                                <option value="LA">Louisiana</option>
-                                <option value="ME">Maine</option>
-                                <option value="MD">Maryland</option>
-                                <option value="MA">Massachusetts</option>
-                                <option value="MI">Michigan</option>
-                                <option value="MN">Minnesota</option>
-                                <option value="MS">Mississippi</option>
-                                <option value="MO">Missouri</option>
-                                <option value="MT">Montana</option>
-                                <option value="NE">Nebraska</option>
-                                <option value="NV">Nevada</option>
-                                <option value="NH">New Hampshire</option>
-                                <option value="NJ">New Jersey</option>
-                                <option value="NM">New Mexico</option>
-                                <option value="NY">New York</option>
-                                <option value="NC">North Carolina</option>
-                                <option value="ND">North Dakota</option>
-                                <option value="OH">Ohio</option>
-                                <option value="OK">Oklahoma</option>
-                                <option value="OR">Oregon</option>
-                                <option value="PA">Pennsylvania</option>
-                                <option value="RI">Rhode Island</option>
-                                <option value="SC">South Carolina</option>
-                                <option value="SD">South Dakota</option>
-                                <option value="TN">Tennessee</option>
-                                <option value="TX">Texas</option>
-                                <option value="UT">Utah</option>
-                                <option value="VT">Vermont</option>
-                                <option value="VA">Virginia</option>
-                                <option value="WA">Washington</option>
-                                <option value="WV">West Virginia</option>
-                                <option value="WI">Wisconsin</option>
-                                <option value="WY">Wyoming</option>
+                                <option value="abia">Abia</option>                                
+                                <option value="abia">Abia</option>
+                                <option value="adamawa">Adamawa</option>
+                                <option value="akwa-ibom">Akwa-Ibom</option>
+                                <option value="anambra">Anambra</option>
+                                <option value="auchi">Bauchi</option>
+                                <option value="benue">Benue</option>
+                                <option value="cross-rivers">Cross-Rivers</option>
+                                <option value="delta">Delta</option>
+                                <option value="ebonyi">Ebonyi</option>
+                                <option value="edo">Edo</option>
+                                <option value="enugu">Enugu</option>
+                                <option value="fct(Abuja)">FCT(Abuja)</option>
+                                <option value="jigawa">Jigawa</option>
+                                <option value="lagos">Lagos</option>
+                                <option value="kaduna">Kaduna</option>
+                                <option value="katsina">Katsina</option>                                
+                                <option value="kogi">Kogi</option>
+                                <option value="nasarawa">Nasarawa</option>                                                                                                                            
                             </select>
                         </div>
                         <div class="col-sm-4">
@@ -260,21 +228,29 @@
                     <div class="card shadow border-0 text-center p-0">
                         <div class="profile-cover rounded-top" data-background="/static/assets/img/profile-cover.jpg"></div>
                         <div class="card-body pb-5">
-                            <img src="/static/assets/img/team/profile-picture-1.jpg" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
+                            {% if request.user.image %}
+                                <img src="{{ request.user.image.url }}" alt="">
+                            {% else %}
+                                {% if request.user.gender == 'male' %}
+                                    <img src="/static/assets/img/users/male.jpg" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
+                                {% else %}
+                                    <img src="/static/assets/img/users/female.png" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
+                                {% endif %}
+                            {% endif %}
                             <h4 class="h3">
-                                Neil Sims
+                                {{ request.user.first_name }} {{ request.user.last_name }}
                             </h4>
                             <h5 class="fw-normal">
-                                {{ request.user.username }}
+                                ({{ request.user.group.name|capfirst }})
                             </h5>
                             <p class="text-gray mb-4">
                                 {{ request.user.email }}
                             </p>
-                            <a class="btn btn-sm btn-gray-800 d-inline-flex align-items-center me-2" href="#">
+                            <!-- <a class="btn btn-sm btn-gray-800 d-inline-flex align-items-center me-2" href="#">
                                 <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path></svg>
                                 Connect
                             </a>
-                            <a class="btn btn-sm btn-secondary" href="#">Send Message</a>
+                            <a class="btn btn-sm btn-secondary" href="#">Send Message</a> -->
                         </div>
                       </div>
                 </div>

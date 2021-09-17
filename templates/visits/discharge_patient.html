@@ -8,7 +8,7 @@
 {% block content %} <br>
 <div>
     {% for encounter in qs %}
-       {{ encounter.patient.first_name }} {{ encounter.patient.last_name }} {{ encounter.patient.other_names }}
+       Discharge {{ encounter.patient.first_name }} {{ encounter.patient.last_name }} {{ encounter.patient.other_names }}
     {% endfor %}
     <br><br>
     <form id="a" class="discharge-patient" method="POST">{% csrf_token %}

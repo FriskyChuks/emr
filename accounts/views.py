@@ -70,6 +70,14 @@ def login_view(request):
     return render(request, 'accounts/login.html', context)
 
 
+@login_required
+def account_setting_view(request, user_id):
+    user = User.objects.get(id=user_id)
+    template = 'home/settings.html'
+    context = {"user":user}
+    return render(request, template, context)
+
+
 def logout_view(request):
     logout(request)
     # messages.success(request, "Sad to see you leave! See you soon please!")
