@@ -1,11 +1,6 @@
-{% extends "layouts/base.html" %}
+{% extends "base.html" %}
 
-{% block title %} Dashboard {% endblock %} 
-
-<!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
-
-{% block content %} <br>
+{% block content %}
 
 {% for bill in bills %}
     {% if bill.medical_service %}

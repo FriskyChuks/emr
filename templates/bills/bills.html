@@ -1,11 +1,5 @@
-{% extends "layouts/base.html" %}
-
-{% block title %} Billing {% endblock %} 
-
-<!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
-
-{% block content %} <br>
+{% extends "base.html" %}
+{% block content %}
 
 <style>
   /* th
@@ -41,7 +35,7 @@
 
     $(document).ready(function()
     {
-        document.getElementById("txtDisplay").style.display="block";
+        document.getElementById("txtDisplay").style.display="none";
         document.getElementById("pay_hidden").style.display="none";
         $('.chkbox').click(function()
         {

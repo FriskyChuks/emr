@@ -1,3 +1,11 @@
+
+{% if request.user.group.name == 'cashier' %}
+<form method="GET" action="{% url 'search_patient' %}" class="d-flex">
+  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" 
+    name="q" value="{{ request.GET.q }}">
+  <button style="background-color:rgb(237, 243, 239);" class="btn btn-outline" type="submit">Search</button>
+</form>
+{% else %}
 <form method="GET" action="{% url 'search_patient' %}" class="navbar-search form-inline" id="navbar-search-main">
   <div class="input-group input-group-merge search-bar">
     <span class="input-group-text" id="topbar-addon">
@@ -9,3 +17,4 @@
     name="q" value="{{ request.GET.q }}">
   </div>
 </form>
+{% endif %}
