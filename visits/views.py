@@ -44,6 +44,7 @@ def ward_visits_display_view(request, id):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','HIM'])
 def create_new_encounter(request, patient_id):
+    qs = Patient.objects.filter(id=patient_id)
     form = EncounterForm(request.POST or None)
     if form.is_valid():
         obj = form.save(commit=False)
@@ -55,7 +56,7 @@ def create_new_encounter(request, patient_id):
         return redirect("/patients/patient_registration")
 
     template = "visits/create_encounter.html"
-    context = {"form":form}
+    context = {"form":form, "qs":qs}
     return render(request, template, context)
 
 

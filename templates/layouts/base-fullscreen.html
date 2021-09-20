@@ -74,6 +74,20 @@
 
 </head>
 <body>
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %} alert-dismissible fade show" role="alert">
+              <ul class="messages">
+                  <li>{{ message }}</li>
+              </ul>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  <!-- <span aria-hidden="true">&times;</span> -->
+              </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
 
     {% block content %}{% endblock content %}
 

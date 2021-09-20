@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.contrib import messages
 
-from visits.models import PatientEncounter
+from visits.models import PatientEncounter, EncounterRoute
 from accounts.models import User
 from accounts.decorators import allowed_users
 
@@ -73,6 +73,8 @@ def home(request):
         # total_outpatients = patient.patientencounter_set.filter(current_clinic__isnull=False).count()
     patient_count = Patient.objects.filter(active=True).count()
     today_patient_count = Patient.objects.filter(active=True, date_created__gte=datetime.date.today()).count()
+    today_outpatient_count = PatientEncounter.objects.filter(current_clinic__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
+    today_inpatient_count = EncounterRoute.objects.filter(ward__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
     user_count = User.objects.filter(is_a_patient=False).count()
     gopd_encounter =  PatientEncounter.objects.filter(current_clinic=1, active=True).count()
 
@@ -84,7 +86,9 @@ def home(request):
         "today_patient_count":today_patient_count,
         "gopd_encounter":gopd_encounter,
         "outpatient_count":outpatient_count,
-        "inpatient_count":inpatient_count
+        "inpatient_count":inpatient_count,
+        "today_outpatient_count":today_outpatient_count,
+        "today_inpatient_count":today_inpatient_count
         }
     return render(request, template, context)
 
