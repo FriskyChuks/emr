@@ -54,7 +54,7 @@
         {% for e in current_encounter|slice:":1" %}
         <a style="background-color:black; color: white;" 
            href="{% url 'archives' patient_id=e.patient.id %}" target="_blank">
-           Archives
+           <button type="button" class="btn btn-info">Archives</button>
         </a>
         {% endfor %}
     </p>
