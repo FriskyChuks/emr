@@ -8,6 +8,7 @@ from django.contrib import messages
 
 from visits.models import PatientEncounter, EncounterRoute
 from accounts.models import User
+from diagnosis.models import MakeDiagosis
 from accounts.decorators import allowed_users
 
 from .models import Patient#, NextOfKin, Address
@@ -18,9 +19,11 @@ from .forms import PatientBiodataForm, PatientImageForm#, FotoForm#, AddressForm
 @allowed_users(alllowed_roles=['admin','doctor','nurse'])
 def patient_folder_view(request, enc_id):
     current_encounter = PatientEncounter.objects.filter(id=enc_id, active=True).order_by("-id")
+    encounter=PatientEncounter.objects.get(id=enc_id)
+    diagnosis = MakeDiagosis.objects.filter(encounter=enc_id)
     
     template = "patients/patient_folder.html"
-    context = {"current_encounter":current_encounter}
+    context = {"current_encounter":current_encounter, "encounter":encounter, "diagnosis":diagnosis}
     return render (request, template, context)
 
 

@@ -44,7 +44,7 @@
             <th scope="col">Gender</th>
             <th scope="col">Marital status</th>
             <th scope="col">Date of Birth</th>
-            <th scope="col">Refer to</th>
+            <!-- <th scope="col">Refer to</th> -->
             <th scope="col">Current location</th>
         </tr>
         </thead>
@@ -52,19 +52,21 @@
         <tbody>
             {% for pt in patient %}            
                 <tr>
-                    <th scope="row"><a href="{{ pt.get_absolute_url }}">{{ pt.id }}</a></th>
+                    <th scope="row"><a href="{{ pt.get_absolute_url }}"><button class="btn btn-success">{{ pt.id }}</button></a></th>
                     <!-- <td>{{ qs.id }}</td> -->
                     <td>{{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }}</td>
                     <td>{{ pt.gender|capfirst }}</td>
                     <td>{{ pt.marital_status|capfirst }}</td>
                     <td>{{ pt.date_of_birth|capfirst }}</td>
-                    <td><a href="{{ pt.get_absolute_url }}">This one</a></td>
-                    {% for p in pt.patientencounter_set.all %}
-                        {% if p.active  %}
+                    <!-- <td><a href="{{ pt.get_absolute_url }}">This one</a></td> -->
+                    {% for p in pt.patientencounter_set.all|slice:":1" %}
+                        {% if not p.active %}
+                            <td><a href="{% url 'create_new_encounter' patient_id=pt.id %}"><button class="btn btn-primary">Send to Clinic</button></a></td>
+                        {% else %}
                             {% if p.current_clinic %}
-                                <td><a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}">{{ p.current_clinic.clinic }} Clinic</a></td>                          
+                                <td><a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}"><button class="btn btn-primary">{{ p.current_clinic.clinic }} Clinic</button></a></td>                          
                             {% else %}
-                                <td><a href="{% url 'ward_admission_display' id=p.current_ward.id %}">{{ p.current_ward.ward }} Ward</a></td>
+                                <td><a href="{% url 'ward_admission_display' id=p.current_ward.id %}"><button class="btn btn-primary">{{ p.current_ward.ward }} Ward</button></a></td>
                             {% endif %}
                         {% endif %}
                     {% endfor %}

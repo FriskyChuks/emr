@@ -1,0 +1,41 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Display Request {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<form method="POST" class="row g-3 needs-validation" novalidate>{% csrf_token %}
+    <div class="col-md-12">
+        <label for="validationCustom04" class="form-label">Select Diagnosis</label>
+        <select class="form-select" id="validationCustom04" name="diagnosis" required>
+          <option selected disabled value="">Choose...</option>
+          {% for d in diagnosis %}
+          <option value="{{d.id}}">{{d.title}}</option>
+          {% endfor %}
+        </select>
+        <div class="invalid-feedback">
+          Please select a diagnosis.
+        </div>
+      </div>
+    <div class="col-md-8">
+      <label for="validationCustom04" class="form-label">Type</label>
+      <select class="form-select" id="validationCustom04" name="type" required>
+        <option selected disabled value="">Choose...</option>
+        {% for t in type %}
+          <option value="{{t.id}}">{{t.type}}</option>
+        {% endfor %}
+      </select>
+      <div class="invalid-feedback">
+        Please select a valid state.
+      </div>
+    </div>
+    
+    <div class="col-12">
+      <button class="btn btn-primary" type="submit">Submit Diagnosis</button>
+    </div>
+  </form>
+
+{% endblock content %}

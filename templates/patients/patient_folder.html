@@ -7,7 +7,7 @@
 
 {% block content %} 
 <style>
-  .table.no-cellpadding td
+  .table.no-cellpadding td{
   padding: 0;
 }
 </style>
@@ -149,8 +149,21 @@
                   
             </div>
     </div>
+  <br>
+    <!--DIAGNOSIS-->
+  <div class="card">
+    <div class="card-body">
+    <h5 class="card-title"><a href="{% url 'make_diagnosis' enc_id=encounter.id %}">Make Diagnosis</a></h5>
+    {% for d in diagnosis %}
+    <ul>
+      <li><p class="card-text">{{d.diagnosis}} | {{d.type}} | by: {{d.created_by}}</p></li>
+    </ul>
+    {% endfor %}
+    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+  </div>
+</div>
 
-
+<!-- PRESCRIPTIONS -->
     <div class="collapse" id="drugs">
         <div class="card card-body">
             <!-- form for prescription for patient -->
