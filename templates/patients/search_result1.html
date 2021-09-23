@@ -21,7 +21,7 @@
                 {% endif %}
                 {% if request.user.group.name == 'cashier' %}
                 <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{% url 'pending_bills' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Bills & Payments for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
+                    <a href="{% url 'pending_bills' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">CLick here for Bills & Payments for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
                 </div>
                 <br>
                 {% endif %}

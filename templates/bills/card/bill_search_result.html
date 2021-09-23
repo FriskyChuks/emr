@@ -8,22 +8,11 @@
         {% if patient.count == 1 %}
             <h6>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> record</h6>
             {% for pt in patient %} 
-            {% if request.user.group.name == 'records' or request.user.group.name == 'doctor' %}     
-                <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{% url 'schedule_appointment' patient_id=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Schedule Appointment for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
-                </div>
-                <br>
-                {% endif %}
                 {% if request.user.group.name == 'cashier' %}
-                <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{% url 'pending_bills' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Bills & Payments for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
-                </div>
+                    <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
+                        <a href="{% url 'pending_bills' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">CLick here for Bills/Payments for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
+                    </div>
                 <br>
-                {% endif %}
-                {% if request.user.group.name == 'pharmacy' %}
-                <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{% url 'view_prescription' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Proceed with {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
-                </div>
                 {% endif %}
             {% endfor %} 
         {% else %}
@@ -57,9 +46,9 @@
                     {% for p in pt.patientencounter_set.all %}
                         {% if p.active  %}
                             {% if p.current_clinic %}
-                                <td><a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}">{{ p.current_clinic.clinic }} Clinic</a></td>                          
+                                <td>{{ p.current_clinic.clinic }} Clinic</td>                          
                             {% else %}
-                                <td><a href="{% url 'ward_admission_display' id=p.current_ward.id %}">{{ p.current_ward.ward }} Ward</a></td>
+                                <td>{{ p.current_ward.ward }} Ward</td>
                             {% endif %}
                         {% endif %}
                     {% endfor %}
