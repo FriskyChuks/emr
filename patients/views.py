@@ -20,7 +20,7 @@ from .forms import PatientBiodataForm, PatientImageForm#, FotoForm#, AddressForm
 def patient_folder_view(request, enc_id):
     current_encounter = PatientEncounter.objects.filter(id=enc_id, active=True).order_by("-id")
     encounter=PatientEncounter.objects.get(id=enc_id)
-    diagnosis = MakeDiagosis.objects.filter(encounter=enc_id)
+    diagnosis = MakeDiagosis.objects.filter(encounter=enc_id).order_by('-id')
     
     template = "patients/patient_folder.html"
     context = {"current_encounter":current_encounter, "encounter":encounter, "diagnosis":diagnosis}
@@ -73,13 +73,12 @@ def home(request):
     patients = Patient.objects.all()
     outpatient_count = PatientEncounter.objects.filter(current_clinic__isnull=False, active=True).count()
     inpatient_count = PatientEncounter.objects.filter(current_ward__isnull=False, active=True).count()
-        # total_outpatients = patient.patientencounter_set.filter(current_clinic__isnull=False).count()
     patient_count = Patient.objects.filter(active=True).count()
     today_patient_count = Patient.objects.filter(active=True, date_created__gte=datetime.date.today()).count()
-    today_outpatient_count = PatientEncounter.objects.filter(current_clinic__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
+    today_outpatient_count = EncounterRoute.objects.filter(clinic__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
     today_inpatient_count = EncounterRoute.objects.filter(ward__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
     user_count = User.objects.filter(is_a_patient=False).count()
-    gopd_encounter =  PatientEncounter.objects.filter(current_clinic=1, active=True).count()
+    # today_encounters =  EncounterRoute.objects.filter(date_created__gte=datetime.date.today())
 
     template = "home/dashboard.html"
     context = {
@@ -87,11 +86,12 @@ def home(request):
         "patient_count":patient_count,
         "user_count":user_count,
         "today_patient_count":today_patient_count,
-        "gopd_encounter":gopd_encounter,
+        # "today_encounters":today_encounters,
         "outpatient_count":outpatient_count,
         "inpatient_count":inpatient_count,
         "today_outpatient_count":today_outpatient_count,
-        "today_inpatient_count":today_inpatient_count
+        "today_inpatient_count":today_inpatient_count,
+        # "today_encounters":today_encounters
         }
     return render(request, template, context)
 

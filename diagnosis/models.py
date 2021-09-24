@@ -19,22 +19,23 @@ class Diagnosis(models.Model):
         return self.title
 
 
-class DiagnosisType(models.Model):
-    type = models.CharField(max_length=20)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    date_created = models.DateTimeField(auto_now_add=True, auto_now=False)
+# class DiagnosisType(models.Model):
+#     type = models.CharField(max_length=20)
+#     created_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+#     date_created = models.DateTimeField(auto_now_add=True, auto_now=False)
 
-    class Meta:
-        ordering = ['type']
+#     class Meta:
+#         ordering = ['type']
 
-    def __str__(self):
-        return self.type
+#     def __str__(self):
+#         return self.type
 
 
 class MakeDiagosis(models.Model):
     encounter = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE)
     diagnosis = models.ForeignKey(Diagnosis, on_delete=models.CASCADE)
-    type = models.ForeignKey(DiagnosisType, on_delete=models.CASCADE)
+    # type = models.ForeignKey(DiagnosisType, on_delete=models.CASCADE)
+    final = models.BooleanField(default=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)

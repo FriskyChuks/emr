@@ -85,7 +85,11 @@
               {% endif %}
               {% if request.user.group.name == 'nurse' or request.user.group.name == 'doctor' or request.user.group.name == 'admin' %}
                 {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
-                  <a href="{% url 'patient_folder' enc_id=p.id %}" class="card-link"><button class="btn btn-primary">View Folder</button></a>
+                  {% if p.active  %}
+                    <a href="{% url 'patient_folder' enc_id=p.id %}" class="card-link"><button class="btn btn-primary">View Folder</button></a>
+                  {% else %}
+                    <a href="{% url 'archives' patient_id=patient.id %}" class="card-link"><button class="btn btn-primary">View Patient Achives</button></a>
+                  {% endif %}
                 {% endfor %}
               {% endif %}
               {% if request.user.group.name == 'cashier' %}

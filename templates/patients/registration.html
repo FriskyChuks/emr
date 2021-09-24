@@ -21,7 +21,7 @@
     <h4>Patient Regisitration</h4><br>
     <form id="registration-form" class="row g-3" method="POST" enctype="multipart/form-data">{% csrf_token %}
         <div class="col-md-12"><b>*Personal Info</b> </div>
-        <div class="col-md-12">Image: {{ form.foto }}</div>
+        <!-- <div class="col-md-12">Image: {{ form.foto }}</div> -->
         <div class="col-md-4">Firstname: {{ form.first_name }}</div>
         <div class="col-md-4">Lastname: {{ form.last_name }}</div>
         <div class="col-md-4">Othernames: {{ form.other_names }}</div>

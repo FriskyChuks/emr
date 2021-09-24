@@ -36,6 +36,7 @@
         {% endif %} 
     <hr>
 
+    <div class="table-responsive">
     <table class="table">
         <thead>
         <tr>
@@ -61,7 +62,11 @@
                     <!-- <td><a href="{{ pt.get_absolute_url }}">This one</a></td> -->
                     {% for p in pt.patientencounter_set.all|slice:":1" %}
                         {% if not p.active %}
-                            <td><a href="{% url 'create_new_encounter' patient_id=pt.id %}"><button class="btn btn-primary">Send to Clinic</button></a></td>
+                            {% if request.user.group.name == 'HIM' %}
+                                <td><a href="{% url 'create_new_encounter' patient_id=pt.id %}"><button class="btn btn-primary">Send to Clinic</button></a></td>
+                            {% else %}
+                                <td><a href="{% url 'archives' patient_id=pt.id %}"><button class="btn btn-primary">Patient Archives</button></a></td>
+                            {% endif %}
                         {% else %}
                             {% if p.current_clinic %}
                                 <td><a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}"><button class="btn btn-primary">{{ p.current_clinic.clinic }} Clinic</button></a></td>                          
@@ -73,7 +78,8 @@
                 </tr> 
             {% endfor %}              
         </tbody>
-    </table>           
+    </table> 
+    </div>          
     {% endif %}              
 </div>
 {% endblock %}

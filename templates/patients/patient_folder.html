@@ -156,7 +156,12 @@
     <h5 class="card-title"><a href="{% url 'make_diagnosis' enc_id=encounter.id %}">Make Diagnosis</a></h5>
     {% for d in diagnosis %}
     <ul>
-      <li><p class="card-text">{{d.diagnosis}} | {{d.type}} | by: {{d.created_by}}</p></li>
+      {% if d.final %}
+      <li><p class="card-text">{{d.diagnosis}} | by: {{d.created_by}}</p></li>  
+      {% else %}
+      
+      <li>{{d.diagnosis}} | <em>(Prelinary diagnosis)</em> | by: {{d.created_by}} </li>
+      {% endif %} 
     </ul>
     {% endfor %}
     <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->

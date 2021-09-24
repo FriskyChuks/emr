@@ -11,6 +11,7 @@ from patients.models import Patient
 from visits.models import PatientEncounter
 
 from accounts.decorators import allowed_users
+from diagnosis.models import MakeDiagosis
 
 from .models import LabRequest, LabTest, LabUnit, LabResult
 from .forms import LabResultForm, LabResultFormSet
@@ -75,10 +76,12 @@ def request_list_view(request):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','MLS'])
 def request_detail_view(request, enc_id):
-    request_detail = LabRequest.objects.filter(encounter_id=enc_id, decline=False, done=False)       
+    request_detail = LabRequest.objects.filter(encounter_id=enc_id, decline=False, done=False) 
+    diagnosis = MakeDiagosis.objects.filter(encounter=enc_id)  
+    # print(diagnosis)   
 
     template = 'labs/request_detail.html'
-    context = {"request_detail":request_detail}
+    context = {"request_detail":request_detail, "diagnosis":diagnosis}
     return render(request, template, context)
 
 
@@ -86,6 +89,7 @@ def request_detail_view(request, enc_id):
 @allowed_users(alllowed_roles=['MLS'])
 def send_lab_results_view(request, enc_id):
     lab_request = LabRequest.objects.filter(encounter_id=enc_id, done=False, decline=False)
+    diagnosis = MakeDiagosis.objects.filter(encounter=enc_id)
     
     result = request.POST
     result_trimmed = dict(result.lists())
@@ -111,7 +115,7 @@ def send_lab_results_view(request, enc_id):
     # messages.success(request, "Result sent successfully!")
 
     template = "labs/lab_results.html"
-    context = {"lab_request":lab_request}
+    context = {"lab_request":lab_request, "diagnosis":diagnosis}
     return render(request, template, context)
 
 
