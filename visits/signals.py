@@ -24,14 +24,14 @@ def post_save_update_patient_encounter(sender, instance, created, **kwargs):
 @receiver(post_save, sender=PatientEncounter)
 def post_save_create_encounter_route(sender, instance, created, **kwargs):
     if created:
-        if instance.clinic_id:
+        if instance.current_clinic_id:
             EncounterRoute.objects.create(
                 encounter_no_id = instance.id,
                 clinic_id = instance.current_clinic_id,
                 created_by_id = instance.created_by_id           
             )
         else:
-            if instance.ward_id:
+            if instance.current_ward_id:
                 EncounterRoute.objects.create(
                     encounter_no_id = instance.id,
                     ward_id = instance.current_ward_id,
