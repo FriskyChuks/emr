@@ -107,6 +107,15 @@ class Prescription(models.Model):
 
 
 # DISPENSE MODEL HERE
+class Dispensary(models.Model):
+    prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    qty = models.PositiveIntegerField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    def __str__(self):
+        return self.prescription
 
     
 

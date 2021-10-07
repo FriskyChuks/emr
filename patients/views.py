@@ -11,8 +11,8 @@ from accounts.models import User
 from diagnosis.models import MakeDiagosis
 from accounts.decorators import allowed_users
 
-from .models import Patient#, NextOfKin, Address
-from .forms import PatientBiodataForm, PatientImageForm#, FotoForm#, AddressForm, NextOfKinForm
+from .models import Patient
+from .forms import PatientBiodataForm, PatientImageForm
 
 
 @login_required(login_url="auth_login")
@@ -63,7 +63,7 @@ def search_patient_view(request):
 # @allowed_users(alllowed_roles=['HIM','admin','doctor','nurse','cashier'])
 def patient_detail_view(request, id):
     patient = Patient.objects.filter(id=id, active=True)
-    # print(patient)
+
     template = "patients/patient_info.html"
     context = {"patient":patient}
     return render(request, template, context)

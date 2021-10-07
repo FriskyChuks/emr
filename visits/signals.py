@@ -39,7 +39,6 @@ def post_save_create_encounter_route(sender, instance, created, **kwargs):
                 )
 
 
-
 @receiver(post_save, sender=DischargePatient)
 def post_save_discharge_patient(sender, instance, created, **kwargs):
     if created:

@@ -32,8 +32,6 @@ def clinic_visits_display_view(request, id):
 @allowed_users(alllowed_roles=['admin','doctor','nurse','HIM'])
 def ward_visits_display_view(request, id):
     qs = PatientEncounter.objects.filter(current_ward=id, active=True)
-    # qs_ward = PatientEncounter.objects.filter(current_ward=id, active=True)
-    # User.objects.filter(Q(income__gte=5000) | Q(income__isnull=True))
 
     tempplate = "location/ward_detail.html"
     context = {"qs": qs}

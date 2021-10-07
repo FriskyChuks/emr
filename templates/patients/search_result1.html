@@ -19,12 +19,7 @@
                 </div>
                 <br>
                 {% endif %}
-                {% if request.user.group.name == 'cashier' %}
-                <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{% url 'pending_bills' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">CLick here for Bills & Payments for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
-                </div>
-                <br>
-                {% endif %}
+                
                 {% if request.user.group.name == 'pharmacy' %}
                 <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
                     <a href="{% url 'view_prescription' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Proceed with {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
@@ -60,21 +55,17 @@
                     <td>{{ pt.marital_status|capfirst }}</td>
                     <td>{{ pt.date_of_birth|capfirst }}</td>
                     <!-- <td><a href="{{ pt.get_absolute_url }}">This one</a></td> -->
-                    {% for p in pt.patientencounter_set.all|slice:":1" %}
-                        {% if not p.active %}
-                            {% if request.user.group.name == 'HIM' %}
-                                <td><a href="{% url 'create_new_encounter' patient_id=pt.id %}"><button class="btn btn-primary">Send to Clinic</button></a></td>
-                            {% else %}
-                                <td><a href="{% url 'archives' patient_id=pt.id %}"><button class="btn btn-primary">Patient Archives</button></a></td>
-                            {% endif %}
-                        {% else %}
+                                        
+                    {% for p in pt.patientencounter_set.all %}
+                        {% if p.active  %}
                             {% if p.current_clinic %}
-                                <td><a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}"><button class="btn btn-primary">{{ p.current_clinic.clinic }} Clinic</button></a></td>                          
+                            <td><a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}"><button class="btn btn-primary">{{ p.current_clinic.clinic }} Clinic</button></a></td>                          
                             {% else %}
-                                <td><a href="{% url 'ward_admission_display' id=p.current_ward.id %}"><button class="btn btn-primary">{{ p.current_ward.ward }} Ward</button></a></td>
+                            <td><a href="{% url 'ward_admission_display' id=p.current_ward.id %}"><button class="btn btn-primary">{{ p.current_ward.ward }} Ward</button></a></td>
                             {% endif %}
                         {% endif %}
                     {% endfor %}
+                    
                 </tr> 
             {% endfor %}              
         </tbody>

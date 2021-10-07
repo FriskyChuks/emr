@@ -53,7 +53,10 @@
     <hr>
 
        <div class="clear">
-            <h5>{{ encounter.patient.first_name }} {{ encounter.patient.last_name }}; {{ encounter.patient.date_of_birth|timesince }}; {{ encounter.patient.gender|capfirst }}</h5>
+            <h5>{{ encounter.patient.first_name }} {{ encounter.patient.last_name }}; 
+                {{ encounter.patient.date_of_birth|timesince }}; 
+                {{ encounter.patient.gender|capfirst }}
+            </h5>
        </div>
        <hr>
     <div class="row g-3">

@@ -6,6 +6,7 @@ from django.contrib import messages
 
 from accounts.decorators import allowed_users
 from patients.models import Patient
+from visits.models import PatientEncounter
 
 from .models import Bill, Payment, PaymentDetail, Wallet
 
@@ -22,45 +23,39 @@ def billing_home_view(request):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','cashier'])
 def clear_outstanding_bills_view(request, pid):
+    ms_os_bill = float(0.00)
     user = request.user
     patient = Patient.objects.get(id=pid)
     patient_wallet = Wallet.objects.get(patient_id=pid)
     initial_balance = patient_wallet.account_balance
     med_serv_outstanding_bill = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
-    if len(med_serv_outstanding_bill) > 0:
-        for ms_bill in med_serv_outstanding_bill:
-            ms_os_bill = float(ms_bill.medical_service.medical_service.price)
-    else:
-        ms_os_bill = float(0.00)
-    outstanding_bill = ms_os_bill
-
-    patient_wallet = Wallet.objects.get(patient_id=pid) 
+    os_total = float(0.00)
+    bill_list = []
+    for bill in med_serv_outstanding_bill:
+        bill_list.append(bill.id)
+        price = bill.medical_service.medical_service.price
+        os_total = os_total + float(price)
+        print(bill_list)
+    
     initial_balance = patient_wallet.account_balance
+    balance_os = float(os_total) - float(initial_balance)
 
-    balance_os = float(outstanding_bill) - float(initial_balance)
-
-    # Form input to clear outstanding
+    # Form to clear outstanding
     if request.method == 'POST':
-        os_amount = request.POST.get('amount')
-        if float(os_amount) == balance_os:
-            payment = Payment.objects.create(amount_paid=os_amount, action='receipt', created_by=user)
-            payment_detail = PaymentDetail.objects.create(bill_id=ms_bill.id, payment_id=payment.id, created_by=user)
-            bill_update = Bill.objects.filter(id=ms_bill.id).update(status="paid")
-            wallet_update = Wallet.objects.filter(patient=pid).update(account_balance=0.00)
-            messages.success(request, "Payment successful!")
-            return redirect('outstanding_bills', pid=pid)
-        elif float(os_amount) > balance_os:
-            messages.error(request, "You're required to pay N" + str(balance_os) + '' + " only")
-            return redirect('outstanding_bills', pid=pid)
-        else: 
-            messages.error(request, "Please clear the outstanding bill")
-            return redirect('outstanding_bills', pid=pid)
+        payment = Payment.objects.create(amount_paid=balance_os, action='receipt', created_by=user)
+        for item in bill_list:
+            PaymentDetail.objects.create(bill_id=item, payment_id=payment.id, created_by=user)
+            Bill.objects.filter(id=item).update(status="paid")
+        wallet_update = Wallet.objects.filter(patient=pid).update(account_balance=0.00)
+        PatientEncounter.objects.filter(patient=pid).update(pay_status=True)
+        messages.success(request, "Payment successful!")
+        return redirect('outstanding_bills', pid=pid)
         
     template = "bills/outstanding_bills.html"
-    context = {"outstanding_bill":outstanding_bill, 
+    context = {"os_total":os_total,
+                "med_serv_outstanding_bill":med_serv_outstanding_bill, 
                 "patient":patient, 
                 "initial_balance":initial_balance,
-                "ms_os_bill":ms_os_bill,
                 "balance_os":balance_os
               }
     return render(request, template, context)

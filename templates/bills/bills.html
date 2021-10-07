@@ -112,7 +112,11 @@
         <a href="{% url 'wallet' pid=patient.id %}">
           <button type="button" class="btn btn-success">Load Wallet</button>
         </a>
-          
+        {% if outstanding_bills %}
+          <a href="{% url 'outstanding_bills' pid=patient.id %}">
+            <button type="button" class="btn btn-danger">Clear outstanding Bills</button>
+          </a>
+        {% endif %}
       </div>
       <br>
     </center>

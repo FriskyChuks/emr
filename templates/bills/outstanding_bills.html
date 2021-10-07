@@ -3,25 +3,25 @@
 
 
    
-        {% if not ms_os_bill %}
-        <center>
-            <a href="{% url 'wallet' pid=patient.id %}">
-                <button type="button" class="btn btn-success">Load Wallet</button>
-            </a>
-            <a href="{% url 'pending_bills' pid=patient.id %}">
-                <button type="button" class="btn btn-primary">Pay Pending Bills</button>
-            </a>
-            </div>
-          </center>
-            <br>
-          <center>  
-            <h2>No Outstanding bill to offset! </h2>
-            <h3>Congratulations!</h3>
-          </center>
-        {% else %}
-    
+{% if not balance_os %}
+<center>
+    <a href="{% url 'wallet' pid=patient.id %}">
+        <button type="button" class="btn btn-success">Load Wallet</button>
+    </a>
+    <a href="{% url 'pending_bills' pid=patient.id %}">
+        <button type="button" class="btn btn-primary">Pay Pending Bills</button>
+    </a>
+    </div>
+  </center>
+    <br>
+  <center>  
+    <h2>No Outstanding bill to offset! </h2>
+    <h3>Congratulations!</h3>
+  </center>
 
-<div class="container">
+{% else %}
+    
+  <div class="container">
     <a href="{% url 'wallet' pid=patient.id %}">
         <button type="button" class="btn btn-success">Load Wallet</button>
     </a>
@@ -30,7 +30,7 @@
     </a>
     </div>
     <br>
-      
+        
     <div class="container">
       <div class="row">
         <div class="col-sm-12">  
@@ -43,22 +43,31 @@
                 <br>
                 <form action="" method="POST">{% csrf_token %}
                     <h4>Details of outstanding bills</h4>
-                    {% if ms_os_bill %}
-                    1. Consultation bill: {{ ms_os_bill }}
-                    {% endif %}
-                    <br><br>
-                    Pay Now (N)<input class="form-control" type="number" name="amount" id="amount" placeholder="{{ balance_os }}"> <br>
-                    <button class="btn btn-success">Offset Bills</button>
+                    <table class="table table-borderless">
+                      <tbody>
+                        {% for bill in med_serv_outstanding_bill %}
+                        <tr>
+                          <td>{{ bill.date_created }}</td>
+                          <td>{{ bill.medical_service.medical_service.medical_service }}</td>
+                          <td>{{ bill.medical_service.medical_service.price }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                          <td><h5>Pay Now (N)</h5></td>
+                          <td></td>
+                          <td><h3>{{ balance_os }}0</h3></td>
+                        </tr>
+                    </table>
+                    <button style="float: right;" class="btn btn-success">Offset Bills</button>
                 </form>
-  
-                <div class="card-header">
-                </div>
+                <br>
+              </div>
+            </div>
           </div>
-        {% endif %}
         </div>
       </div>
     </div>
-  
-</div>
+{% endif %}
+    
 
 {% endblock %}

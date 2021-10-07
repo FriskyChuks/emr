@@ -53,9 +53,7 @@
               {% if p.current_clinic  %}                       
                   {{ p.current_clinic.clinic }} Clinic
               {% else %}
-                {% if request.user.group.name == 'HIM' or request.user.group.name == 'admin' %}
                   {{ p.current_ward.ward }} Ward           
-                {% endif %}
               {% endif %}
             {% endif %}
           {% endfor %}   

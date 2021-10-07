@@ -1,0 +1,12 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Create Item {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+{% for p in prescription %}
+    {{p.encounter_no.current_clinic}} <br>
+{% endfor %}
+{% endblock %}

@@ -59,6 +59,7 @@
                 </a>
               </li>
               {% endif %}
+              {% if request.user.group.name == 'doctor' or request.user.group.name == 'nurse' or request.user.group.name == 'admin' %}
               <li class="nav-item {% if 'transactions' in segment %} active {% endif %}">
                 <a href="{% url 'clinic_view' %}" class="nav-link">
                   <span class="sidebar-icon">
@@ -75,6 +76,7 @@
                   <span class="sidebar-text">Wards</span>
                 </a>
               </li>
+              {% endif %}
               {% if request.user.group.name == 'HIM' or request.user.group.name == 'doctor' or request.user.group.name == 'admin' %}
               <li class="nav-item {% if 'transactions' in segment %} active {% endif %}">
                 <a href="{% url 'display_appointment' %}" class="nav-link">
@@ -161,7 +163,7 @@
                   role="list" id="pharm" aria-expanded="false">
                   <ul class="flex-column nav">
                     <li class="nav-item {% if 'bootstrap-tables' in segment %} active {% endif %}">
-                      <a class="nav-link" href="{% url 'request_list_view' %}">
+                      <a class="nav-link" href="">
                         <span class="sidebar-text">Bill patient</span>
                       </a>
                     </li>

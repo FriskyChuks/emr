@@ -103,11 +103,18 @@ def prescription_view(request, enc_id):
     return render(request, template,context)
 
 
-
-
 def prescription_view1(request, enc_id):
     prescribed = request.POST
 
     template = "pharmacy/prescription.html"
     context = {}
+    return render(request, template,context)
+
+
+def dispensary_view(request, pid):
+    prescription = Prescription.objects.filter(patient=pid).order_by('-encounter_no')
+    # prescription = Prescription.objects.filter(patient=pid)
+
+    template = "pharmacy/dispensary.html"
+    context = {"prescription":prescription}
     return render(request, template,context)

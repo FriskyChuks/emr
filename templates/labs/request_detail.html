@@ -7,7 +7,13 @@
 
 {% block content %}
 <br>
-<div class="col-sm-12">
+<!-- {% for detail in request_detail|slice:":1" %}
+
+{% endfor %} -->
+{% if not request_detail %}
+<center><h3>No Pending Request for this patient</h3></center>
+{% else %}
+  <div class="col-sm-12">
     <h4 class="panel-title"><strong>Investigation Request Details</strong></h4>
       <div class="card">
         <div class="card-body">
@@ -96,7 +102,6 @@
         </div>
       </div>
     </div>
-
-
+{% endif %}
 
 {% endblock %}

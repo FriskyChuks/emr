@@ -15,11 +15,6 @@ from .models import Bill, Wallet
 @receiver(post_save, sender=RaiseRadiologyService)
 def post_save_radiology_bill(sender, instance, created, **kwargs):
     if created:
-        # print(created)
-        # print("ID = ", instance.id)
-        # print("Encounter No =", instance.encounter_no_id)
-        # print("sender =", sender)
-
         Bill.objects.create(
             encounter_id = instance.encounter_no_id,
             patient_id = instance.patient_id,
@@ -33,7 +28,7 @@ def post_save_radiology_bill(sender, instance, created, **kwargs):
 @receiver(post_save, sender=PatientEncounterService)
 def post_save_medical_service_bill(sender, instance, created, **kwargs):
     if created:
-        if instance.medical_service.medical_service == "Consultation":
+        if instance.medical_service.medical_service == "Consultation" or instance.medical_service.medical_service == "Registration":
             new_bill = Bill.objects.create(
                         encounter_id = instance.encounter_no_id,
                         patient_id = instance.patient_id,
@@ -42,12 +37,12 @@ def post_save_medical_service_bill(sender, instance, created, **kwargs):
                         created_by_id = instance.created_by_id           
                     )
             bill_id = new_bill.id
-            consultation_price = instance.medical_service.price
+            service_price = instance.medical_service.price
 
             wallet = Wallet.objects.get(patient_id=instance.patient_id)
             wallet_balance = wallet.account_balance
-            if wallet_balance >= consultation_price:
-                wallet_balance -= consultation_price
+            if wallet_balance >= service_price:
+                wallet_balance -= service_price
                 wallet = Wallet.objects.filter(patient_id=instance.patient_id).update(account_balance=wallet_balance)
                 bill = Bill.objects.filter(id=bill_id).update(status="paid")
         else:

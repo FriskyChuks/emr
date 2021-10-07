@@ -8,7 +8,8 @@ from .views import(
     search_drug_view, 
     view_prescription_view, 
     dispense_prescription_view,
-    prescription_view1
+    prescription_view1,
+    dispensary_view
 )
 
 
@@ -20,4 +21,5 @@ urlpatterns = [
     path("search_drug/", csrf_exempt(search_drug_view), name="search_drug_view"),
     path("view_prescription/<pid>", view_prescription_view, name="view_prescription"),
     path("dispense_prescription/<encounter_id>", dispense_prescription_view, name="dispense_prescription"),
+    path("dispensary/<pid>", dispensary_view, name="dispensary"),
 ]
