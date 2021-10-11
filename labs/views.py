@@ -45,9 +45,11 @@ def lab_request_view(request, enc_id):
                     created_by      = request.user
                 )
                 obj.save()
-
         messages.success(request, "Lab investigation request successful!.")
-        return redirect("patient_folder", enc_id = enc_id)
+        if request.user.group.name == 'MLS':
+            return redirect("lab_request", enc_id = enc_id)
+        else:
+            return redirect("patient_folder", enc_id = enc_id)
         
     template = "labs/lab_request2.html"
     context = {
