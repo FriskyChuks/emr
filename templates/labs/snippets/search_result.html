@@ -37,7 +37,6 @@
             <th scope="col">Gender</th>
             <th scope="col">Marital status</th>
             <th scope="col">Date of Birth</th>
-            <th scope="col">Refer to</th>
             <th scope="col">Current location</th>
         </tr>
         </thead>
@@ -51,7 +50,6 @@
                     <td>{{ pt.gender|capfirst }}</td>
                     <td>{{ pt.marital_status|capfirst }}</td>
                     <td>{{ pt.date_of_birth|capfirst }}</td>
-                    <td><a href="{{ pt.get_absolute_url }}">This one</a></td>
                     {% for p in pt.patientencounter_set.all %}
                         {% if p.active  %}
                             {% if p.current_clinic %}
