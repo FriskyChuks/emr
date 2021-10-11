@@ -3,7 +3,7 @@
 
 
    
-{% if not balance_os %}
+{% if not os_total %}
 <center>
     <a href="{% url 'wallet' pid=patient.id %}">
         <button type="button" class="btn btn-success">Load Wallet</button>
@@ -55,7 +55,7 @@
                         <tr>
                           <td><h5>Pay Now (N)</h5></td>
                           <td></td>
-                          <td><h3>{{ balance_os }}0</h3></td>
+                          <td><h3>{{ os_total }}0</h3></td>
                         </tr>
                     </table>
                     <button style="float: right;" class="btn btn-success">Offset Bills</button>

@@ -35,18 +35,22 @@ def clear_outstanding_bills_view(request, pid):
         bill_list.append(bill.id)
         price = bill.medical_service.medical_service.price
         os_total = os_total + float(price)
-        print(bill_list)
-    
+       
     initial_balance = patient_wallet.account_balance
-    balance_os = float(os_total) - float(initial_balance)
+    if float(os_total) >= float(initial_balance):
+        amount_paid = float(os_total) - float(initial_balance)
+        balance_os = 0.00
+    else:
+        amount_paid = 0.00
+        balance_os = float(initial_balance) - float(os_total)
 
     # Form to clear outstanding
     if request.method == 'POST':
-        payment = Payment.objects.create(amount_paid=balance_os, action='receipt', created_by=user)
+        payment = Payment.objects.create(amount_paid=amount_paid, action='receipt', created_by=user)
         for item in bill_list:
             PaymentDetail.objects.create(bill_id=item, payment_id=payment.id, created_by=user)
             Bill.objects.filter(id=item).update(status="paid")
-        wallet_update = Wallet.objects.filter(patient=pid).update(account_balance=0.00)
+        Wallet.objects.filter(patient=pid).update(account_balance=balance_os)
         PatientEncounter.objects.filter(patient=pid).update(pay_status=True)
         messages.success(request, "Payment successful!")
         return redirect('outstanding_bills', pid=pid)
@@ -56,7 +60,6 @@ def clear_outstanding_bills_view(request, pid):
                 "med_serv_outstanding_bill":med_serv_outstanding_bill, 
                 "patient":patient, 
                 "initial_balance":initial_balance,
-                "balance_os":balance_os
               }
     return render(request, template, context)
 
@@ -200,13 +203,12 @@ def load_wallet_view(request, pid):
     initial_balance = patient_wallet.account_balance
 
     med_serv_outstanding_bill = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
-    if len(med_serv_outstanding_bill) > 0:
-        for ms_bill in med_serv_outstanding_bill:
-            ms_os_bill = float(ms_bill.medical_service.medical_service.price)
-            outstanding_bill = ms_os_bill
-    else:
-        ms_os_bill = float(0.00)
-        outstanding_bill = ms_os_bill
+    os_total = float(0.00)
+    bill_list = []
+    for bill in med_serv_outstanding_bill:
+        bill_list.append(bill.id)
+        price = bill.medical_service.medical_service.price
+        os_total = os_total + float(price)
 
     if request.method == 'POST':
         deposit_amount = request.POST.get('amount')
@@ -218,7 +220,7 @@ def load_wallet_view(request, pid):
             messages.error(request, "Please enter POSITIVE VALUES only, Thanks!")
 
     template = "bills/wallet.html"
-    context = {"patient":patient, "initial_balance":initial_balance, "outstanding_bill":outstanding_bill}
+    context = {"patient":patient, "initial_balance":initial_balance, "os_total":os_total}
     return render(request, template, context)
 
     

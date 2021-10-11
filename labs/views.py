@@ -1,3 +1,4 @@
+import datetime
 from django.views.generic import ListView, TemplateView
 from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -64,7 +65,7 @@ def lab_request_view(request, enc_id):
 def request_list_view(request):
     # lab_request = LabRequest.objects.filter(done=False).values\
     #             ('encounter','patient').annotate(total=Count('id'))
-    unique_request = LabRequest.objects.filter(done=False).distinct('encounter').order_by('-encounter')
+    unique_request = LabRequest.objects.filter(done=False, date_created__gte=datetime.date.today()).distinct('encounter').order_by('-encounter')
 
     template = 'labs/display_request.html'
     context = {"unique_request":unique_request}

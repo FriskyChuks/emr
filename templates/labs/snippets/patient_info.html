@@ -19,11 +19,14 @@
           }
 </style>
 
+<div class="container">
 {% for patient in patient %}
-
   <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
     {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
       <a href="{% url 'request_detail' enc_id=p.id %}"><button class="btn btn-primary">View Investigation Details</button></a>
+      {% if p.active %}
+        <a href="{% url 'lab_request' enc_id=p.id %}"><button class="btn btn-primary">Request Lab Investigation</button></a>
+      {% endif %}
     {% endfor %}
     <hr>
   </div>
@@ -58,10 +61,8 @@
             {% endif %}
           {% endfor %}   
           </p>
-    </div>
-    
+    </div>    
   </div>
-
 {% endfor %}
-
+</div>
 {% endblock %}

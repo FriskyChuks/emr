@@ -5,7 +5,7 @@
   <a href="{% url 'pending_bills' pid=patient.id %}">
     <button type="button" class="btn btn-primary">Pay Pending Bills</button>
   </a>
-  {% if outstanding_bills %}
+  {% if os_total %}
     <a href="{% url 'outstanding_bills' pid=patient.id %}">
       <button type="button" class="btn btn-danger">Clear outstanding Bills</button>
     </a>

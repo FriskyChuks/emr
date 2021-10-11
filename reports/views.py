@@ -1,13 +1,25 @@
 from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.core import serializers
 
-from bills.models import Bill
+
+from bills.models import Bill, Payment, PaymentDetail
 
 
-def pending_consultation_fee_view(request, pid):
-    med_serv_outstanding_bill = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
-    if len(med_serv_outstanding_bill) > 0:
-        for ms_bill in med_serv_outstanding_bill:
-            ms_os_bill = float(ms_bill.medical_service.medical_service.price)
-    else:
-        ms_os_bill = float(0.00)
-    outstanding_bill = ms_os_bill
+def dashboard_with_pivot(request):
+    return render(request, 'reports/dashboard_with_pivot.html', {})
+
+
+def pivot_data(request, user_id=8):
+    # dataset = Bill.objects.all()
+    dataset = Payment.objects.filter(created_by=user_id, action='receipt')
+    data = serializers.serialize('json', dataset)
+    return JsonResponse(data, safe=False)
+
+
+def payment_reports_view(request, user_id):
+    payments = Payment.objects.filter(created_by=user_id, action='deposit')
+
+    context = {"payments":payments}
+    return render(request, 'reports/payments.html', context)

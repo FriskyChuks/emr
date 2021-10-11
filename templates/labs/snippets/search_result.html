@@ -1,4 +1,10 @@
-{% extends 'base.html' %}
+{% extends "layouts/base.html" %}
+
+{% block title %} Foto {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
 {% block content %}
 
 <div class="container">
@@ -6,14 +12,17 @@
             <center><h3>{{ query1 }}</h3></center>
     {% else %}
         {% if patient.count == 1 %}
-            <h6>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> record</h6>
+            <h6>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> record</h6> <br>
             {% for pt in patient %} 
-                
+               {% for e in pt.patientencounter_set.all|slice:":1" %} 
                 <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{% url 'pending_bills' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">CLick here for Bills/Payments for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
+                    <a href="{% url 'request_detail' enc_id=e.id %}"><button class="btn btn-primary">View Investigation Details</button></a>
+                {% if e.active %}
+                    <a href="{% url 'lab_request' enc_id=e.id %}"><button class="btn btn-primary">Request Lab Investigation</button></a>
+                {% endif %}
                 </div>
                 <br>
-                
+              {% endfor %}
             {% endfor %} 
         {% else %}
         <h5>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> records</h5>

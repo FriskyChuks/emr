@@ -86,13 +86,3 @@ def post_save_create_wallet(sender, instance, created, **kwargs):
     if created:
         Wallet.objects.create(patient_id=instance.id)
 
-
-
-# @receiver(post_save, sender=PatientEncounter)
-# def post_save_deduct_consultaion_fee_from_wallet(sender, instance, created, **kwargs):
-#     if created:
-#         wallet = Wallet.objects.get(patient_id=instance.patient_id)
-#         wallet_balance = wallet.account_balance
-#         if wallet_balance >= 1500:
-#             wallet = Wallet.objects.filter(patient_id=instance.patient_id).update(account_balance=wallet_balance)
-
