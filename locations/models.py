@@ -4,6 +4,7 @@ from django.db import models
 
 class Clinic(models.Model):
     clinic          = models.CharField(max_length=100, blank=False, null=False)
+    female_only     = models.BooleanField(default=False)
     date_created    = models.DateField(auto_now_add=True, auto_now=False)
     updated         = models.DateField(auto_now_add=False, auto_now=True)
     active          = models.BooleanField(default=True)
@@ -19,6 +20,7 @@ class Clinic(models.Model):
 class Ward(models.Model):
     clinic          = models.ForeignKey(Clinic, on_delete=models.CASCADE)
     ward          = models.CharField(max_length=100, blank=False, null=False)
+    female_only     = models.BooleanField(default=False)
     date_created    = models.DateField(auto_now_add=True, auto_now=False)
     updated         = models.DateField(auto_now_add=False, auto_now=True)
     active          = models.BooleanField(default=True)

@@ -5,7 +5,7 @@ from visits.models import PatientEncounter
 from patients.models import Patient
 from medical_services.models import PatientEncounterService
 from pharmacy.models import Prescription
-from radiology.models import RaiseRadiologyService
+from radiology.models import RadiologyRequest
 from labs.models import LabRequest
 
 User = settings.AUTH_USER_MODEL
@@ -29,7 +29,7 @@ class Bill(models.Model):
     encounter           = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE)
     patient             = models.ForeignKey(Patient, on_delete=models.CASCADE)
     medical_service     = models.ForeignKey(PatientEncounterService, on_delete=models.CASCADE, blank=True, null=True)
-    radiology_service   = models.ForeignKey(RaiseRadiologyService, on_delete=models.CASCADE, blank=True, null=True)
+    radiology_service   = models.ForeignKey(RadiologyRequest, on_delete=models.CASCADE, blank=True, null=True)
     prescription        = models.ForeignKey(Prescription, on_delete=models.CASCADE, blank=True, null=True)
     lab_request          = models.ForeignKey(LabRequest, on_delete=models.CASCADE, blank=True, null=True)
     status              = models.CharField(max_length=10, choices=BILL_STATUS, default='pending')

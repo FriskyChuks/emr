@@ -5,14 +5,14 @@ from django.dispatch import receiver
 from visits.models import PatientEncounter
 from medical_services.models import PatientEncounterService
 from pharmacy.models import Prescription
-from radiology.models import RaiseRadiologyService
+from radiology.models import RadiologyRequest
 from labs.models import LabRequest
 from patients.models import Patient
 
 from .models import Bill, Wallet
 
 # Radiology Bill
-@receiver(post_save, sender=RaiseRadiologyService)
+@receiver(post_save, sender=RadiologyRequest)
 def post_save_radiology_bill(sender, instance, created, **kwargs):
     if created:
         Bill.objects.create(

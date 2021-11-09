@@ -11,7 +11,7 @@ def dashboard_with_pivot(request):
     return render(request, 'reports/dashboard_with_pivot.html', {})
 
 
-def pivot_data(request, user_id=8):
+def pivot_data(request, user_id):
     # dataset = Bill.objects.all()
     dataset = Payment.objects.filter(created_by=user_id, action='receipt')
     data = serializers.serialize('json', dataset)
@@ -19,7 +19,13 @@ def pivot_data(request, user_id=8):
 
 
 def payment_reports_view(request, user_id):
-    payments = Payment.objects.filter(created_by=user_id, action='deposit')
+    payments = Payment.objects.filter(created_by=user_id).order_by('-date_created')
 
     context = {"payments":payments}
     return render(request, 'reports/payments.html', context)
+
+def single_patient_reports_view(request, pid):
+    payments = Payment.objects.filter(patient_id=pid).order_by('-date_created')
+
+    context = {"payments":payments}
+    return render(request, 'reports/single_patient.html', context)

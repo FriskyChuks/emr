@@ -61,6 +61,8 @@ def login_view(request):
                     return redirect("clinic_visits_display", id=clinic_id)
                 elif group_name == "MLS":
                     return HttpResponseRedirect("/labs/request_list_view")
+                elif group_name == "radiology":
+                    return HttpResponseRedirect("/radiology/pending_rad_request")
                 elif group_name == "cashier":
                     return HttpResponseRedirect("/bills/billing_home")
                 else:

@@ -7,12 +7,14 @@ from django.contrib import messages
 from patients.models import Patient
 from medical_services.models import PatientEncounterService
 from pharmacy.models import Prescription
-from radiology.models import RaiseRadiologyService
+from radiology.models import RadiologyRequest
 from bills.models import Bill
 from accounts.decorators import allowed_users
 
-from .models import PatientEncounter
-from .forms import EncounterForm, DischargeForm, TransferForm
+from .models import PatientEncounter, EncounterRoute
+from .forms import DischargeForm
+
+from locations.models import Clinic, Ward
 
 
 @login_required(login_url="auth_login")
@@ -42,19 +44,56 @@ def ward_visits_display_view(request, id):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','HIM'])
 def create_new_encounter(request, patient_id):
-    qs = Patient.objects.filter(id=patient_id)
-    form = EncounterForm(request.POST or None)
-    if form.is_valid():
-        obj = form.save(commit=False)
-        obj.patient_id = patient_id
-        obj.created_by = request.user
-        obj.save()
+    qs = Patient.objects.get(id=patient_id)
+    clinics = Clinic.objects.all
+    wards = Ward.objects.all
+
+    if request.method=='POST':
+        clinic = request.POST.get('clinic')
+        ward = request.POST.get('ward')
+        
+        PatientEncounter.objects.create(
+                patient_id=patient_id,
+                current_clinic_id=clinic,
+                current_ward_id=ward,
+                created_by= request.user
+            )
+ 
         Patient.objects.filter(id=patient_id).update(new=False) 
         messages.success(request, "Transfer successful!")
         return redirect("/patients/patient_registration")
 
     template = "visits/create_encounter.html"
-    context = {"form":form, "qs":qs}
+    context = {"qs":qs, "clinics":clinics,"wards":wards}
+    return render(request, template, context)
+
+
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','nurse'])
+def transfer_patient_view(request, id):
+    clinics = Clinic.objects.all
+    wards = Ward.objects.all
+    qs = PatientEncounter.objects.get(id=id)
+    clinic_id = qs.current_clinic_id
+    ward_id = qs.current_ward_id
+
+    if request.method=='POST':
+        clinic = request.POST.get('clinic')
+        ward = request.POST.get('ward')
+
+        EncounterRoute.objects.create(
+                encounter_no_id=id,
+                clinic_id=clinic,
+                ward_id=ward,
+                created_by=request.user
+            )
+        if clinic_id:
+            return redirect("clinic_visits_display", id = clinic_id)
+        else:
+            return redirect("ward_admission_display", id = ward_id)
+
+    template = "visits/transfer_patient.html"
+    context = {"clinic_id":clinic_id, "qs":qs, "clinics":clinics, "wards":wards, }
     return render(request, template, context)
 
 
@@ -80,30 +119,6 @@ def discharge_patient_view(request, id):
 
     template = "visits/discharge_patient.html"
     context = {"form":form, "qs":qs}
-    return render(request, template, context)
-
-
-@login_required(login_url="auth_login")
-@allowed_users(alllowed_roles=['admin','doctor','nurse'])
-def transfer_patient_view(request, id):
-    qs = PatientEncounter.objects.filter(id=id)
-    for q in qs:
-        clinic_id = q.current_clinic_id
-        ward_id = q.current_ward_id
-
-    form = TransferForm(request.POST or None)
-    if form.is_valid():
-        obj = form.save(commit=False)
-        obj.encounter_no_id = id
-        obj.created_by = request.user
-        obj.save()
-        if clinic_id:
-            return redirect("clinic_visits_display", id = clinic_id)
-        else:
-            return redirect("ward_admission_display", id = ward_id)
-
-    template = "visits/transfer_patient.html"
-    context = {"form":form, "clinic_id":clinic_id, "qs":qs}
     return render(request, template, context)
 
 

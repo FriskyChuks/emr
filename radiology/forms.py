@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import RadiologyService, RaiseRadiologyService
+from .models import RadiologyService, RadiologyRequest
 
 
 class RadiologyServiceForm(forms.ModelForm):
@@ -17,10 +17,11 @@ class RadiologyServiceForm(forms.ModelForm):
 
 class RaiseRadiologyServiceForm(forms.ModelForm):
     class Meta:
-        model = RaiseRadiologyService
-        fields = ["radiology_service", "unit"]
+        model = RadiologyRequest
+        fields = ["radiology_service", "unit", "clinical_info"]
 
         widgets = {
                 'radiology_service': forms.Select(attrs={'class': 'form-control'}),
                 'unit': forms.NumberInput(attrs={'class': 'form-control'}),
+                'clinical_info': forms.TextInput(attrs={'class': 'form-control'}),
             }

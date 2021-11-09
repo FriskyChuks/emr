@@ -7,11 +7,7 @@
 
 {% block content %} <br>
 
-<!-- Item: <select name="item" id="items">
-    {% for i in item %}
-    <option value="{{ i.id }}">{{ i.title }}-{{ i.type }}</option>
-    {% endfor %}
-    </select> -->
+
 <div class="container">
     <--<a href="{% url 'patient_folder' enc_id=encounter.id %}">{{ encounter.patient.first_name }}'s Folder</a>
     <br>
@@ -31,6 +27,39 @@
           <div class="card-body">
 
             <form id="form" method="POST" action="">{% csrf_token %} 
+              <input type="submit" class="btn btn-success", value="Prescribe">
+                {{ formset.management_form }}
+                <div class="table-responsive">
+                <table style="width:100%" class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Select Item</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Frequency</th>
+                        <th scope="col">No. of Days</th>
+                        <th scope="col">Route</th>
+                        <th scope="col">Note</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for form in formset %}
+                        <tr>
+                          <td>{{ form.item }}</td>
+                          <td style="width:5%">{{ form.qty_per_take }}</td>
+                          <td>{{ form.times_daily }}</td>
+                          <td style="width:10%">{{ form.no_of_days }}</td>
+                          <td>{{ form.route }}</td>
+                          <td>{{ form.note }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <br>
+                  <input type="submit" class="btn btn-success", value="Prescribe">
+            </form>
+            <!-- 
+              <form id="form" method="POST" action="">{% csrf_token %} 
                 <input type="submit" class="btn btn-success", value="Prescribe" style="float: right;">
                 <br>
                 {{ formset.management_form }}
@@ -42,11 +71,11 @@
                     Route: {{ form.route }} <br><br>
                     note: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
                     {{ form.note }} 
-                    <!-- {{ form }} -->
                     <hr>
                 {% endfor %}
                 <input type="submit" class="btn btn-success", value="Prescribe">
             </form>
+             -->
         </div>
         <div class="card-header">  
         </div>

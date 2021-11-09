@@ -28,9 +28,9 @@
         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#vitals" aria-expanded="false" aria-controls="collapseExample">
         Vital signs History
         </button>
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="#drugs" role="button" aria-expanded="false" aria-controls="collapseExample">
-        Drug History
-        </a>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#drugs" aria-expanded="false" aria-controls="collapseExample">
+          Drug History
+        </button>
         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#lab" aria-expanded="false" aria-controls="collapseExample">
         Lab History
         </button>
@@ -150,23 +150,6 @@
             </div>
     </div>
   <br>
-    <!--DIAGNOSIS-->
-  <div class="card">
-    <div class="card-body">
-    <h5 class="card-title"><a href="{% url 'make_diagnosis' enc_id=encounter.id %}">Make Diagnosis</a></h5>
-    {% for d in diagnosis %}
-    <ul>
-      {% if d.final %}
-      <li><p class="card-text">{{d.diagnosis}} | by: {{d.created_by}}</p></li>  
-      {% else %}
-      
-      <li>{{d.diagnosis}} | <em>(Prelinary diagnosis)</em> | by: {{d.created_by}} </li>
-      {% endif %} 
-    </ul>
-    {% endfor %}
-    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-  </div>
-</div>
 
 <!-- PRESCRIPTIONS -->
     <div class="collapse" id="drugs">
@@ -307,8 +290,24 @@
     </div>
     <br>
     
-
-
+    <!--DIAGNOSIS-->
+  <div class="card">
+      <div class="card-body">
+      <h5 class="card-title"><a href="{% url 'make_diagnosis' enc_id=encounter.id %}">Make Diagnosis</a></h5>
+      {% for d in diagnosis %}
+      <ul>
+        {% if d.final %}
+        <li><p class="card-text">{{d.diagnosis}} | by: {{d.created_by}}</p></li>  
+        {% else %}
+        
+        <li>{{d.diagnosis}} | <em>(Prelinary diagnosis)</em> | by: {{d.created_by}} </li>
+        {% endif %} 
+      </ul>
+      {% endfor %}
+      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+    </div>
+  </div>
+  <br>
     <!-- cards -->
     <!-- Pharmacy Card -->
     <div class="row">
