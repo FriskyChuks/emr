@@ -34,14 +34,12 @@
             <div class="col-md-3" id="current_clinic">
               <select name="clinic" id="">
                 {% if qs.patient.gender == 'male' %}
-                  <option selected disabled value="">Choose a clinic...</option>
                   {% for c in clinics %}
                     {% if c.female_only != True %}
                       <option value="{{ c.id }}">{{ c.clinic }}</option>
                     {% endif %}
                   {% endfor %}
                 {% else %}
-                  <option selected disabled value="">Choose a clinic...</option>
                   {% for c in clinics %}
                     <option value="{{ c.id }}">{{ c.clinic }}</option>
                   {% endfor %}
