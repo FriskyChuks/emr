@@ -10,6 +10,9 @@ class Clinic(models.Model):
     active          = models.BooleanField(default=True)
     created_by      = models.CharField(max_length=30, blank=True, null=True)
 
+    class Meta:
+        ordering = ('clinic', )
+
     def __str__(self):
         return self.clinic
 
@@ -25,6 +28,9 @@ class Ward(models.Model):
     updated         = models.DateField(auto_now_add=False, auto_now=True)
     active          = models.BooleanField(default=True)
     created_by      = models.CharField(max_length=30, blank=True, null=True)
+
+    class Meta:
+        ordering = ('ward',)
 
     def __str__(self):
         return self.ward
