@@ -1,0 +1,40 @@
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">DATE</th>
+        <th scope="col">PATIENT</th>
+        <th scope="col">AMOUNT</th>
+        <th scope="col">SERVICE</th>
+        <th scope="col">CASHIER</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for p in payments %}
+        <tr>
+            <td>{{ p.date_created }}</td>
+            <td>{{ p.bill.patient.id }}</td>
+            <td>{{ p.payment.amount_paid }}</td>
+            <td>{{ p.bill }}</td>
+            <td>{{ p.payment.created_by.first_name }} {{ p.payment.created_by.last_name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <span class="step-links">
+        {% if payments.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ payments.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ payments.number }} of {{ payments.paginator.num_pages }}.
+        </span>
+        &nbsp; &nbsp;
+        {% if payments.has_next %}
+            <a href="?page={{ payments.next_page_number }}">next</a>&nbsp; &nbsp;
+            <a href="?page={{ payments.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>

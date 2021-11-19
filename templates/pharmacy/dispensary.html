@@ -1,12 +1,138 @@
 {% extends "layouts/base.html" %}
-
+{% load mathfilters %}
 {% block title %} Create Item {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %} <br>
 
-{% for p in prescription %}
-    {{p.encounter_no.current_clinic}} <br>
+<style>
+    table {
+
+}
+html {
+  background: #ccc;
+}
+.val td:nth-child(4){
+    width: 15%;
+}
+.val td:nth-child(3) {
+  width: 25%;
+} 
+</style>
+
+<script>
+
+$(document).ready(function() {
+  $('#myTable tr').each(function(){
+    $(this).find('td').each(function(){
+      
+      function myFunction() {
+        var x = document.getElementById("brandSelect").value;
+        document.getElementById("cost").value = x;
+        document.getElementById("unitCost").value = x;
+      }
+})
+} )
+
+
+    $(document).ready(function() {
+      function calculateSum(){
+        var subTotal=0;
+        var sumTotal=0;
+        var tax = $("#tax").val()
+        $("#pay_hidden").val(0);
+        // var outstanding = $("#outstanding").val()
+            $('table tbody tr').each(function() {
+              var $tr = $(this);
+
+              if ($tr.find('input[type="checkbox"]').is(':checked')) {   
+                var $td = $tr.find("td");
+                var price = $td.eq(3).text();
+                var qty = $td.eq(4).text();
+                var pending = price*qty;
+                // sumTotal+=billTotal;
+                subTotal+=pending;
+                newSubTotal = parseFloat(subTotal).toFixed(2)
+                var billTotal = subTotal + parseInt(tax);
+                sumTotal=parseFloat(billTotal).toFixed(2);
+              }
+            });
+            
+            $("#sub-total").val(newSubTotal); 
+            $("#pay_amount_visible").val(sumTotal);
+            $("#pay_hidden").val(sumTotal);
+                         
+        }
+
+          $('#sum').on('click', function() {
+            
+            calculateSum();
+          });
+
+          $("input[type='text']").keyup(function() {
+            calculateSum();
+
+          });
+          
+          $("input[type='checkbox']").change(function() {
+            calculateSum();
+
+          });
+      }); 
+
+</script>
+
+{% for p in prescription|slice:":1" %}
+   <h3>{{ p.patient.first_name }} {{ p.patient.last_name }} || ({{ p.patient.id }})</h3> 
 {% endfor %}
+
+{% for p in prescription %}
+    <!-- <a href="">{{p.encounter_no.updated}}</a> -->
+    <a href=""><button class="btn btn-primary">{{p.encounter_no.current_clinic}}</button></a>
+{% endfor %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="table table-responsive">
+        <table id="myTable" class="table">
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Qty</th>
+                <th scope="col">Select Brand</th>
+                <th scope="col">Dispense Qty</th>
+                <th scope="col">Unit Cost</th>
+                <th scope="col">Total Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for p in prescription %}
+                    <tr class="val">
+                        <td>{{ p.item }}</td>
+                        <td>{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}</td>
+                        <td>
+                            <select class="form-select" id="brandSelect">
+                            <option selected disabled value="">Select...</option>
+                            {% for brand in brands %}
+                            {% if brand.item.id == p.item.id %}
+                            <option>{{brand.title}}</option>
+                            {% endif %}
+                            {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" min="0" max="100" 
+                            class="form-control" id="validationCustom01" value="" required>
+                        </td>
+                        <td id="unitCost">0.00</td>
+                        <td id="cost">0.00</td>
+                    </tr>
+              {% endfor %}
+            </tbody>
+          </table> 
+        </div>           
+    </div>
+</div>
+
 {% endblock %}

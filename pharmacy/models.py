@@ -39,10 +39,10 @@ DRUG_ROUTE = (
 )
 
 TIMES_DAILY = (
-    ('bd','BD'),
-    ('tds','TDS'),
-    ('od','OD'),
-    ('qds','QDS'),
+    ('2','BD'),
+    ('3','TDS'),
+    ('1','OD'),
+    ('4','QDS'),
     ('prn','PRN'),
 )
 
@@ -80,7 +80,7 @@ class Brand(models.Model):
     created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return str(self.title) + " " + str(self.item.title)
+        return f"{self.title} ({self.item.title})"
 
     class Meta:
         unique_together = ('title', 'slug')

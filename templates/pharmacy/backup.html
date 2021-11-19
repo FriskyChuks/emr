@@ -1,0 +1,84 @@
+{% extends "layouts/base.html" %}
+{% load mathfilters %}
+{% block title %} Create Item {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="js/jquery.dropdown.js"></script>
+
+<style>
+    table {
+
+}
+html {
+  background: #ccc;
+}
+.val td:nth-child(4){
+    width: 15%;
+}
+.val td:nth-child(3) {
+  width: 25%;
+} 
+</style>
+
+<script>
+ $(document).ready(function(){
+      $(document).on('change', 'select', function(){
+        $("#unitCost").val($(this).attr('value'));
+        $("#cost").val($(this).attr('value'));
+    //call get($(this).attr('value'))
+      });
+      $('select').trigger('change')
+});
+
+</script>
+
+
+
+{% for p in prescription|slice:":1" %}
+   <h3>{{ p.patient.first_name }} {{ p.patient.last_name }} || ({{ p.patient.id }})</h3> 
+{% endfor %}
+
+{% for p in prescription %}
+    <!-- <a href="">{{p.encounter_no.updated}}</a> -->
+    <a href=""><button class="btn btn-primary">{{p.encounter_no.current_clinic}}</button></a>
+{% endfor %}
+
+
+<br><br>
+<div class="row g-2">
+  <div class="col-md-3"></div>
+  <div class="col-md-9">
+
+    <form class="row g-3" id="form" method="POST" action="">{% csrf_token %}
+      {% for p in prescription %} 
+      <div class="col-md-12">{{ p.item }}</div>
+      <div class="col-md-2">Presc. Qty: <input type="text" class="form-control" 
+        value="{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}" id="" readonly></div>
+      <div class="col-md-4">Select Barnd: 
+        <select class="form-select" id="brandSelect" onchange="myFunction()">
+          <option selected disabled value="">Choose...</option>
+          {% for brand in brands %}
+          {% if brand.item.id == p.item.id %}
+          <option value="{{brand.sale_price}}">{{brand.title}}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">Unit Cost: <input type="text" class="form-control" value="0.00" id="unitCost" readonly></div>
+      <div class="col-md-2">Disp. Qty: <input type="number" min="0" max="{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}" 
+        class="form-control" id="validationCustom02"
+        value=""></div>
+      <div class="col-md-2">Cost: <input type="text" class="form-control" value="0.00" id="cost" readonly></div>
+      <hr>
+      {% endfor %}
+      <div class="col-md-10"><input type="submit" class="btn btn-success", value="Save"></div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+

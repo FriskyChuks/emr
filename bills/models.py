@@ -39,13 +39,13 @@ class Bill(models.Model):
 
     def __str__(self):
         if self.medical_service:
-            return f"{self.medical_service} | {self.encounter.patient.id}"
+            return f"{self.medical_service}"
         elif self.radiology_service:
-            return f"{self.radiology_service} | {self.encounter.patient.id}"
+            return f"{self.radiology_service}"
         elif self.lab_request:
-            return f"{self.lab_request} | {self.encounter.patient.id}"
+            return f"{self.lab_request}"
         else:
-            return f"{self.prescription} | {self.encounter.patient.id}"
+            return f"{self.prescription}"
 
 
 class Payment(models.Model):

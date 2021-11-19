@@ -11,7 +11,7 @@ from patients.models import Patient
 from accounts.decorators import allowed_users
 
 from .forms import ItemForm, BrandForm, PrescriptionForm
-from .models import Item, Prescription
+from .models import Item, Prescription, Brand
 
 
 def search_drug_view(request):
@@ -113,8 +113,9 @@ def prescription_view1(request, enc_id):
 
 def dispensary_view(request, pid):
     prescription = Prescription.objects.filter(patient=pid).order_by('-encounter_no')
-    # prescription = Prescription.objects.filter(patient=pid)
+    brands = Brand.objects.all
 
-    template = "pharmacy/dispensary.html"
-    context = {"prescription":prescription}
+    # template = "pharmacy/dispensary.html"
+    template = "pharmacy/backup.html"
+    context = {"prescription":prescription, "brands":brands}
     return render(request, template,context)
