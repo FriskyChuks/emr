@@ -170,8 +170,6 @@ def pending_bills_view(request, pid):
                     bill_obj = Bill.objects.filter(id=item).update(status="paid")
                 messages.success(request, "Payment processed successfully!")
                 return redirect('pending_bills', pid=pid)
-            
-            print(payment_obj)
         else:
             messages.error(request, "Please check items to pay for!")
 
