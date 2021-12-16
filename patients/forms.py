@@ -7,17 +7,17 @@ from .models import Patient#, PatientImage#,NextOfKin, Address
 
 
 # for DateTime input use
-class MyDateTimeInput(forms.DateTimeInput):
-    input_type = 'date'
+# class MyDateTimeInput(forms.DateTimeInput):
+#     input_type = 'date'
 
-# for DateTime input use
-class MyTimeInput(forms.TimeInput):
-    input_type = 'date'
+# # for DateTime input use
+# class MyTimeInput(forms.TimeInput):
+#     input_type = 'date'
 
 
-# for Date input use
-class MyDateInput(forms.DateInput):
-    input_type = 'date'
+# # for Date input use
+# class MyDateInput(forms.DateInput):
+#     input_type = 'date'
 
 
 class PatientBiodataForm(forms.ModelForm):
@@ -36,7 +36,7 @@ class PatientBiodataForm(forms.ModelForm):
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'other_names': forms.TextInput(attrs={'class': 'form-control'}),
             'gender': forms.Select(attrs={'class': 'form-control'}),
-            'date_of_birth': MyDateInput(attrs={'class': 'form-control'}),
+            'date_of_birth': DatePickerInput(attrs={'class': 'form-control'}),
             'marital_status': forms.Select(attrs={'class': 'form-control'}),
             'phone_1': forms.NumberInput(attrs={'class': 'form-control'}),
             'phone_2': forms.NumberInput(attrs={'class': 'form-control'}),
