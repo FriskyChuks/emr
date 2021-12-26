@@ -25,11 +25,17 @@ html {
 </style>
 
 <script>
+
+// $(document).on("change", '.products', function (event) {
+//            event.preventDefault();
+//            $('#id_price').val($(this).children(":selected").attr("price"));
+//     });
+
  $(document).ready(function(){
       $(document).on('change', 'select', function(){
         $("#unitCost").val($(this).attr('value'));
         $("#cost").val($(this).attr('value'));
-    //call get($(this).attr('value'))
+    // call get($(this).attr('value'))
       });
       $('select').trigger('change')
 });

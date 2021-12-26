@@ -4,6 +4,8 @@
     {% include 'labs/snippets/search_result.html' %}
 {% elif request.user.group.name == 'pharmacy' %}
     {% include 'pharmacy/snippets/search_result.html' %}
+{% elif request.user.group.name == 'radiology' %}
+    {% include 'radiology/snippets/search_result.html' %}
 {% else %}
     {% include 'patients/search_result1.html' %}
 {% endif %}

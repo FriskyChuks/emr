@@ -24,7 +24,7 @@
           {% for p in patient_request %}
                 
                 <a href="{% url 'radio_request_detail' enc_id=p.encounter_no %}" class="btn btn-outline-dark">
-                  {{ p.patient }} | ({{ p.total }}) 
+                  {{ p.patient }} || ({{ p.total }}) 
                 </a><br>
             
           {% endfor %}

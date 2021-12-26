@@ -31,6 +31,7 @@ $(document).ready(function() {
         var x = document.getElementById("brandSelect").value;
         document.getElementById("cost").value = x;
         document.getElementById("unitCost").value = x;
+        console.log(x);
       }
 })
 } )
@@ -92,7 +93,8 @@ $(document).ready(function() {
     <a href=""><button class="btn btn-primary">{{p.encounter_no.current_clinic}}</button></a>
 {% endfor %}
 
-<div class="row">
+<form action="">
+  <div class="row">
     <div class="col-md-12">
         <div class="table table-responsive">
         <table id="myTable" class="table">
@@ -112,7 +114,7 @@ $(document).ready(function() {
                         <td>{{ p.item }}</td>
                         <td>{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}</td>
                         <td>
-                            <select class="form-select" id="brandSelect">
+                            <select class="form-select" id="brandSelect" onchange="myFunction()">
                             <option selected disabled value="">Select...</option>
                             {% for brand in brands %}
                             {% if brand.item.id == p.item.id %}
@@ -131,8 +133,12 @@ $(document).ready(function() {
               {% endfor %}
             </tbody>
           </table> 
+          
         </div>           
     </div>
 </div>
+<div class="col-md-10"><input type="submit" class="btn btn-success", value="Save"></div>
+</form>
+
 
 {% endblock %}

@@ -115,7 +115,7 @@ def dispensary_view(request, pid):
     prescription = Prescription.objects.filter(patient=pid).order_by('-encounter_no')
     brands = Brand.objects.all
 
-    # template = "pharmacy/dispensary.html"
-    template = "pharmacy/backup.html"
+    template = "pharmacy/dispensary.html"
+    # template = "pharmacy/backup.html"
     context = {"prescription":prescription, "brands":brands}
     return render(request, template,context)

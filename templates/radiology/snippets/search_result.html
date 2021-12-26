@@ -35,8 +35,18 @@
                             <td>{{ pt.date_of_birth|capfirst }}</td>
                         </tr>              
                 </tbody>
-            </table>  
+            </table>
+            {% for e in pt.patientencounter_set.all|slice:":1" %}
+            <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
+                <a href="{% url 'radio_request_detail' enc_id=e.id %}">
+                    <button class="btn btn-primary">View Investigation Details</button>
+                </a>
+            </div>
+            <br>
+            {% if e.active %}  
                 {% include 'radiology/snippets/card.html' %}
+            {% endif %}
+            {% endfor %}
             {% endfor %} 
         {% else %}
         <h5>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> records</h5>
