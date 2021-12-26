@@ -15,14 +15,19 @@
             {% for pt in patient %} 
             {% if request.user.group.name == 'records' or request.user.group.name == 'doctor' %}     
                 <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{% url 'schedule_appointment' patient_id=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Schedule Appointment for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
+                    <a href="{% url 'schedule_appointment' patient_id=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Schedule Appointment for {{ pt.first_name }} {{ pt.last_name }} {% if pt.other_names %} {{ pt.other_names }} {% endif %} </button></a>
                 </div>
                 <br>
                 {% endif %}
                 
                 {% if request.user.group.name == 'pharmacy' %}
                 <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{% url 'view_prescription' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">Proceed with {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
+                    <a href="{% url 'view_prescription' pid=pt.id %}">
+                        <button type="button" class="btn btn-primary col-md-4">Proceed with 
+                        {{ pt.first_name }} {{ pt.last_name }} 
+                        {% if pt.other_names %} {{ pt.other_names }} {% endif %}
+                        </button>
+                    </a>
                 </div>
                 {% endif %}
             {% endfor %} 
@@ -50,7 +55,7 @@
                 <tr>
                     <th scope="row"><a href="{{ pt.get_absolute_url }}"><button class="btn btn-success">{{ pt.id }}</button></a></th>
                     <!-- <td>{{ qs.id }}</td> -->
-                    <td>{{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }}</td>
+                    <td>{{ pt.first_name }} {{ pt.last_name }} {% if pt.other_names %} {{ pt.other_names }} {% endif %}</td>
                     <td>{{ pt.gender|capfirst }}</td>
                     <td>{{ pt.marital_status|capfirst }}</td>
                     <td>{{ pt.date_of_birth|capfirst }}</td>

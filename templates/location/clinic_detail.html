@@ -60,7 +60,7 @@
                                 </td>
                                 
                                 <td>
-                                  {{ qs.patient.first_name }} {{ qs.patient.last_name }} {{ qs.patient.other_names }}
+                                  {{ qs.patient.first_name }} {{ qs.patient.last_name }} {% if qs.patient.other_names %} {{ qs.patient.other_names }} {% endif %}
                                 </td>
                                 <td>
                                   <div class="d-flex">
