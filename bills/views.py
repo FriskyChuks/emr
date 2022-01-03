@@ -11,7 +11,6 @@ from visits.models import PatientEncounter
 from .models import Bill, Payment, PaymentDetail, Wallet
 
 
-
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','cashier'])
 def billing_home_view(request):
@@ -23,31 +22,49 @@ def billing_home_view(request):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','cashier'])
 def clear_outstanding_bills_view(request, pid):
-    ms_os_bill = float(0.00)
     user = request.user
+    new_bill_list = []
     patient = Patient.objects.get(id=pid)
     patient_wallet = Wallet.objects.get(patient_id=pid)
     initial_balance = patient_wallet.account_balance
-    med_serv_outstanding_bill = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
+    med_serv_outstanding_bill = Bill.objects.filter(
+                                patient=pid, medical_service__isnull=False, status='billed')
+    pharm_outstanding_bill = Bill.objects.filter(
+                                patient=pid, dispensary__isnull=False, status='billed')                            
     os_total = float(0.00)
     bill_list = []
     for bill in med_serv_outstanding_bill:
         bill_list.append(bill.id)
         price = bill.medical_service.medical_service.price
         os_total = os_total + float(price)
+        # print(os_total)
+    
+    # pharmacy bill
+    pharm_os_total = float(0.00)
+    pharm_bill_list = []
+    for pharm_bill in pharm_outstanding_bill:
+        pharm_bill_list.append(pharm_bill.id)
+        pharm_price = pharm_bill.dispensary.prescription.brand.sale_price
+        pharm_qty_dispensed = pharm_bill.dispensary.qty_dispensed
+        pharm_os_total = pharm_os_total + (float(pharm_price * pharm_qty_dispensed))
+
+    # Sum of all outstanding
+    new_os_total = os_total + pharm_os_total
+    # Combine all bill IDs into one list
+    new_bill_list = bill_list + pharm_bill_list
        
     initial_balance = patient_wallet.account_balance
-    if float(os_total) >= float(initial_balance):
-        amount_paid = float(os_total) - float(initial_balance)
+    if float(new_os_total) >= float(initial_balance):
+        amount_paid = float(new_os_total) - float(initial_balance)
         balance_os = 0.00
     else:
         amount_paid = 0.00
-        balance_os = float(initial_balance) - float(os_total)
-
+        balance_os = float(initial_balance) - float(new_os_total)
+    
     # Form to clear outstanding
     if request.method == 'POST':
-        payment = Payment.objects.create(amount_paid=amount_paid, action='receipt', created_by=user)
-        for item in bill_list:
+        payment = Payment.objects.create(amount_paid=amount_paid, action='receipt', patient_id=pid, created_by=user)
+        for item in new_bill_list:
             PaymentDetail.objects.create(bill_id=item, payment_id=payment.id, created_by=user)
             Bill.objects.filter(id=item).update(status="paid")
         Wallet.objects.filter(patient=pid).update(account_balance=balance_os)
@@ -58,6 +75,9 @@ def clear_outstanding_bills_view(request, pid):
     template = "bills/outstanding_bills.html"
     context = {"os_total":os_total,
                 "med_serv_outstanding_bill":med_serv_outstanding_bill, 
+                "pharm_os_total":pharm_os_total,
+                "pharm_outstanding_bill":pharm_outstanding_bill,
+                "new_os_total":new_os_total,
                 "patient":patient, 
                 "initial_balance":initial_balance,
               }
@@ -71,33 +91,41 @@ def pending_bills_view(request, pid):
     services_bills = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='pending')
     radiology_bills = Bill.objects.filter(patient=pid, radiology_service__isnull=False, status='pending')
     lab_bills = Bill.objects.filter(patient=pid, lab_request__isnull=False, status='pending')
-    pharmacy_bills = Bill.objects.filter(patient=pid, prescription__isnull=False)
+    pharmacy_bills = Bill.objects.filter(patient=pid, dispensary__isnull=False)
 
     # OUTSTANDING BILLS
     billed_med_serv = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
     billed_rad_serv = Bill.objects.filter(patient=pid, radiology_service__isnull=False, status='billed')
     billed_lab_serv = Bill.objects.filter(patient=pid, lab_request__isnull=False, status='billed')
+    pharm_outstanding_bill = Bill.objects.filter(patient=pid, dispensary__isnull=False, status='billed')
     
-    # OUTSATANDING MEDICAL SERVICES
+    # OUTSATANDING SERVICES
     outstanding_med_serv = 0.00
-    outstanding_rad_serv = 0.00
-    outstanding_lab_serv = 0.00
+    # outstanding_rad_serv = 0.00
+    # outstanding_lab_serv = 0.00
+    outstanding_pharm = 0.00
 
+    # OUTSATANDING MEDICAL SERVICES
     for billed_med_serv in billed_med_serv:
         med_serv_qty = billed_med_serv.medical_service.unit
         med_serv_price = billed_med_serv.medical_service.medical_service.price
         outstanding_med_serv = float(med_serv_price * med_serv_qty)
-    # OUTSATANDING RADIOLOGY BILLS
-    for billed_rad_serv in billed_rad_serv:
-        rad_qty = billed_rad_serv.radiology_service.unit
-        rad_price = billed_rad_serv.radiology_service.radiology_service.price
-        outstanding_rad_serv = float(rad_price * rad_qty)
-    # OUTSATANDING LAB BILLS
-    for billed_lab_serv in billed_lab_serv:
-        lab_price = billed_lab_serv.lab_request.test.price
-        outstanding_lab_serv += float(lab_price)
+    # OUTSATANDING PHARM BILLS
+    for pharm_bill in pharm_outstanding_bill:
+        pharm_price = pharm_bill.dispensary.prescription.brand.sale_price
+        pharm_qty_dispensed = pharm_bill.dispensary.qty_dispensed
+        outstanding_pharm = float(pharm_price * pharm_qty_dispensed)
+    # # OUTSATANDING RADIOLOGY BILLS
+    # for billed_rad_serv in billed_rad_serv:
+    #     rad_qty = billed_rad_serv.radiology_service.unit
+    #     rad_price = billed_rad_serv.radiology_service.radiology_service.price
+    #     outstanding_rad_serv = float(rad_price * rad_qty)
+    # # OUTSATANDING LAB BILLS
+    # for billed_lab_serv in billed_lab_serv:
+    #     lab_price = billed_lab_serv.lab_request.test.price
+    #     outstanding_lab_serv += float(lab_price)
 
-    outstanding_bills = outstanding_med_serv + outstanding_rad_serv + outstanding_lab_serv
+    outstanding_bills = outstanding_med_serv + outstanding_pharm
 
     medical_service_total_bill = 0
     radiology_total_bill = 0
@@ -157,7 +185,7 @@ def pending_bills_view(request, pid):
             # convert Comma separated string to a python list
             my_list = pay_bill.split(",")
            
-            payment_obj = Payment.objects.create(amount_paid=paid_amount,action='receipt',created_by=request.user)
+            payment_obj = Payment.objects.create(amount_paid=paid_amount,action='receipt',patient_id=pid,created_by=request.user)
             if payment_obj:
                 instance = payment_obj
                 for item in my_list:
@@ -179,7 +207,7 @@ def pending_bills_view(request, pid):
                 "bills":bills,
                 "services_bills":services_bills,
                 "radiology_bills":radiology_bills,
-                "pharmacy_bills":pharmacy_bills,
+                "outstanding_pharm":outstanding_pharm,
                 'lab_bills':lab_bills,
                 'med_total':med_total,
                 'rad_total':rad_total,
@@ -192,7 +220,6 @@ def pending_bills_view(request, pid):
     return render(request, template, context)
 
 
-
 @login_required(login_url="auth_login")
 def load_wallet_view(request, pid):
     user = request.user
@@ -201,24 +228,42 @@ def load_wallet_view(request, pid):
     initial_balance = patient_wallet.account_balance
 
     med_serv_outstanding_bill = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
+    pharm_outstanding_bill = Bill.objects.filter(patient=pid, dispensary__isnull=False, status='billed')
+
     os_total = float(0.00)
-    bill_list = []
     for bill in med_serv_outstanding_bill:
-        bill_list.append(bill.id)
         price = bill.medical_service.medical_service.price
-        os_total = os_total + float(price)
+        os_total += float(price)
+    
+    # pharmacy bill
+    pharm_os_total = float(0.00)
+    for pharm_bill in pharm_outstanding_bill:
+        pharm_price = pharm_bill.dispensary.prescription.brand.sale_price
+        pharm_qty_dispensed = pharm_bill.dispensary.qty_dispensed
+        pharm_os_total += (float(pharm_price * pharm_qty_dispensed))
+
+    # Sum of all outstanding
+    new_os_total = os_total + pharm_os_total
 
     if request.method == 'POST':
         deposit_amount = request.POST.get('amount')
-        if float(deposit_amount) > float(0):
-            initial_balance = float(initial_balance) + float(deposit_amount)
-            object = Wallet.objects.filter(patient_id=pid).update(account_balance=initial_balance, created_by=request.user)
-            payment = Payment.objects.create(amount_paid=deposit_amount, action='deposit', created_by=user)
+        if deposit_amount == '':
+            messages.error(request, "Amount of deposit cannot be empty")
+            return redirect('wallet', pid=pid)
         else:
-            messages.error(request, "Please enter POSITIVE VALUES only, Thanks!")
+            if float(deposit_amount) > float(0):
+                initial_balance = float(initial_balance) + float(deposit_amount)
+                Wallet.objects.filter(patient_id=pid).update(account_balance=initial_balance, created_by=request.user)
+                payment_instance = Payment.objects.create(amount_paid=deposit_amount, action='deposit', patient_id=pid, created_by=user)
+                bill_instance = Bill.objects.create(patient_id=pid, status='paid', created_by=user)
+                PaymentDetail.objects.create(payment_id=payment_instance.id,bill_id=bill_instance.id,created_by=user)
+                messages.success(request, 'Wallet loaded successfully, thanks!')
+                return redirect('wallet', pid=pid)
+            else:
+                messages.error(request, "Please enter POSITIVE VALUES only, Thanks!")   
 
     template = "bills/wallet.html"
-    context = {"patient":patient, "initial_balance":initial_balance, "os_total":os_total}
+    context = {"patient":patient, "initial_balance":initial_balance, "new_os_total":new_os_total}
     return render(request, template, context)
 
     

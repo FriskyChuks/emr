@@ -1,0 +1,59 @@
+
+{% extends "layouts/base.html" %}
+{% load humanize %}
+{% load mathfilters %}
+
+{% block title %} Reports {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="row g-3">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                      <th scope="col">S/N</th>
+                      <th scope="col">BILL ID</th>
+                      <th scope="col">ITEM/SERVICE</th>
+                      <th style="text-align: right;" scope="col">AMOUNT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in payment_detail %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ p.bill.id }}</td>
+                            {% if p.bill.radiology_service %}
+                                <td>{{ p.bill.radiology_service.radiology_service }}</td>
+                                <td style="text-align: right;">{{ p.bill.radiology_service.radiology_service.price }}</td>
+                            {% elif p.bill.medical_service %}
+                                <td>{{ p.bill.medical_service.medical_service }}</td>
+                                <td style="text-align: right;">{{ p.bill.medical_service.medical_service.price }}</td>
+                            {% elif p.bill.dispensary %}
+                                <td>{{ p.bill.dispensary }}</td>
+                                <td style="text-align: right;">
+                                    {{ p.bill.dispensary.prescription.brand.sale_price|mul:p.bill.dispensary.qty_dispensed }}
+                                </td>
+                            {% elif p.bill.lab_request %}
+                                <td>{{ p.bill.lab_request }}</td>
+                                <td style="text-align: right;">{{ p.bill.lab_request.test.price }}</td>
+                            {% else %}
+                                <td>Cash Deposit</td>
+                                <td style="text-align: right;">{{ p.payment.amount_paid }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h4 style="text-align: right;">Total Cash Collected: 
+                {% for p in payment_detail|slice:":1" %} N{{ p.payment.amount_paid|intcomma }} {% endfor %}
+            </h4>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+{% endblock %}

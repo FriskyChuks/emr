@@ -141,7 +141,7 @@
                 <!-- <td>{{ vitals.date|date:"d-m-y" }} {{ vitals.date|time:"h:i a" }}</td> -->
                 <td>{{ prescription.timestamp }}</td>
                 <td>
-                  {{ prescription.item }} ({{ prescription.strength }})
+                  {{ prescription.brand }} ({{ prescription.brand.item.strength }})
                 </td>
                 <td>{{ prescription.qty_per_take }} x {{ prescription.times_daily }} x {{ prescription.no_of_days }}</td>
                 <td>{{ prescription.created_by|capfirst }}</td>

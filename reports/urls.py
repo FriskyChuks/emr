@@ -1,9 +1,10 @@
 from django.urls import path
 
-from .views import single_user_reports_view, all_user_reports_view, clinical_reports_view
+from .views import single_user_reports_view, all_user_reports_view, clinical_reports_view,receipt_detail_view
 
 urlpatterns = [
     path('single_user_reports/<user_id>/', single_user_reports_view, name='single_user_reports'),
     path('all_user_reports/', all_user_reports_view, name='all_user_reports'),
     path('clinical_reports/', clinical_reports_view, name='clinical_reports'),
+    path('receipt_detail/<payment_id>/', receipt_detail_view, name='receipt_detail'),
 ]

@@ -4,7 +4,7 @@ from django.db import models
 from visits.models import PatientEncounter
 from patients.models import Patient
 from medical_services.models import PatientEncounterService
-from pharmacy.models import Prescription
+from pharmacy.models import Dispensary, Prescription
 from radiology.models import RadiologyRequest
 from labs.models import LabRequest
 
@@ -26,11 +26,12 @@ PAY_ACTION = (
 
 
 class Bill(models.Model):
-    encounter           = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE)
+    encounter           = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE, blank=True, null=True)
     patient             = models.ForeignKey(Patient, on_delete=models.CASCADE)
     medical_service     = models.ForeignKey(PatientEncounterService, on_delete=models.CASCADE, blank=True, null=True)
     radiology_service   = models.ForeignKey(RadiologyRequest, on_delete=models.CASCADE, blank=True, null=True)
-    prescription        = models.ForeignKey(Prescription, on_delete=models.CASCADE, blank=True, null=True)
+    # prescription        = models.ForeignKey(Prescription, on_delete=models.CASCADE, blank=True, null=True)
+    dispensary          = models.ForeignKey(Dispensary, on_delete=models.CASCADE, blank=True, null=True)
     lab_request          = models.ForeignKey(LabRequest, on_delete=models.CASCADE, blank=True, null=True)
     status              = models.CharField(max_length=10, choices=BILL_STATUS, default='pending')
     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -45,21 +46,22 @@ class Bill(models.Model):
         elif self.lab_request:
             return f"{self.lab_request}"
         else:
-            return f"{self.prescription}"
+            return f"{self.dispensary}"
 
 
 class Payment(models.Model):
     amount_paid     = models.DecimalField(decimal_places=2, default='00.00', max_digits=20)
     action          = models.CharField(max_length=20, choices=PAY_ACTION)
+    patient         = models.ForeignKey(Patient, on_delete=models.CASCADE)
     created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date_created    = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
-        return self.amount_paid
+        return str(self.amount_paid)
 
 
 class PaymentDetail(models.Model):
-    bill            = models.ForeignKey(Bill, on_delete=models.CASCADE)
+    bill            = models.ForeignKey(Bill, on_delete=models.CASCADE, blank=True, null=True)
     payment         = models.ForeignKey(Payment, on_delete=models.CASCADE)
     created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date_created    = models.DateTimeField(auto_now_add=False, auto_now=True)
@@ -70,6 +72,8 @@ class PaymentDetail(models.Model):
             return f"{self.bill.lab_request} {self.bill.lab_request.test.price}"
         elif self.bill.medical_service:
             return f"{self.bill.medical_service} {self.bill.medical_service.medical_service.price}"
+        elif self.bill.dispensary:
+            return f"{self.bill.dispensary} {self.bill.dispensary.prescription.brand.sale_price}"
         else:
             return f"{self.bill.radiology_service} {self.bill.radiology_service.radiology_service.price}"
 

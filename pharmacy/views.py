@@ -5,13 +5,14 @@ import json
 from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.contrib import messages
+import itertools
 
 from visits.models import PatientEncounter
 from patients.models import Patient
 from accounts.decorators import allowed_users
 
 from .forms import ItemForm, BrandForm, PrescriptionForm
-from .models import Item, Prescription, Brand
+from .models import Item, Prescription, Brand, Dispensary
 
 
 def search_drug_view(request):
@@ -78,10 +79,11 @@ def dispense_prescription_view(request, encounter_id):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','doctor','nurse'])
 def prescription_view(request, enc_id):
-    item = Item.objects.all
+    # item = Item.objects.all
+    brand = Brand.objects.all
     prescriptionFormSet = inlineformset_factory(
                                 PatientEncounter, Prescription, fields=(
-                                    'item', 'route','qty_per_take','times_daily','no_of_days','note'
+                                    'brand', 'route','qty_per_take','times_daily','no_of_days','note'
                                     ), extra=5
                                 )
     encounter = PatientEncounter.objects.get(active=True, id=enc_id)
@@ -99,7 +101,7 @@ def prescription_view(request, enc_id):
         return redirect("patient_folder", enc_id = enc_id)
 
     template = "pharmacy/prescribe.html"
-    context = {"formset":formset, "encounter":encounter, "item":item}
+    context = {"formset":formset, "encounter":encounter, "brand":brand}
     return render(request, template,context)
 
 
@@ -112,9 +114,30 @@ def prescription_view1(request, enc_id):
 
 
 def dispensary_view(request, pid):
-    prescription = Prescription.objects.filter(patient=pid).order_by('-encounter_no')
+    prescription = Prescription.objects.filter(patient=pid, dispensed=False).order_by('-encounter_no')
     brands = Brand.objects.all
+    
+    if request.method == "POST":
+        if request.POST.get("brand_ID"):
+            dispensed = Dispensary()
+            dispensed.prescription_id = request.POST.get("brand_ID")
+            dispensed.qty_dispensed = request.POST.get("brand_Qty") 
+            # paid_amount = request.POST.get("pay_amount")
+            
+            # convert Comma separated string to a python list
+            dispensed_brand_list = dispensed.prescription_id.split(",")
+            dispensed_qty_list = dispensed.qty_dispensed.split(",")
 
+            for (item, qty) in zip(dispensed_brand_list, dispensed_qty_list):
+                print('brand: ', item)
+                print('qty: ', qty)
+                Dispensary.objects.create(
+                            prescription_id=item,
+                            qty_dispensed=qty,
+                            created_by=request.user
+                        )
+                Prescription.objects.filter(id=item).update(dispensed=True)
+            
     template = "pharmacy/dispensary.html"
     # template = "pharmacy/backup.html"
     context = {"prescription":prescription, "brands":brands}

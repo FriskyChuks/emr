@@ -114,9 +114,20 @@ DATABASES = {
 
 # DATABASES = {
 #     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': "emr",
+#         'USER': "root",
+#         'PASSWORD': "",
+#         'HOST': "localhost",
+#         'PORT': "3306",
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': 'emr',
-#         'USER': 'postgres',
+#         'USER': 'root',
 #         'PASSWORD': 'light6085',
 #         'HOST': '127.0.0.1',
 #         'PORT': '5432',

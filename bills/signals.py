@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 from visits.models import PatientEncounter
 from medical_services.models import PatientEncounterService
-from pharmacy.models import Prescription
+from pharmacy.models import Dispensary
 from radiology.models import RadiologyRequest
 from labs.models import LabRequest
 from patients.models import Patient
@@ -56,14 +56,17 @@ def post_save_medical_service_bill(sender, instance, created, **kwargs):
 
 
 # Pharmacy Bill
-@receiver(post_save, sender=Prescription)
+@receiver(post_save, sender=Dispensary)
 def post_save_pharmacy_bill(sender, instance, created, **kwargs):
     if created:
+        # print('instance: ',instance)
+        # print('instance_id: ',instance.id)
+        # print('patient_id: ',instance.prescription.patient.id)
         Bill.objects.create(
-            encounter_id = instance.encounter_no_id,
-            patient_id = instance.patient_id,
-            prescription_id = instance.id,
-            status = "pending",
+            encounter_id = instance.prescription.encounter_no.id,
+            patient_id = instance.prescription.patient.id,
+            dispensary_id = instance.id,
+            status = "billed",
             created_by_id = instance.created_by_id           
         )
 

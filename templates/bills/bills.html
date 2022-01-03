@@ -215,28 +215,28 @@
                   <tfoot>
                     {% if outstanding_bills %}
                     <tr>
-                        <th class="empty" colspan="4"></th>
+                        <th class="empty" colspan="3"></th>
                         <th>OUTSTANDING(N)</th>
                         <!-- <th colspan="2" style="text-align: right;"><input style="color: red; text-align: right;" id="outstanding" type="text" value="{{ outstanding_bills }}0"></th> -->
                         <th id="outstanding" style="color: red; text-align: right;" colspan="2" class="sub-total">{{ outstanding_bills }}0</th>
                     </tr>
                     {% endif %}
                     <tr>
-                        <th class="empty" colspan="4"></th>
+                        <th class="empty" colspan="3"></th>
                         <th>SUBTOTAL (N)</th>
                         <th colspan="2" style="text-align: right;"><input style="text-align: right;" id="sub-total" type="text" value="0.00" disabled></th>
                         <!-- <th style="text-align:right" colspan="2" class="sub-total">{{ total_bill }}0</th> -->
                     </tr>
                     <tr>
-                        <th class="empty" colspan="4"></th>
+                        <th class="empty" colspan="3"></th>
                         <th>TAX (N)</th>
                         <th colspan="2" style="text-align: right;"><input style="text-align: right;" id="tax" value="10.00" type="text" disabled></th>
                         <!-- <td style="text-align:right" colspan="2">00.00</td> -->
                     </tr>
                     <tr>
-                        <th class="empty" colspan="4"></th>
+                        <th class="empty" colspan="3"></th>
                         <th>PAY NOW (NGN)</th>
-                        <th colspan="2" class="total" ><h3><p><input style="text-align:right" type="text" name="pay_amount" id="pay_amount_visible" value="0.00" disabled/></p></h3></th>
+                        <th colspan="2" style="text-align: right;" class="total" ><h3><p><input style="text-align:right" type="text" name="pay_amount" id="pay_amount_visible" value="0.00" disabled/></p></h3></th>
                     </tr>
                    </tfoot>          
               </table>

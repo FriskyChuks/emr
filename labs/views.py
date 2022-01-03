@@ -65,9 +65,9 @@ def lab_request_view(request, enc_id):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','MLS','lab_front_desk'])
 def request_list_view(request):
-    # lab_request = LabRequest.objects.filter(done=False).values\
-    #             ('encounter','patient').annotate(total=Count('id'))
     unique_request = LabRequest.objects.filter(done=False, date_created__gte=datetime.date.today()).distinct('encounter').order_by('-encounter')
+    # unique_request = LabRequest.objects.filter(done=False).values\
+    #             ('encounter','patient').annotate(total=Count('id'))
 
     template = 'labs/display_request.html'
     context = {"unique_request":unique_request}

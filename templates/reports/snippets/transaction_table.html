@@ -1,22 +1,28 @@
 <table class="table table-striped">
     <thead>
       <tr>
+        <th scope="col">RECEIPT NO</th>
         <th scope="col">DATE</th>
         <th scope="col">PATIENT</th>
         <th scope="col">AMOUNT</th>
-        <th scope="col">SERVICE</th>
         <th scope="col">CASHIER</th>
+        <th scope="col">NARATIVE</th>
+        <th scope="col">ACTION</th>
       </tr>
     </thead>
     <tbody>
         {% for p in payments %}
         <tr>
-            <td>{{ p.date_created }}</td>
-            <td>{{ p.bill.patient.id }}</td>
-            <td>{{ p.payment.amount_paid }}</td>
-            <td>{{ p.bill }}</td>
-            <td>{{ p.payment.created_by.first_name }} {{ p.payment.created_by.last_name }}</td>
+            <td><a href="{% url 'receipt_detail' payment_id=p.payment %}">{{ p.payment }}</a></td>
+            <td>{{ p.payment__date_created }}</td>
+            <td>{{ p.bill__patient }}</td>
+            <td>{{ p.payment__amount_paid }}</td>
+            <td>{{ p.created_by__first_name }} {{ p.created_by__last_name }}</td>
+            <td>{{ p.payment__action }}</td>
+            <td><a href="{% url 'receipt_detail' payment_id=p.payment %}">View Detail</a></td>
+            {% comment %} <td>{{ p.payment__date_created__first_name }} {{ p.payment__created_by__last_name }}</td> {% endcomment %}
         </tr>
+       
         {% endfor %}
     </tbody>
   </table>
