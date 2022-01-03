@@ -73,9 +73,6 @@
                   {% endif %}
                 {% endfor %}
               {% endif %}
-              {% if not patient.new %}
-                <a href="{% url 'create_new_encounter' patient_id=patient.id %}"><button class="btn btn-primary">Send to Clinic</button></a>
-              {% endif %}
               {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
                 {% if not p.active  %}
                   {% if request.user.group.name == 'HIM' %}
