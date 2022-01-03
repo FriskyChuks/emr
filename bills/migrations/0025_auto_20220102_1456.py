@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='payment',
             name='patient',
-            field=models.ForeignKey(default=100000, on_delete=django.db.models.deletion.CASCADE, to='patients.patient'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='patients.patient'),
             preserve_default=False,
         ),
         migrations.CreateModel(
