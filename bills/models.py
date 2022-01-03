@@ -10,13 +10,11 @@ from labs.models import LabRequest
 
 User = settings.AUTH_USER_MODEL
 
-
 BILL_STATUS = (
         ("pending","Pending"),
         ("billed","Billed"),
         ("paid","Paid")
     )
-
 
 PAY_ACTION = (
         ("deposit","Deposit"),
@@ -62,7 +60,7 @@ class Payment(models.Model):
 
 class PaymentDetail(models.Model):
     bill            = models.ForeignKey(Bill, on_delete=models.CASCADE, blank=True, null=True)
-    payment         = models.ForeignKey(Payment, on_delete=models.CASCADE)
+    payment         = models.ForeignKey(Payment, on_delete=models.CASCADE, null=True, blank=True)
     created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date_created    = models.DateTimeField(auto_now_add=False, auto_now=True)
     last_updated    = models.DateTimeField(auto_now_add=True, auto_now=False)
