@@ -293,6 +293,9 @@
                   <ul class="flex-column nav">
                     <li class="nav-item {% if 'bootstrap-tables' in segment %} active {% endif %}">
                       {% if request.user.group.name == 'admin' %}
+                        <a class="nav-link" href="{% url 'clinical_reports_home' %}">
+                          <span class="sidebar-text">Home</span>
+                        </a>
                         <a class="nav-link" href="{% url 'all_user_reports' %}">
                           <span class="sidebar-text">Cash Transactions</span>
                         </a>
@@ -300,7 +303,7 @@
                           <span class="sidebar-text">Clinical Reports</span>
                         </a>
                       {% else %}
-                      <a class="nav-link" href="{% url 'single_user_reports' user_id=request.user.id %}">
+                      <a class="nav-link" href="{% url 'single_user_reports' %}">
                         <span class="sidebar-text">My Transactions</span>
                       </a>
                       {% endif %}

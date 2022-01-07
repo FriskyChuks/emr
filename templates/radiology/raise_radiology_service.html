@@ -6,15 +6,23 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %} <br>
+<--<a href="{% url 'patient_folder' enc_id=encounter.id %}">{{ encounter.patient.first_name }}'s Folder</a>
+<br>
 
-<h5>Create Services for <b>{{ patient.first_name }} {{ patient.last_name }}</b> </h5> 
+<--{% if encounter.current_clinic %}
+    Go to <a href="{% url 'clinic_visits_display' id=encounter.current_clinic.id %}"> {{ encounter.current_clinic }}</a>
+{% else %}
+    Go to <a href="{% url 'ward_admission_display' id=encounter.current_ward.id %}"> {{ encounter.current_ward }}</a>
+{% endif %}
+
+<h5>Create Services for <b>{{ encounter.patient.first_name }} {{ encounter.patient.last_name }}</b> </h5> 
 <br>
 
 <form id="form" method="POST" action="">{% csrf_token %} 
   <input type="submit" class="btn btn-success", value="Request Investigations">
     {{ formset.management_form }}
     <div class="table-responsive">
-    <table class="table table-striped">
+    <table>
         <thead>
           <tr>
             <th scope="col">Select service</th>

@@ -96,11 +96,13 @@ def prescription_view(request, enc_id):
                 obj.patient_id = encounter.patient.id
                 obj.created_by = request.user
                 obj.save()
-                formset = prescriptionFormSet()
-        messages.success(request, "Prescription was successful!.")
-        return redirect("patient_folder", enc_id = enc_id)
+            messages.success(request, "Prescription was successful!.")
+            return redirect("patient_folder", enc_id = enc_id)
+        else:
+            messages.error(request, "Kindly fill the form appropriately. Only note field is optional")
 
     template = "pharmacy/prescribe.html"
+    # template = "pharmacy/prescription2.html"
     context = {"formset":formset, "encounter":encounter, "brand":brand}
     return render(request, template,context)
 

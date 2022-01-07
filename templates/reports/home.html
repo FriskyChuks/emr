@@ -1,0 +1,101 @@
+{% extends "layouts/base.html" %}
+{% load humanize %}
+
+{% block title %} Reports {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="row g-2">
+    <div class="col-md-3">
+        <h3>CASH REPORTS</h3>
+        <div class="container">
+            <div class="row col-md-12">
+                <div class="card" style="width: 15rem;">
+                    <!-- <img src="..." class="card-img-top" alt="..."> -->
+                    <div class="card-body">
+                    <h5 class="card-title">Total Deposits</h5>
+                    <p class="card-text">Today's record</p>
+                    <a href="" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>&nbsp;
+                <div class="card" style="width: 15rem;">
+                    <!-- <img src="..." class="card-img-top" alt="..."> -->
+                    <div class="card-body">
+                    <h5 class="card-title">Cash Collected</h5>
+                    <p class="card-text">Today's record</p>
+                    <a href="" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>&nbsp;
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-8">
+        <h3>CLINICAL REPORTS</h3>
+        <div class="container">
+            <div class="container">
+                <div class="row col-md-12">
+                    <div class="card" style="width: 20rem;">
+                        <!-- <img src="..." class="card-img-top" alt="..."> -->
+                        <div class="card-body">
+                        <h5 class="card-title">Diagnosis</h5>
+                        <p class="card-text">Today's Stats</p>
+                        <a href="" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>&nbsp;
+                    <div class="card" style="width: 20rem;">
+                        <!-- <img src="..." class="card-img-top" alt="..."> -->
+                        <div class="card-body">
+                        <h5 class="card-title">Services</h5>
+                        <p class="card-text">Today's Stats</p>
+                        <a href="{% url 'reports_by_service' %}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>&nbsp;
+                    <div class="card" style="width: 20rem;">
+                        <!-- <img src="..." class="card-img-top" alt="..."> -->
+                        <div class="card-body">
+                        <h5 class="card-title">Out-Patient Reports</h5>
+                        <p class="card-text">Today's Stats</p>
+                        <a href="" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>&nbsp;
+                    <div class="card" style="width: 20rem;">
+                        <!-- <img src="..." class="card-img-top" alt="..."> -->
+                        <div class="card-body">
+                        <h5 class="card-title">In-Patient Reports</h5>
+                        <p class="card-text">Today's Stats</p>
+                        <a href="" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>&nbsp;
+                    <div class="card" style="width: 20rem;">
+                        <!-- <img src="..." class="card-img-top" alt="..."> -->
+                        <div class="card-body">
+                        <h5 class="card-title">Laboratory</h5>
+                        <p class="card-text">Today's Stats</p>
+                        <a href="" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>&nbsp;
+                    <div class="card" style="width: 20rem;">
+                        <!-- <img src="..." class="card-img-top" alt="..."> -->
+                        <div class="card-body">
+                        <h5 class="card-title">Radiology</h5>
+                        <p class="card-text">Today's Stats</p>
+                        <a href="" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>&nbsp;
+                    <div class="card" style="width: 20rem;">
+                        <!-- <img src="..." class="card-img-top" alt="..."> -->
+                        <div class="card-body">
+                        <h5 class="card-title">Pharmacy</h5>
+                        <p class="card-text">Today's Stats</p>
+                        <a href="" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>&nbsp;
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

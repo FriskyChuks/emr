@@ -1,0 +1,79 @@
+{% extends "layouts/base.html" %}
+{% load humanize %}
+
+{% block title %} Reports {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+{% include 'reports/snippets/report_categories.html' %}
+<h4>Reports by Services</h4>
+<form action="." method="GET">  
+    <div class="form-row">
+        <div class="form-group col-md-2 col-lg-2">
+            <label for="publishDateMin">Transaction date from</label>
+            <input type="date" class="form-control" id="publishDateMin" name="date_from">
+        </div>
+        <div class="form-group col-md-2 col-lg-2">
+            <label for="publishDateMax">Transaction date to</label>
+            <input type="date" class="form-control" id="publishDateMax" name="date_to">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <br>    
+</form>
+<br>
+{% if not date_from or not date_to %}
+    <h6>Search result for <strong>today</strong></h6>
+{% elif date_from and date_to %}
+    <h6>Search from start of <strong>{{date_from}}</strong> to end of <strong>{{date_to}}</strong></h6>
+{% endif %}
+<h4>Total Count: {{ lab_count|add:med_service_count|add:pharm_count|add:rad_count }}</h4>
+
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Laboratory Services</h5>
+          <p class="card-text">Count: {{ lab_count }}</p>
+          <a href="#" class="btn btn-primary">View Details</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Medical Services</h5>
+          <p class="card-text">Count: {{ med_service_count }}</p>
+          <a href="#" class="btn btn-primary">View Details</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Pharmacy</h5>
+            <p class="card-text">Count: {{ pharm_count }}</p>
+            <a href="#" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Radiology Serices</h5>
+            <p class="card-text">Count: {{ rad_count }}</p>
+            <a href="#" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <!-- details of reports -->
+
+{% endblock %}
+

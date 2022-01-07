@@ -163,15 +163,6 @@ html {
                                 data-value2='{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}' value=""></td>
                           </tr>
                       {% endfor %}
-                        {% comment %} <hr>
-                        <tr>
-                          <td><b>Pending Bills: (N)</b></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td style="text-align: left;"><b>{{ total_bill }}0</b></td>
-                          <td></td>
-                        </tr> {% endcomment %}
                   </tbody>
                   <tfoot>
                     {% if outstanding_bills %}

@@ -9,8 +9,9 @@
 {% block content %}
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
- 
-<h3>Clinical Report</h3>
+
+{% include 'reports/snippets/report_categories.html' %}
+<h4>Reports by Services</h4>
 <form action="." method="GET">
     <div class="form-row">         
         <div class="form-group col-4">
@@ -43,6 +44,7 @@
           <select class="form-select" id="validationCustom04" name="service_category">
             <option selected disabled value="">Select Category</option>
             <option value="lab">Lab Services</option>
+            <option value="pharm">Pharmacy</option>
             <option value="rad">Radiology Services</option>
           </select>
         </div>
@@ -72,8 +74,14 @@
     <br>    
 </form>
 <br>
-<h3>Record Count: {{ bills.count }}</h3>
-<table class="table table-striped">
+{% if not date_from or not date_to %}
+    <h6>Search result for <strong>today</strong></h6>
+{% elif date_from and date_to %}
+    <h6>Search from start of <strong>{{date_from}}</strong> to end of <strong>{{date_to}}</strong></h6>
+{% endif %}
+<h4>Record Count: {{ bills.count }}</h4>
+<div class="table-responsive">
+  <table class="table table-striped">
     <thead>
       <tr>
         <th scope="col">DATE</th>
@@ -95,6 +103,8 @@
         {% endfor %}
     </tbody>
   </table>
+</div>
+
 
   <div class="pagination">
     <span class="step-links">

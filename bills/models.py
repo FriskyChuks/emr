@@ -30,7 +30,7 @@ class Bill(models.Model):
     radiology_service   = models.ForeignKey(RadiologyRequest, on_delete=models.CASCADE, blank=True, null=True)
     # prescription        = models.ForeignKey(Prescription, on_delete=models.CASCADE, blank=True, null=True)
     dispensary          = models.ForeignKey(Dispensary, on_delete=models.CASCADE, blank=True, null=True)
-    lab_request          = models.ForeignKey(LabRequest, on_delete=models.CASCADE, blank=True, null=True)
+    lab_request         = models.ForeignKey(LabRequest, on_delete=models.CASCADE, blank=True, null=True)
     status              = models.CharField(max_length=10, choices=BILL_STATUS, default='pending')
     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date_created        = models.DateTimeField(auto_now_add=False, auto_now=True)
