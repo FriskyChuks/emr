@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from .models import Diagnosis, MakeDiagosis
+from .models import Diagnosis, MakeDiagnosis
 
 
 admin.site.register(Diagnosis)
-admin.site.register(MakeDiagosis)
+admin.site.register(MakeDiagnosis)
 

@@ -10,11 +10,10 @@ from pharmacy.models import Prescription
 from radiology.models import RadiologyRequest
 from bills.models import Bill
 from accounts.decorators import allowed_users
+from locations.models import Clinic, Ward
 
 from .models import PatientEncounter, EncounterRoute
 from .forms import DischargeForm
-
-from locations.models import Clinic, Ward
 
 
 @login_required(login_url="auth_login")
@@ -51,17 +50,19 @@ def create_new_encounter(request, patient_id):
     if request.method=='POST':
         clinic = request.POST.get('clinic')
         ward = request.POST.get('ward')
-        
-        PatientEncounter.objects.create(
-                patient_id=patient_id,
-                current_clinic_id=clinic,
-                current_ward_id=ward,
-                created_by= request.user
-            )
- 
-        Patient.objects.filter(id=patient_id).update(new=False) 
-        messages.success(request, "Transfer successful!")
-        return redirect("/patients/patient_registration")
+        if not clinic and not ward:
+            messages.error(request, 'Please select a location!')
+            return redirect('create_new_encounter',patient_id=patient_id)
+        else:
+            PatientEncounter.objects.create(
+                    patient_id=patient_id,
+                    current_clinic_id=clinic,
+                    current_ward_id=ward,
+                    created_by= request.user
+                )   
+            Patient.objects.filter(id=patient_id).update(new=False) 
+            messages.success(request, "Transfer successful!")
+            return redirect("/patients/patient_registration")
 
     template = "visits/create_encounter.html"
     context = {"qs":qs, "clinics":clinics,"wards":wards}
@@ -80,7 +81,6 @@ def transfer_patient_view(request, id):
     if request.method=='POST':
         clinic = request.POST.get('clinic')
         ward = request.POST.get('ward')
-
         EncounterRoute.objects.create(
                 encounter_no_id=id,
                 clinic_id=clinic,
@@ -104,7 +104,6 @@ def discharge_patient_view(request, id):
     for q in qs:
         clinic_id = q.current_clinic_id
         ward_id = q.current_ward_id
-        print(clinic_id)
 
     form = DischargeForm(request.POST or None)
     if form.is_valid():
@@ -112,6 +111,7 @@ def discharge_patient_view(request, id):
         obj.encounter_no_id = id
         obj.created_by = request.user
         obj.save()
+        PatientEncounter.objects.filter(id=id, active=True).update(active=False)
         if clinic_id:
             return redirect("clinic_visits_display", id = clinic_id)
         else:

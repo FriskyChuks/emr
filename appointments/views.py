@@ -1,14 +1,23 @@
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render
 from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.contrib import messages
+from django.urls.base import reverse_lazy
 
 from patients.models import Patient
 
 from .models import Appointment
 from .filters import AppointmentFilter
-from .forms import AppointmentForm
+from .forms import AppointmentForm, UpdateAppointmentForm
+
+
+class AppointmentUpdateView(UpdateView):
+    form_class = UpdateAppointmentForm
+    model = Appointment
+    template_name = "appointments/cbv_update_appointment.html"
+    success_url = reverse_lazy('display_appointment')
 
 
 @login_required(login_url="auth_login")
@@ -26,11 +35,7 @@ def schedule_appointment_view(request, patient_id):
         form = AppointmentForm()
 
     template = "appointments/schedule_appointment.html"
-    context = {"form": form,
-                "patient":patient,
-                "appointment":appointment,
-                # "appointments":appointments
-              }
+    context = {"form": form,"patient":patient,"appointment":appointment,}
     return render(request, template, context)
 
 

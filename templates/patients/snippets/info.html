@@ -81,7 +81,7 @@
                 {% endif %}
               {% endfor %}
               {% if request.user.group.name == 'HIM' or request.user.group.name == 'admin' %}
-              <a href="#" class="card-link"><button class="btn btn-primary">Update Record</button></a>
+              <a href="{% url 'update_patient' pk=patient.id %}" class="card-link"><button class="btn btn-primary">Update Record</button></a>
               {% endif %}
               {% if request.user.group.name == 'nurse' or request.user.group.name == 'doctor' or request.user.group.name == 'admin' %}
                 {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}

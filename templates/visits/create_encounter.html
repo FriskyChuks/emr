@@ -28,6 +28,7 @@
     <form id="form-body" class="row g-3" method="POST">{% csrf_token %}
       <div class="col-md-3" id="current_clinic">
           <select name="clinic" id="">
+            <option selected disabled value="">Select clinic...</option>
             {% if qs.gender == 'male' %}
               {% for c in clinics %}
                 {% if c.female_only != True %}
@@ -44,6 +45,7 @@
 
       <div class="col-md-3" id="current_ward" style="display: none;">
           <select name="ward" id="">
+            <option selected disabled value="">Select clinic...</option>
             {% if qs.gender == 'male' %}
               {% for w in wards %}
                 {% if w.female_only != True %}

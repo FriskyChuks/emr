@@ -8,7 +8,6 @@ from .models import DischargePatient, EncounterRoute, PatientEncounter
 @receiver(post_save, sender=EncounterRoute)
 def post_save_update_patient_encounter(sender, instance, created, **kwargs):
     if created:
-        print(instance.ward_id)
         if instance.clinic_id:
             PatientEncounter.objects.filter(id=instance.encounter_no.id, active=True).update(
                                                                                 current_clinic = instance.clinic,
@@ -37,13 +36,3 @@ def post_save_create_encounter_route(sender, instance, created, **kwargs):
                     ward_id = instance.current_ward_id,
                     created_by_id = instance.created_by_id           
                 )
-
-
-@receiver(post_save, sender=DischargePatient)
-def post_save_discharge_patient(sender, instance, created, **kwargs):
-    if created:
-        PatientEncounter.objects.filter(id=instance.encounter_no.id, active=True).update(
-                                                                                        active=False,
-                                                                                        current_clinic_id=None,
-                                                                                        current_ward_id=None 
-                                                                                    )

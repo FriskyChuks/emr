@@ -1,3 +1,7 @@
+from django.http import request
+from django.urls.base import reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView
 import datetime
 from django.db.models import Q
 from django.db.models.aggregates import Count
@@ -5,14 +9,15 @@ from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 
 from visits.models import PatientEncounter, EncounterRoute
 from accounts.models import User
-from diagnosis.models import MakeDiagosis
+from diagnosis.models import MakeDiagnosis
 from accounts.decorators import allowed_users
 
 from .models import Patient
-from .forms import PatientBiodataForm, PatientImageForm
+from .forms import PatientBiodataForm, PatientImageForm, UpdatePatientForm
 
 
 @login_required(login_url="auth_login")
@@ -20,7 +25,7 @@ from .forms import PatientBiodataForm, PatientImageForm
 def patient_folder_view(request, enc_id):
     current_encounter = PatientEncounter.objects.filter(id=enc_id, active=True).order_by("-id")
     encounter=PatientEncounter.objects.get(id=enc_id)
-    diagnosis = MakeDiagosis.objects.filter(encounter=enc_id).order_by('-id')
+    diagnosis = MakeDiagnosis.objects.filter(encounter=enc_id).order_by('-id')
     
     template = "patients/patient_folder.html"
     context = {"current_encounter":current_encounter, "encounter":encounter, "diagnosis":diagnosis}
@@ -36,7 +41,6 @@ def patient_archives_view(request, patient_id):
     template = "patients/archives.html" # Change this template with patient_folder_view
     context = {"patient_ecounter":patient_ecounter}
     return render (request, template, context)
-
 
 
 @login_required(login_url="auth_login")
@@ -58,9 +62,8 @@ def search_patient_view(request):
 	return render(request, template, context)
 
 
-
 @login_required(login_url="auth_login")
-# @allowed_users(alllowed_roles=['HIM','admin','doctor','nurse','cashier'])
+@allowed_users(alllowed_roles=['HIM','admin','doctor','nurse','cashier'])
 def patient_detail_view(request, id):
     patient = Patient.objects.filter(id=id, active=True)
 
@@ -78,7 +81,7 @@ def home(request):
     today_outpatient_count = EncounterRoute.objects.filter(clinic__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
     today_inpatient_count = EncounterRoute.objects.filter(ward__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
     user_count = User.objects.filter(is_a_patient=False).count()
-    # today_encounters =  EncounterRoute.objects.filter(date_created__gte=datetime.date.today())
+
 
     template = "home/dashboard.html"
     context = {
@@ -133,3 +136,17 @@ def upload_patient_image_form(request, pid):
     template = "patients/patient_foto.html"
     context = {"form": form1, "patient_instance":patient_instance}
     return render(request, template, context)
+
+
+class PatientListView(ListView):
+    model = Patient
+    paginate_by = 50
+    ordering = ['id']
+
+
+class UpdatePatientView(SuccessMessageMixin,UpdateView):
+    form_class = UpdatePatientForm
+    model = Patient
+    template_name = "patients/cbv_update_patient.html"
+    success_message = 'Patient record updated successfully!'
+    success_url = reverse_lazy('home')

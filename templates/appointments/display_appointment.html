@@ -59,7 +59,7 @@
               <td>{{ appointment.appointment_time }}</td>
               <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }} ({{ appointment.patient.id }})</td>
               {% if appointment.status == "pending" %} 
-              <td><a href="{% url 'edit_appointment' appointment.id %}">Re-schedule</a></td>
+              <td><a href="{% url 'cbv_update_appointment' pk=appointment.id %}">Re-schedule</a></td>
               <td><a href="#">Cancel</a></td>
               {% endif %}
             </tr>

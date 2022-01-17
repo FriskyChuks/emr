@@ -12,7 +12,7 @@ from patients.models import Patient
 from visits.models import PatientEncounter
 
 from accounts.decorators import allowed_users
-from diagnosis.models import MakeDiagosis
+from diagnosis.models import MakeDiagnosis
 
 from .models import LabRequest, LabTest, LabUnit, LabResult
 from .forms import LabResultForm, LabResultFormSet
@@ -80,7 +80,7 @@ def request_list_view(request):
 @allowed_users(alllowed_roles=['admin','MLS'])
 def request_detail_view(request, enc_id):
     request_detail = LabRequest.objects.filter(encounter_id=enc_id, decline=False, done=False) 
-    diagnosis = MakeDiagosis.objects.filter(encounter=enc_id)  
+    diagnosis = MakeDiagnosis.objects.filter(encounter=enc_id)  
     # print(diagnosis)   
 
     template = 'labs/request_detail.html'
@@ -92,7 +92,7 @@ def request_detail_view(request, enc_id):
 @allowed_users(alllowed_roles=['MLS'])
 def send_lab_results_view(request, enc_id):
     lab_request = LabRequest.objects.filter(encounter_id=enc_id, done=False, decline=False)
-    diagnosis = MakeDiagosis.objects.filter(encounter=enc_id)
+    diagnosis = MakeDiagnosis.objects.filter(encounter=enc_id)
     
     result = request.POST
     result_trimmed = dict(result.lists())

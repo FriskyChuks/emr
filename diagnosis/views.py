@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 
-from .models import MakeDiagosis, Diagnosis
+from .models import MakeDiagnosis, Diagnosis
 
 
 def make_dianosis_view(request, enc_id):
@@ -14,7 +14,7 @@ def make_dianosis_view(request, enc_id):
            final=True 
         created_by=request.user
 
-        MakeDiagosis.objects.create(
+        MakeDiagnosis.objects.create(
             encounter_id=enc_id,
             diagnosis_id=diagnosis,
             created_by=created_by,

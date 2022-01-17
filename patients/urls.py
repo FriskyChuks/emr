@@ -11,12 +11,16 @@ from .views import(
     search_patient_view,
     patient_folder_view,
     patient_archives_view,
-    upload_patient_image_form
+    upload_patient_image_form,
+    UpdatePatientView,
+    PatientListView
     #upload_foto,
 )  
 
 urlpatterns = [
+    path('<pk>/update_patient/', UpdatePatientView.as_view(), name='update_patient'),
     path('registration/', patient_registration_form, name='registration'),
+    path('patient_list/', PatientListView.as_view(), name='patient_list'),
     path('search/', search_patient_view, name='search_patient'),
     path('patient_info/<id>/', patient_detail_view, name='patient_detail'),
     path('patient_folder/<enc_id>/', patient_folder_view, name='patient_folder'),

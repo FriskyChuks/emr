@@ -5,12 +5,18 @@ from django.shortcuts import render
 from django.db.models import Q, Count
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from accounts.models import User
+from accounts.decorators import allowed_users
 from labs.models import LabRequest
 from bills.models import Bill, Payment, PaymentDetail
+from diagnosis.models import Diagnosis, MakeDiagnosis
+from locations.models import Clinic, Ward
 
 
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','cashier'])
 def single_user_cash_reports_view(request):
     user_id = request.user.id
     payment = PaymentDetail.objects.values(
@@ -100,6 +106,8 @@ def is_valid_query_param(param):
     return param != '' and param != None
 
 
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','cashier'])
 def all_user_cash_reports_view(request):
     payment = PaymentDetail.objects.values(
         'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
@@ -198,10 +206,14 @@ def all_user_cash_reports_view(request):
     return render(request, 'reports/all_users_transaction.html', context)
 
 
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','cashier'])
 def clinical_reports_home_view(request):
     return render(request, 'reports/home.html', {})
 
 
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','cashier'])
 def reports_by_service_view(request):    
     lab_services = Bill.objects.filter(lab_request__isnull=False).filter(date_created__gte=datetime.date.today())
     med_services = Bill.objects.filter(medical_service__isnull=False).filter(date_created__gte=datetime.date.today())
@@ -249,6 +261,8 @@ def reports_by_service_view(request):
     return render(request, 'reports/reports_by_service.html', context)
 
 
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','cashier'])
 def clinical_reports_view(request):
     lab_bills = Bill.objects.filter(lab_request__isnull=False)
     pharm_bills = Bill.objects.filter(dispensary__isnull=False)
@@ -307,13 +321,13 @@ def clinical_reports_view(request):
                 Q(lab_request__test__title__icontains=service_contains)
             )
 
-    paginator = Paginator(bills, 25) # Show 25 contacts per page.
+    paginator = Paginator(bills, 100) # Show 25 contacts per page.
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
         
     context = {
-                "bills":page_obj,
+                "page_obj":page_obj,
                 "lab_requests":lab_requests, 
                 "lab_results":lab_results, 
                 "cash_officers":cash_officers,
@@ -322,8 +336,51 @@ def clinical_reports_view(request):
     return render(request, 'reports/clinical_reports.html', context)
 
 
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','cashier'])
 def receipt_detail_view(request, payment_id):
     payment_detail = PaymentDetail.objects.filter(payment_id=payment_id)
 
     return render(request, 'reports/receipt_details.html', {"payment_detail":payment_detail})
 
+
+# DIAGNOSIS
+def diagnosis_report_view(request):
+    diagnosis = MakeDiagnosis.objects.values('diagnosis__id','diagnosis__title').annotate(
+            Count('diagnosis'))
+    
+    search_variable = request.GET.get('diagnosis_contains')
+    if search_variable:
+        diagnosis = MakeDiagnosis.objects.values('diagnosis__id','diagnosis__title').annotate(
+            Count('diagnosis')).filter(diagnosis__title__icontains=search_variable)
+
+    paginator = Paginator(diagnosis, 25) # Show 25 contacts per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'reports/diagnosis.html', {'page_obj': page_obj})
+
+
+def diagnosis_detail_report_view(request, diagnosis_id):
+    diagnosis = MakeDiagnosis.objects.filter(diagnosis_id=diagnosis_id)
+    clinics = Clinic.objects.all()
+    wards = Ward.objects.all()
+    users = User.objects.all()
+
+    select_clinic = request.GET.get('select_clinic')
+    select_ward = request.GET.get('select_ward')
+    get_date_from = request.GET.get('date_from')
+    get_date_to = request.GET.get('date_to')
+
+    if select_ward:
+        print(select_ward)
+        diagnosis = MakeDiagnosis.objects.filter(
+                diagnosis_id=diagnosis_id,encounter__current_ward__id=select_ward
+            )
+
+    paginator = Paginator(diagnosis, 25) # Show 25 contacts per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {'page_obj': page_obj, "clinics":clinics, "wards":wards, "users":users}
+    return render(request, 'reports/diagnosis_details.html', context)

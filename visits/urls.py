@@ -15,6 +15,5 @@ urlpatterns = [
     path("create_encounter/<patient_id>/", create_new_encounter, name='create_new_encounter'),
     path("discharge_patient/<id>/", discharge_patient_view, name='discharge_patient'),
     path("transfer_patient_view/<id>/", transfer_patient_view, name='transfer_patient'),
-    # path("bills/<encounter_id>/", create_patient_bills_view, name='bills'),
 ]
 
