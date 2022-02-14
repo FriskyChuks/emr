@@ -347,12 +347,25 @@ def receipt_detail_view(request, payment_id):
 # DIAGNOSIS
 def diagnosis_report_view(request):
     diagnosis = MakeDiagnosis.objects.values('diagnosis__id','diagnosis__title').annotate(
-            Count('diagnosis'))
+            Count('diagnosis')).filter(date_created__gte=datetime.date.today())
     
+    get_date_from = request.GET.get('date_from')
+    get_date_to = request.GET.get('date_to')
     search_variable = request.GET.get('diagnosis_contains')
+
+    date_to=None
+    date_from=None
+    if get_date_from and get_date_to:
+        date_to = datetime.datetime.strptime(get_date_to, "%Y-%m-%d")
+        date_to = date_to + datetime.timedelta(days=1)
+        date_from = datetime.datetime.strptime(get_date_from, "%Y-%m-%d")
+    elif date_from and date_to:
+        diagnosis = MakeDiagnosis.objects.values('diagnosis__id','diagnosis__title').annotate(
+            Count('diagnosis')).filter(date_created__range=[date_from, date_to])
+
     if search_variable:
         diagnosis = MakeDiagnosis.objects.values('diagnosis__id','diagnosis__title').annotate(
-            Count('diagnosis')).filter(diagnosis__title__icontains=search_variable)
+            Count('diagnosis')).filter(diagnosis__title__icontains=search_variable,date_created__range=[date_from, date_to])
 
     paginator = Paginator(diagnosis, 25) # Show 25 contacts per page.
     page_number = request.GET.get('page')
@@ -372,11 +385,28 @@ def diagnosis_detail_report_view(request, diagnosis_id):
     get_date_from = request.GET.get('date_from')
     get_date_to = request.GET.get('date_to')
 
+    date_to=None
+    date_from=None
+    if get_date_from and get_date_to:
+        date_to = datetime.datetime.strptime(get_date_to, "%Y-%m-%d")
+        date_to = date_to + datetime.timedelta(days=1)
+        date_from = datetime.datetime.strptime(get_date_from, "%Y-%m-%d")
+
     if select_ward:
-        print(select_ward)
-        diagnosis = MakeDiagnosis.objects.filter(
-                diagnosis_id=diagnosis_id,encounter__current_ward__id=select_ward
-            )
+        if not date_from or not date_to:
+            messages.error(request, 'Please enter "Transaction dates"')
+            return redirect('diagnosis_detail_report',diagnosis_id=diagnosis_id)
+        else:
+            diagnosis = MakeDiagnosis.objects.filter(diagnosis_id=diagnosis_id,
+            encounter__current_ward__id=select_ward,date_created__range=[date_from, date_to])
+    elif select_clinic:
+        if not date_from or not date_to:
+            messages.error(request, 'Please enter "Transaction dates"')
+            return redirect('diagnosis_detail_report',diagnosis_id=diagnosis_id)
+        else:
+            diagnosis = MakeDiagnosis.objects.filter(
+                    diagnosis_id=diagnosis_id,encounter__current_clinic__id=select_clinic, 
+                    date_created__range=[date_from, date_to])
 
     paginator = Paginator(diagnosis, 25) # Show 25 contacts per page.
     page_number = request.GET.get('page')

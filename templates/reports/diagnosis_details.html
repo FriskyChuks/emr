@@ -61,28 +61,30 @@
 {% for d in page_obj|slice:":1" %}
     <h3>{{ d.diagnosis }}</h3>
 {% endfor %}
-<table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">PATIENT</th>
-        <th scope="col">CLINIC</th>
-        <th scope="col">DATE</th>
-      </tr>
-    </thead>
-    <tbody>
-        {% for d in page_obj %}
-            <tr>
-                <td>{{ d.encounter.patient.id }}</td>
-                {% if d.encounter.current_clinic %}
-                    <td>{{ d.encounter.current_clinic }}</td>
-                {% else %}
-                    <td>{{ d.encounter.current_ward }}</td>
-                {% endif %}
-                <td>{{ d.date_created }}</td>
-            </tr>       
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">PATIENT</th>
+            <th scope="col">CLINIC</th>
+            <th scope="col">DATE</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for d in page_obj %}
+                <tr>
+                    <td>{{ d.encounter.patient.id }}</td>
+                    {% if d.encounter.current_clinic %}
+                        <td>{{ d.encounter.current_clinic }}</td>
+                    {% else %}
+                        <td>{{ d.encounter.current_ward }}</td>
+                    {% endif %}
+                    <td>{{ d.date_created }}</td>
+                </tr>       
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <div class="pagination">
 <span class="step-links">
