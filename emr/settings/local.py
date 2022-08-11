@@ -190,3 +190,5 @@ SECURE_FRAME_DENY = False
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'

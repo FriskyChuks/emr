@@ -23,9 +23,13 @@ from .forms import LabResultForm, LabResultFormSet
 def lab_request_view(request, enc_id):
     encounter = PatientEncounter.objects.get(id=enc_id, active=True)
     patient_id = encounter.patient_id
-    microbiology_tests = LabTest.objects.filter(lab_unit=3).order_by('-compound_test_id')
-    chem_path_tests = LabTest.objects.filter(lab_unit=2).order_by('-compound_test_id')
-    hermatology_tests = LabTest.objects.filter(lab_unit=1).order_by('-compound_test_id')
+
+    immunolgy_tests = LabTest.objects.filter(lab_unit__title__icontains='immunology').order_by('-compound_test_id')
+    parasitology_tests = LabTest.objects.filter(lab_unit__title__icontains='parasitology').order_by('-compound_test_id')
+    bacteriology_tests = LabTest.objects.filter(lab_unit__title__icontains='bacteriology').order_by('-compound_test_id')
+    chem_path_tests = LabTest.objects.filter(lab_unit__title__icontains="Chemical Pathology").order_by('-compound_test_id')
+    hermatology_tests = LabTest.objects.filter(lab_unit__title__icontains="Hematology").order_by('-compound_test_id')
+    BGS_tests = LabTest.objects.filter(lab_unit__title__icontains='Blood Group Serology (BGS)').order_by('-compound_test_id')
     
     if request.method == "POST":
         if request.POST.get("test_id"):
@@ -54,9 +58,9 @@ def lab_request_view(request, enc_id):
     template = "labs/lab_request2.html"
     context = {
         "encounter":encounter,
-        "microbiology_tests":microbiology_tests,
-        "chem_path_tests":chem_path_tests,
-        "hermatology_tests":hermatology_tests
+        "immunolgy_tests":immunolgy_tests,"parasitology_tests":parasitology_tests,
+        "bacteriology_tests":bacteriology_tests,"chem_path_tests":chem_path_tests,
+        "hermatology_tests":hermatology_tests,"BGS_tests":BGS_tests
     }
     return render(request, template, context)
 
@@ -65,9 +69,9 @@ def lab_request_view(request, enc_id):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','MLS','lab_front_desk'])
 def request_list_view(request):
-    unique_request = LabRequest.objects.filter(done=False, date_created__gte=datetime.date.today()).distinct('encounter').order_by('-encounter')
-    # unique_request = LabRequest.objects.filter(done=False).values\
-    #             ('encounter','patient').annotate(total=Count('id'))
+    # unique_request = LabRequest.objects.filter(done=False, date_created__gte=datetime.date.today()).distinct('encounter').order_by('-encounter')
+    unique_request = LabRequest.objects.filter(done=False).values\
+                ('encounter','patient').annotate(total=Count('id'))
 
     template = 'labs/display_request.html'
     context = {"unique_request":unique_request}

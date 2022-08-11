@@ -69,7 +69,7 @@ html {
   
                 if ($tr.find('input[type="checkbox"]').is(':checked')) {   
                   var $td = $tr.find("td");
-                  var price = $td.eq(3).text();
+                  var price = $td.eq(2).text();
                   var qty = $td.eq(1).text();
                   var pending = price*qty;
                   // sumTotal+=billTotal;
@@ -129,7 +129,7 @@ html {
                       <th scope="col">Item</th>
                       <th scope="col">Qty</th>
                       {% comment %} <th scope="col">Select Brand</th> {% endcomment %}
-                      <th scope="col">Dispense Qty</th>
+                      <!-- <th scope="col">Dispense Qty</th> -->
                       <th style="text-align: right;" scope="col">Unit Cost</th>
                       <th style="text-align: right;" scope="col">Total Cost</th>
                       <th scope="col">[ ]</th>
@@ -141,7 +141,7 @@ html {
                               <td>{{ p.brand }} ({{ p.brand.item.strength }})</td>
                               <td> {{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}</td>
 
-                              {% comment %} <td>
+                              <!-- <td>
                                   <select class="form-select" id="brandSelect" onchange="myFunction()">
                                   <option selected disabled value="">Select...</option>
                                   {% for brand in brands %}
@@ -150,13 +150,13 @@ html {
                                   {% endif %}
                                   {% endfor %}
                                   </select>
-                              </td> {% endcomment %}
+                              </td> -->
 
-                              <td>
+                              <!-- <td>
                                   <input name="dispenseQty" id=dispenseQty type="number" value="{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}"
                                   min="0" max="{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}" 
                                   class="form-control" id="validationCustom01" value="" required>
-                              </td>
+                              </td> -->
                               <td style="text-align: right;" id="unitCost">{{p.brand.sale_price}}</td>
                               <td style="text-align: right;" id="cost">0.00</td>
                               <td><input id="chkBox" class="chkbox" name="check_list" style="text-align:center" type="checkbox" data-value1="{{ p.id }}"
@@ -174,19 +174,19 @@ html {
                     </tr>
                     {% endif %}
                     <tr>
-                        <th class="empty" colspan="2"></th>
+                        <th class="empty" colspan="1"></th>
                         <th>SUBTOTAL (N)</th>
                         <th colspan="2" style="text-align: right;"><input style="text-align: right;" id="sub-total" type="text" value="0.00" disabled></th>
                         <!-- <th style="text-align:right" colspan="2" class="sub-total">{{ total_bill }}0</th> -->
                     </tr>
                     <tr>
-                        <th class="empty" colspan="2"></th>
+                        <th class="empty" colspan="1"></th>
                         <th>TAX (N)</th>
                         <th colspan="2" style="text-align: right;"><input style="text-align: right;" id="tax" value="00.00" type="text" disabled></th>
                         <!-- <td style="text-align:right" colspan="2">00.00</td> -->
                     </tr>
                     <tr>
-                        <th class="empty" colspan="2"></th>
+                        <th class="empty" colspan="1"></th>
                         <th>PAY NOW (NGN)</th>
                         <th colspan="2" style="text-align: right;" class="total" ><h3><input style="text-align:right" type="text" name="pay_amount" id="pay_amount_visible" value="0.00" disabled/></h3></th>
                     </tr>

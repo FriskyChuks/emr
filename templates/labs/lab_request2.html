@@ -61,56 +61,72 @@
        <hr>
     <div class="row g-3">
         <div class="col-md-4">
-            <h4>Microbiology</h4>
-            {% for mc in microbiology_tests %}
-                {% if mc.compound_test.title == 'M/C/S' %}
-                    <input type="checkbox" value="{{ mc.id }}" class="chkbox"> 
-                    {{ mc.title }} <i><b>(M/C/S)</b></i> <br>
-                {% endif %}
-                {% if mc.compound_test.title == 'P/N' %}
-                    <input type="checkbox" value="{{ mc.id }}" class="chkbox"> 
-                    {{ mc.title }} <i><b>(P/N)</b></i> <br>
+            <h4>Immunology</h4>
+            {% for test in immunolgy_tests %}
+                {% if test.compound_test %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox"> 
+                    {{ test.title }} <i><b>{{ test.compound_test.title }}</b></i> <br>
                 {% else %}
-                    {% if not mc.compound_test %}
-                        <input type="checkbox" value="{{ mc.id }}" class="chkbox"> 
-                        {{ mc.title }}<br>
-                    {% endif %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox">
+                    {{ test.title }} <br>
+                {% endif %}
+            {% endfor %}
+            <br>
+            <h4>Parasitology</h4>
+            {% for test in parasitology_tests %}
+                {% if test.compound_test %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox"> 
+                    {{ test.title }} <i><b>{{ test.compound_test.title }}</b></i> <br>
+                {% else %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox">
+                    {{ test.title }} <br>
+                {% endif %}
+            {% endfor %}
+            <br>
+            <h4>Bacteriology</h4>
+            {% for test in bacteriology_tests %}
+                {% if test.compound_test %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox"> 
+                    {{ test.title }} <i><b>{{ test.compound_test.title }}</b></i> <br>
+                {% else %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox">
+                    {{ test.title }} <br>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <div class="col-md-4">
+            <h4>Hematology</h4>
+            {% for test in hermatology_tests %}
+                {% if test.compound_test %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox"> 
+                    {{ test.title }} <i><b>{{ test.compound_test.title }}</b></i> <br>
+                {% else %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox">
+                    {{ test.title }} <br>
+                {% endif %}
+            {% endfor %}
+            <br>
+            <h4>Blood Group Seriology</h4>
+            {% for test in BGS_tests %}
+                {% if test.compound_test %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox"> 
+                    {{ test.title }} <i><b>{{ test.compound_test.title }}</b></i> <br>
+                {% else %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox">
+                    {{ test.title }} <br>
                 {% endif %}
             {% endfor %}
         </div>
         <div class="col-md-4">
             <h4>Chemical Pathology</h4>
-            {% for chempath in chem_path_tests %}
-                {% if chempath.compound_test.title == 'Lipid Profile' %}
-                    <input type="checkbox" value="{{ chempath.id }}" class="chkbox"> 
-                    {{ chempath.title }} <i><b>(Lipid Profile)</b></i> <br>
-                {% endif %}
-                {% if chempath.compound_test.title == 'LFT' %}
-                    <input type="checkbox" value="{{ chempath.id }}" class="chkbox"> 
-                    {{ chempath.title }} <i><b>(LFT)</b></i> <br>
-                {% endif %}
-                {% if chempath.compound_test.title == 'E/u/Cr' %}
-                    <input type="checkbox" value="{{ chempath.id }}" class="chkbox"> 
-                    {{ chempath.title }} <i><b>(E/u/Cr)</b></i> <br>
+            {% for test in chem_path_tests %}
+                {% if test.compound_test %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox"> 
+                    {{ test.title }} <i><b>{{ test.compound_test.title }}</b></i> <br>
                 {% else %}
-                    {% if not chempath.compound_test %}
-                        <input type="checkbox" value="{{ chempath.id }}" class="chkbox"> 
-                        {{ chempath.title }}<br>
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
-        </div>
-        <div class="col-md-4">
-            <h4>Hermatology</h4>
-            {% for herma in hermatology_tests %}
-                {% if herma.compound_test.title == 'FBC' %}
-                    <input type="checkbox" value="{{ herma.id }}" class="chkbox"> 
-                    {{ herma.title }} <i><b>(FBC)</b></i><br>
-                {% else %}
-                    {% if not herma.compound_test %}
-                        <input type="checkbox" value="{{ herma.id }}" class="chkbox"> 
-                        {{ herma.title }}<br>
-                    {% endif %}
+                    <input type="checkbox" value="{{ test.id }}" class="chkbox">
+                    {{ test.title }} <br>
                 {% endif %}
             {% endfor %}
         </div>
