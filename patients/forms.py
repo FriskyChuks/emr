@@ -1,8 +1,6 @@
 from django import forms
 from django.contrib.admin import options
 from django.forms import widgets
-# from bootstrap_datepicker_plus import DatePickerInput
-from bootstrap_datepicker_plus.widgets import DateTimePickerInput
 
 from .models import Patient#, PatientImage#,NextOfKin, Address
 
