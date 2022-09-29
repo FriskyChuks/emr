@@ -20,7 +20,7 @@ from locations.models import Clinic, Ward
 def single_user_cash_reports_view(request):
     user_id = request.user.id
     payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(created_by=user_id, date_created__gte=datetime.date.today())
 
     cash_officers = User.objects.filter(group__name__iexact='cashier')
@@ -43,26 +43,26 @@ def single_user_cash_reports_view(request):
     if is_valid_query_param(pid_exact):
         if date_from and date_to:
             payment = PaymentDetail.objects.values(
-            'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
-                Count('bill_id')).filter(created_by=user_id).filter(bill__patient__id__iexact=pid_exact,payment__date_created__range=[date_from, date_to])
+            'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+                Count('bill_id')).filter(created_by=user_id).filter(bill__encounter__patient__id__iexact=pid_exact,payment__date_created__range=[date_from, date_to])
         else:
             payment = PaymentDetail.objects.values(
-            'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
-                Count('bill_id')).filter(created_by=user_id).filter(bill__patient__id__iexact=pid_exact)
+            'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+                Count('bill_id')).filter(created_by=user_id).filter(bill__encounter__patient__id__iexact=pid_exact)
         
     elif is_valid_query_param(min_amount):
         payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(created_by=user_id).filter(payment__amount_paid__gte=min_amount)
         
     elif is_valid_query_param(max_amount):
         payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(created_by=user_id).filter(payment__amount_paid__lte=max_amount)
         
     elif is_valid_query_param(cashier):
         payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(created_by=user_id).filter(payment__created_by__id__iexact=cashier)
          
     elif is_valid_query_param(transaction_type):
@@ -70,7 +70,7 @@ def single_user_cash_reports_view(request):
             messages.error(request, 'Please specify the "DATE RANGE"')
             return redirect('single_user_reports')
         payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(created_by=user_id).filter(
                 payment__action=transaction_type,payment__date_created__range=[date_from, date_to])
   
@@ -79,12 +79,12 @@ def single_user_cash_reports_view(request):
             messages.error(request, 'Please enter "Transaction date-to"')
             return redirect('single_user_reports')
         payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(created_by=user_id).filter(payment__date_created__range=[date_from, date_to])
             
     elif is_valid_query_param(date_to):
         payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(created_by=user_id).filter(payment__date_created__lte=date_to)
 
     sum_total = 0.00
@@ -110,7 +110,7 @@ def is_valid_query_param(param):
 @allowed_users(alllowed_roles=['admin','cashier'])
 def all_user_cash_reports_view(request):
     payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(date_created__gte=datetime.date.today())
 
     cash_officers = User.objects.filter(group__name__iexact='cashier')
@@ -133,21 +133,21 @@ def all_user_cash_reports_view(request):
     if is_valid_query_param(pid_exact):
         if date_from and date_to:
             payment = PaymentDetail.objects.values(
-            'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
-                Count('bill_id')).filter(bill__patient__id__iexact=pid_exact,payment__date_created__range=[date_from, date_to])
+            'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+                Count('bill_id')).filter(bill__encounter__patient__id__iexact=pid_exact,payment__date_created__range=[date_from, date_to])
         else:
             payment = PaymentDetail.objects.values(
-            'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
-                Count('bill_id')).filter(bill__patient__id__iexact=pid_exact)
+            'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+                Count('bill_id')).filter(bill__encounter__patient__id__iexact=pid_exact)
         
     elif is_valid_query_param(min_amount):
         payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(payment__amount_paid__gte=min_amount)
         
     elif is_valid_query_param(max_amount):
         payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(payment__amount_paid__lte=max_amount)
          
     elif is_valid_query_param(transaction_type):
@@ -157,11 +157,11 @@ def all_user_cash_reports_view(request):
         elif cashier:
             print('Cashier', cashier)
             payment = PaymentDetail.objects.values(
-            'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+            'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
                 Count('bill_id')).filter(payment__action=transaction_type,payment__date_created__range=[date_from, date_to], payment__created_by__id__iexact=cashier)
         else:
             payment = PaymentDetail.objects.values(
-            'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+            'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
                 Count('bill_id')).filter(payment__action=transaction_type,payment__date_created__range=[date_from, date_to])
   
     elif is_valid_query_param(cashier):
@@ -170,11 +170,11 @@ def all_user_cash_reports_view(request):
             return redirect('all_user_reports')
         if transaction_type:
             payment = PaymentDetail.objects.values(
-            'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+            'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
                 Count('bill_id')).filter(payment__created_by__id__iexact=cashier,payment__date_created__range=[date_from, date_to],payment__action=transaction_type)
         else:
             payment = PaymentDetail.objects.values(
-            'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+            'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
                 Count('bill_id')).filter(payment__created_by__id__iexact=cashier,payment__date_created__range=[date_from, date_to])
 
     elif is_valid_query_param(date_from):
@@ -182,12 +182,12 @@ def all_user_cash_reports_view(request):
             messages.error(request, 'Please enter "Transaction date-to"')
             return redirect('single_user_reports')
         payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(payment__date_created__range=[date_from, date_to])
             
     elif is_valid_query_param(date_to):
         payment = PaymentDetail.objects.values(
-        'payment','payment__action','payment__date_created','payment__amount_paid','bill__patient', 'created_by__first_name', 'created_by__last_name').annotate(
+        'payment','payment__action','payment__date_created','payment__amount_paid','bill__encounter__patient', 'created_by__first_name', 'created_by__last_name').annotate(
             Count('bill_id')).filter(payment__date_created__lte=date_to)
      
     sum_total = 0.00

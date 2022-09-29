@@ -44,7 +44,7 @@ def lab_request_view(request, enc_id):
             for item in request_list:
                 obj = LabRequest.objects.create(
                     encounter_id    = encounter.id,
-                    patient_id      = patient_id,
+                    # patient_id      = patient_id,
                     test_id         = item,
                     created_by      = request.user
                 )
@@ -71,7 +71,8 @@ def lab_request_view(request, enc_id):
 def request_list_view(request):
     # unique_request = LabRequest.objects.filter(done=False, date_created__gte=datetime.date.today()).distinct('encounter').order_by('-encounter')
     unique_request = LabRequest.objects.filter(done=False).values\
-                ('encounter','patient').annotate(total=Count('id'))
+                ('encounter','encounter__patient','encounter__current_clinic__clinic','encounter__current_clinic__ward').annotate(\
+                    total=Count('id'))
 
     template = 'labs/display_request.html'
     context = {"unique_request":unique_request}
@@ -109,7 +110,7 @@ def send_lab_results_view(request, enc_id):
         # initializing test string
         cleaned_result = j 
         cleaned_result = ''.join((filter(lambda x: x not in bad_chars, cleaned_result)))
-        # print(i, cleaned_result) 
+        print(i, cleaned_result) 
         if cleaned_result:
             lab_result = LabResult.objects.create(
                     lab_request_id = i,

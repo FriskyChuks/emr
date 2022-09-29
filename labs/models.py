@@ -48,7 +48,7 @@ class LabTest(models.Model):
 
 class LabRequest(models.Model):
     encounter           = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE, blank=True, null=True)
-    patient             = models.ForeignKey(Patient, on_delete=models.CASCADE, blank=True, null=True)
+    # patient             = models.ForeignKey(Patient, on_delete=models.CASCADE, blank=True, null=True)
     test                = models.ForeignKey(LabTest, on_delete=models.CASCADE)
     accepted            = models.BooleanField(default=False)
     decline             = models.BooleanField(default=False)
@@ -59,7 +59,6 @@ class LabRequest(models.Model):
 
     def __str__(self):
         return str(self.test)
-
 
 
 class LabResult(models.Model):

@@ -25,7 +25,7 @@ PAY_ACTION = (
 
 class Bill(models.Model):
     encounter           = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE, blank=True, null=True)
-    patient             = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    # patient             = models.ForeignKey(Patient, on_delete=models.CASCADE)
     medical_service     = models.ForeignKey(PatientEncounterService, on_delete=models.CASCADE, blank=True, null=True)
     radiology_service   = models.ForeignKey(RadiologyRequest, on_delete=models.CASCADE, blank=True, null=True)
     # prescription        = models.ForeignKey(Prescription, on_delete=models.CASCADE, blank=True, null=True)
@@ -71,7 +71,7 @@ class PaymentDetail(models.Model):
         elif self.bill.medical_service:
             return f"{self.bill.medical_service} {self.bill.medical_service.medical_service.price}"
         elif self.bill.dispensary:
-            return f"{self.bill.dispensary} {self.bill.dispensary.prescription.brand.sale_price}"
+            return f"{self.bill.dispensary} {self.bill.dispensary.brand.sale_price}"
         else:
             return f"{self.bill.radiology_service} {self.bill.radiology_service.radiology_service.price}"
 

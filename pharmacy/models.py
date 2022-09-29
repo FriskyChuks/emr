@@ -92,8 +92,8 @@ class Brand(models.Model):
 class Prescription(models.Model):
     encounter_no        = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE)
     patient             = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    # item                = models.ForeignKey(Item, on_delete=models.CASCADE)
-    brand               = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    item                = models.ForeignKey(Item, on_delete=models.CASCADE)
+    # brand               = models.ForeignKey(Brand, on_delete=models.CASCADE)
     qty_per_take        = models.IntegerField()
     times_daily         = models.CharField(max_length=20, choices=TIMES_DAILY)
     no_of_days          = models.IntegerField()
@@ -105,20 +105,20 @@ class Prescription(models.Model):
     updated             = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
-        return str(self.brand.title)
+        return str(self.item.title)
 
 
 # DISPENSE MODEL HERE
 class Dispensary(models.Model):
     prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE)
-    # brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     # qty = models.PositiveIntegerField()
     qty_dispensed = models.PositiveIntegerField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True, auto_now=False)
 
     def __str__(self):
-        return str(self.prescription.brand.title)
+        return str(self.brand.title)
 
     
 

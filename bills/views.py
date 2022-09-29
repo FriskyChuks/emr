@@ -87,17 +87,17 @@ def clear_outstanding_bills_view(request, pid):
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','cashier'])
 def pending_bills_view(request, pid): 
-    bills = Bill.objects.filter(patient=pid, status="billed") | Bill.objects.filter(patient=pid, status="pending")
-    services_bills = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='pending')
-    radiology_bills = Bill.objects.filter(patient=pid, radiology_service__isnull=False, status='pending')
-    lab_bills = Bill.objects.filter(patient=pid, lab_request__isnull=False, status='pending')
-    pharmacy_bills = Bill.objects.filter(patient=pid, dispensary__isnull=False)
+    bills = Bill.objects.filter(encounter__patient=pid, status="billed") | Bill.objects.filter(encounter__patient=pid, status="pending")
+    services_bills = Bill.objects.filter(encounter__patient=pid, medical_service__isnull=False, status='pending')
+    radiology_bills = Bill.objects.filter(encounter__patient=pid, radiology_service__isnull=False, status='pending')
+    lab_bills = Bill.objects.filter(encounter__patient=pid, lab_request__isnull=False, status='pending')
+    pharmacy_bills = Bill.objects.filter(encounter__patient=pid, dispensary__isnull=False)
 
     # OUTSTANDING BILLS
-    billed_med_serv = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
-    billed_rad_serv = Bill.objects.filter(patient=pid, radiology_service__isnull=False, status='billed')
-    billed_lab_serv = Bill.objects.filter(patient=pid, lab_request__isnull=False, status='billed')
-    pharm_outstanding_bill = Bill.objects.filter(patient=pid, dispensary__isnull=False, status='billed')
+    billed_med_serv = Bill.objects.filter(encounter__patient=pid, medical_service__isnull=False, status='billed')
+    billed_rad_serv = Bill.objects.filter(encounter__patient=pid, radiology_service__isnull=False, status='billed')
+    billed_lab_serv = Bill.objects.filter(encounter__patient=pid, lab_request__isnull=False, status='billed')
+    pharm_outstanding_bill = Bill.objects.filter(encounter__patient=pid, dispensary__isnull=False, status='billed')
     
     # OUTSATANDING SERVICES
     outstanding_med_serv = 0.00

@@ -1,18 +1,20 @@
+from operator import index
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-import json
+import simplejson as json
 from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.contrib import messages
 import itertools
+from django.core import serializers
 
 from visits.models import PatientEncounter
 from patients.models import Patient
 from accounts.decorators import allowed_users
-
 from .forms import ItemForm, BrandForm, PrescriptionForm
 from .models import Item, Prescription, Brand, Dispensary
+from bills.models import Bill
 
 
 def search_drug_view(request):
@@ -83,7 +85,7 @@ def prescription_view(request, enc_id):
     brand = Brand.objects.all
     prescriptionFormSet = inlineformset_factory(
                                 PatientEncounter, Prescription, fields=(
-                                    'brand', 'route','qty_per_take','times_daily','no_of_days','note'
+                                    'item', 'route','qty_per_take','times_daily','no_of_days','note'
                                     ), extra=5
                                 )
     encounter = PatientEncounter.objects.get(active=True, id=enc_id)
@@ -117,30 +119,29 @@ def prescription_view1(request, enc_id):
 
 def dispensary_view(request, pid):
     prescription = Prescription.objects.filter(patient=pid, dispensed=False).order_by('-encounter_no')
-    brands = Brand.objects.all
+    brands = Brand.objects.all()
     
-    if request.method == "POST":
-        if request.POST.get("brand_ID"):
-            dispensed = Dispensary()
-            dispensed.prescription_id = request.POST.get("brand_ID")
-            dispensed.qty_dispensed = request.POST.get("brand_Qty") 
-            # paid_amount = request.POST.get("pay_amount")
-            
-            # convert Comma separated string to a python list
-            dispensed_brand_list = dispensed.prescription_id.split(",")
-            dispensed_qty_list = dispensed.qty_dispensed.split(",")
-
-            for (item, qty) in zip(dispensed_brand_list, dispensed_qty_list):
-                print('brand: ', item)
-                print('qty: ', qty)
-                Dispensary.objects.create(
-                            prescription_id=item,
-                            qty_dispensed=qty,
-                            created_by=request.user
-                        )
-                Prescription.objects.filter(id=item).update(dispensed=True)
-            
-    template = "pharmacy/dispensary.html"
-    # template = "pharmacy/backup.html"
-    context = {"prescription":prescription, "brands":brands}
+    list_prescription = list(prescription.values())
+    list_brands = list(brands.values())
+               
+    # template = "pharmacy/dispensary.html"
+    template = "pharmacy/backup.html"
+    context = {"prescription":prescription, "pid":pid, "brands":brands, "json_prescriptions":list_prescription, "json_brands":list_brands}
     return render(request, template,context)
+
+import json
+def submit_dispensery_view(request):
+    if request.method == "POST":
+        data = request.POST.get('data')
+        # convert string to list
+        list_data = json.loads(data)
+        # extract dict in list and insert to db
+        for dict_data in list_data:
+            disp_obj = Dispensary.objects.create(prescription_id=dict_data['prescription_id'],
+                        brand_id=dict_data['brand_id'], qty_dispensed=dict_data['quantity_dispensed'],
+                        created_by_id=request.user.id)
+            disp_obj.save()
+            Prescription.objects.filter(id=dict_data['prescription_id']).update(dispensed=True)        
+        messages.success(request, "items dispensed successfully!")
+
+        return JsonResponse({})
