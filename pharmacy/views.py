@@ -5,7 +5,6 @@ from django.db.models import Count
 from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.contrib import messages
-import itertools
 from django.core import serializers
 
 from visits.models import PatientEncounter
