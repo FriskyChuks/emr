@@ -2,7 +2,6 @@ from operator import index
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-import simplejson as json
 from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.contrib import messages
