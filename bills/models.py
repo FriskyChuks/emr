@@ -24,27 +24,28 @@ PAY_ACTION = (
 
 
 class Bill(models.Model):
-    encounter           = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE, blank=True, null=True)
-    # patient             = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    medical_service     = models.ForeignKey(PatientEncounterService, on_delete=models.CASCADE, blank=True, null=True)
-    radiology_service   = models.ForeignKey(RadiologyRequest, on_delete=models.CASCADE, blank=True, null=True)
-    # prescription        = models.ForeignKey(Prescription, on_delete=models.CASCADE, blank=True, null=True)
-    dispensary          = models.ForeignKey(Dispensary, on_delete=models.CASCADE, blank=True, null=True)
-    lab_request         = models.ForeignKey(LabRequest, on_delete=models.CASCADE, blank=True, null=True)
-    status              = models.CharField(max_length=10, choices=BILL_STATUS, default='pending')
-    created_by          = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    date_created        = models.DateTimeField(auto_now_add=False, auto_now=True)
-    last_updated        = models.DateTimeField(auto_now_add=True, auto_now=False)
+    pass
+    # encounter           = models.ForeignKey(PatientEncounter, on_delete=models.CASCADE, blank=True, null=True)
+    # # patient             = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    # medical_service     = models.ForeignKey(PatientEncounterService, on_delete=models.CASCADE, blank=True, null=True)
+    # radiology_service   = models.ForeignKey(RadiologyRequest, on_delete=models.CASCADE, blank=True, null=True)
+    # # prescription        = models.ForeignKey(Prescription, on_delete=models.CASCADE, blank=True, null=True)
+    # dispensary          = models.ForeignKey(Dispensary, on_delete=models.CASCADE, blank=True, null=True)
+    # lab_request         = models.ForeignKey(LabRequest, on_delete=models.CASCADE, blank=True, null=True)
+    # status              = models.CharField(max_length=10, choices=BILL_STATUS, default='pending')
+    # created_by          = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    # date_created        = models.DateTimeField(auto_now_add=False, auto_now=True)
+    # last_updated        = models.DateTimeField(auto_now_add=True, auto_now=False)
 
-    def __str__(self):
-        if self.medical_service:
-            return f"{self.medical_service}"
-        elif self.radiology_service:
-            return f"{self.radiology_service}"
-        elif self.lab_request:
-            return f"{self.lab_request}"
-        else:
-            return f"{self.dispensary}"
+    # def __str__(self):
+    #     if self.medical_service:
+    #         return f"{self.medical_service}"
+    #     elif self.radiology_service:
+    #         return f"{self.radiology_service}"
+    #     elif self.lab_request:
+    #         return f"{self.lab_request}"
+    #     else:
+    #         return f"{self.dispensary}"
 
 
 class Payment(models.Model):
