@@ -28,9 +28,9 @@ def clear_outstanding_bills_view(request, pid):
     patient_wallet = Wallet.objects.get(patient_id=pid)
     initial_balance = patient_wallet.account_balance
     med_serv_outstanding_bill = Bill.objects.filter(
-                                patient=pid, medical_service__isnull=False, status='billed')
-    pharm_outstanding_bill = Bill.objects.filter(
-                                patient=pid, dispensary__isnull=False, status='billed')                            
+                                encounter__patient__id=pid, medical_service__isnull=False, status='billed')
+    pharm_outstanding_bill = Bill.objects.filter(encounter__patient__id=pid,
+                                 dispensary__isnull=False, status='billed')                            
     os_total = float(0.00)
     bill_list = []
     for bill in med_serv_outstanding_bill:
@@ -227,8 +227,8 @@ def load_wallet_view(request, pid):
     patient_wallet = Wallet.objects.get(patient_id=pid)
     initial_balance = patient_wallet.account_balance
 
-    med_serv_outstanding_bill = Bill.objects.filter(patient=pid, medical_service__isnull=False, status='billed')
-    pharm_outstanding_bill = Bill.objects.filter(patient=pid, dispensary__isnull=False, status='billed')
+    med_serv_outstanding_bill = Bill.objects.filter(encounter__patient=pid, medical_service__isnull=False, status='billed')
+    pharm_outstanding_bill = Bill.objects.filter(encounter__patient=pid, dispensary__isnull=False, status='billed')
 
     os_total = float(0.00)
     for bill in med_serv_outstanding_bill:
@@ -255,7 +255,7 @@ def load_wallet_view(request, pid):
                 initial_balance = float(initial_balance) + float(deposit_amount)
                 Wallet.objects.filter(patient_id=pid).update(account_balance=initial_balance, created_by=request.user)
                 payment_instance = Payment.objects.create(amount_paid=deposit_amount, action='deposit', patient_id=pid, created_by=user)
-                bill_instance = Bill.objects.create(patient_id=pid, status='paid', created_by=user)
+                bill_instance = Bill.objects.create(encounter__patient__id=pid, status='paid', created_by=user)
                 PaymentDetail.objects.create(payment_id=payment_instance.id,bill_id=bill_instance.id,created_by=user)
                 messages.success(request, 'Wallet loaded successfully, thanks!')
                 return redirect('wallet', pid=pid)
