@@ -44,7 +44,7 @@ def clear_outstanding_bills_view(request, pid):
     pharm_bill_list = []
     for pharm_bill in pharm_outstanding_bill:
         pharm_bill_list.append(pharm_bill.id)
-        pharm_price = pharm_bill.dispensary.prescription.brand.sale_price
+        pharm_price = pharm_bill.dispensary.brand.sale_price
         pharm_qty_dispensed = pharm_bill.dispensary.qty_dispensed
         pharm_os_total = pharm_os_total + (float(pharm_price * pharm_qty_dispensed))
 
@@ -112,7 +112,7 @@ def pending_bills_view(request, pid):
         outstanding_med_serv = float(med_serv_price * med_serv_qty)
     # OUTSATANDING PHARM BILLS
     for pharm_bill in pharm_outstanding_bill:
-        pharm_price = pharm_bill.dispensary.prescription.brand.sale_price
+        pharm_price = pharm_bill.dispensary.brand.sale_price
         pharm_qty_dispensed = pharm_bill.dispensary.qty_dispensed
         outstanding_pharm = float(pharm_price * pharm_qty_dispensed)
     # # OUTSATANDING RADIOLOGY BILLS
@@ -255,7 +255,7 @@ def load_wallet_view(request, pid):
                 initial_balance = float(initial_balance) + float(deposit_amount)
                 Wallet.objects.filter(patient_id=pid).update(account_balance=initial_balance, created_by=request.user)
                 payment_instance = Payment.objects.create(amount_paid=deposit_amount, action='deposit', patient_id=pid, created_by=user)
-                bill_instance = Bill.objects.create(encounter__patient__id=pid, status='paid', created_by=user)
+                bill_instance = Bill.objects.create(status='paid', created_by=user)
                 PaymentDetail.objects.create(payment_id=payment_instance.id,bill_id=bill_instance.id,created_by=user)
                 messages.success(request, 'Wallet loaded successfully, thanks!')
                 return redirect('wallet', pid=pid)
