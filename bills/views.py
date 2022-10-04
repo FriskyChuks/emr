@@ -238,7 +238,7 @@ def load_wallet_view(request, pid):
     # pharmacy bill
     pharm_os_total = float(0.00)
     for pharm_bill in pharm_outstanding_bill:
-        pharm_price = pharm_bill.dispensary.prescription.brand.sale_price
+        pharm_price = pharm_bill.dispensary.brand.sale_price
         pharm_qty_dispensed = pharm_bill.dispensary.qty_dispensed
         pharm_os_total += (float(pharm_price * pharm_qty_dispensed))
 

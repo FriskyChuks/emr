@@ -112,7 +112,7 @@
       <div class="card card-body">
         <div class="table-responsive">
           {% for encounter in current_encounter|slice:":1" %}
-            <button style="float: right;">
+            <button class="btn btn-secondary" style="float: right;">
               <a href="{% url 'take_vital_signs' id=encounter.id %}" >
                 Take New Vital Signs
               </a>

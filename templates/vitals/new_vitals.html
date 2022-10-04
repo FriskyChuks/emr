@@ -30,7 +30,7 @@
 
     <!-- Collapse -->
     <p>
-      <a class="btn btn-primary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">View previous Vital signs</a>
+      <a class="btn btn-secondary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">View previous Vital signs</a>
       <!-- <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Toggle second element</button>
       <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Toggle both elements</button> -->
     </p>
@@ -38,8 +38,8 @@
       <div class="col-md-10">
         <div class="collapse multi-collapse" id="multiCollapseExample1">
           <div class="card card-body">
-            <!-- Previous vitals table starts here -->
-            <h5>Previous Vitals</h5>    
+            <div class="table-responsive">
+              <h5>Previous Vitals</h5>    
               <table class="table">
                 <thead>
                   <tr>
@@ -68,6 +68,7 @@
                     {% endfor %}           
                 </tbody>
               </table>
+            </div>  
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db.models.enums import Choices
 from django.urls import reverse
 from django.db import models
@@ -46,7 +47,6 @@ TIMES_DAILY = (
     ('1','PRN'),
 )
 
-
 class Item(models.Model):
     category        = models.CharField(max_length=50, choices=CATEGORY)
     title           = models.CharField(max_length=120)
@@ -73,6 +73,7 @@ class Brand(models.Model):
     description     = models.TextField(null=True, blank=True)
     price           = models.DecimalField(max_digits=65, decimal_places=2, default=00.00)
     sale_price      = models.DecimalField(max_digits=65, decimal_places=2, default=00.00, null=True, blank=True)
+    stock_level     = models.IntegerField(default=0)
     slug            = models.SlugField(unique=True, blank=True, null=True)
     timestamp       = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated         = models.DateTimeField(auto_now_add=False, auto_now=True)

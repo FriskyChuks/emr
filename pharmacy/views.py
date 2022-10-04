@@ -8,9 +8,8 @@ from django.contrib import messages
 from django.core import serializers
 
 from visits.models import PatientEncounter
-from patients.models import Patient
 from accounts.decorators import allowed_users
-from .forms import ItemForm, BrandForm, PrescriptionForm
+from .forms import ItemForm, BrandForm
 from .models import Item, Prescription, Brand, Dispensary
 from bills.models import Bill
 
@@ -106,7 +105,8 @@ def prescription_view(request, enc_id):
     context = {"formset":formset, "encounter":encounter, "brand":brand}
     return render(request, template,context)
 
-
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['admin','doctor','nurse'])
 def prescription_view1(request, enc_id):
     prescribed = request.POST
 
@@ -114,7 +114,8 @@ def prescription_view1(request, enc_id):
     context = {}
     return render(request, template,context)
 
-
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['pharmacy'])
 def dispensary_view(request, pid):
     prescription = Prescription.objects.filter(patient=pid, dispensed=False).order_by('-encounter_no')
     brands = Brand.objects.all()
@@ -128,6 +129,8 @@ def dispensary_view(request, pid):
     return render(request, template,context)
 
 import json
+@login_required(login_url="auth_login")
+@allowed_users(alllowed_roles=['pharmacy'])
 def submit_dispensery_view(request):
     if request.method == "POST":
         data = request.POST.get('data')
@@ -139,7 +142,10 @@ def submit_dispensery_view(request):
                         brand_id=dict_data['brand_id'], qty_dispensed=dict_data['quantity_dispensed'],
                         created_by_id=request.user.id)
             disp_obj.save()
-            Prescription.objects.filter(id=dict_data['prescription_id']).update(dispensed=True)        
+            Prescription.objects.filter(id=dict_data['prescription_id']).update(dispensed=True) 
+            initial_stock=int(Brand.objects.get(id=dict_data['brand_id']).stock_level)
+            Brand.objects.filter(id=dict_data['brand_id']).update(
+                        stock_level=initial_stock-int(dict_data['quantity_dispensed']))      
         messages.success(request, "items dispensed successfully!")
 
         return JsonResponse({})

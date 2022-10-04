@@ -5,6 +5,8 @@
    {% if wallet_balance < 0 %}
         <h4 style="color: red;">Account Balance: N{{ initial_balance }}</h4>
    {% else %}
-        <h4 style="color: blue;">Account Balance: N{{ initial_balance }}</h4>
+        <h4 style="color: blue;">Account Balance: 
+          <span style="color: green;">N{{ initial_balance }}</span>
+        </h4>
    {% endif %}
 </h4>
