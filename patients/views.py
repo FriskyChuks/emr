@@ -12,13 +12,39 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
 from visits.models import PatientEncounter, EncounterRoute
-from accounts.models import User
+from accounts.models import *
 from diagnosis.models import MakeDiagnosis
 from accounts.decorators import allowed_users
 
 from .models import Patient
 from .forms import PatientBiodataForm, PatientImageForm, UpdatePatientForm
 
+
+def home(request):
+    patients = Patient.objects.all()
+    outpatient_count = PatientEncounter.objects.filter(current_clinic__isnull=False, active=True).count()
+    inpatient_count = PatientEncounter.objects.filter(current_ward__isnull=False, active=True).count()
+    patient_count = Patient.objects.filter(active=True).count()
+    today_patient_count = Patient.objects.filter(active=True, date_created__gte=datetime.date.today()).count()
+    today_outpatient_count = EncounterRoute.objects.filter(clinic__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
+    today_inpatient_count = EncounterRoute.objects.filter(ward__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
+    user_count = User.objects.filter(is_a_patient=False).count()
+
+
+    template = "home/dashboard.html"
+    context = {
+        "patients": patients, 
+        "patient_count":patient_count,
+        "user_count":user_count,
+        "today_patient_count":today_patient_count,
+        # "today_encounters":today_encounters,
+        "outpatient_count":outpatient_count,
+        "inpatient_count":inpatient_count,
+        "today_outpatient_count":today_outpatient_count,
+        "today_inpatient_count":today_inpatient_count,
+        # "today_encounters":today_encounters
+        }
+    return render(request, template, context)
 
 @login_required(login_url="auth_login")
 @allowed_users(alllowed_roles=['admin','doctor','nurse'])
@@ -69,33 +95,6 @@ def patient_detail_view(request, id):
 
     template = "patients/patient_info.html"
     context = {"patient":patient}
-    return render(request, template, context)
-
-
-def home(request):
-    patients = Patient.objects.all()
-    outpatient_count = PatientEncounter.objects.filter(current_clinic__isnull=False, active=True).count()
-    inpatient_count = PatientEncounter.objects.filter(current_ward__isnull=False, active=True).count()
-    patient_count = Patient.objects.filter(active=True).count()
-    today_patient_count = Patient.objects.filter(active=True, date_created__gte=datetime.date.today()).count()
-    today_outpatient_count = EncounterRoute.objects.filter(clinic__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
-    today_inpatient_count = EncounterRoute.objects.filter(ward__isnull=False, date_created__gte=datetime.date.today(), active=True).count()
-    user_count = User.objects.filter(is_a_patient=False).count()
-
-
-    template = "home/dashboard.html"
-    context = {
-        "patients": patients, 
-        "patient_count":patient_count,
-        "user_count":user_count,
-        "today_patient_count":today_patient_count,
-        # "today_encounters":today_encounters,
-        "outpatient_count":outpatient_count,
-        "inpatient_count":inpatient_count,
-        "today_outpatient_count":today_outpatient_count,
-        "today_inpatient_count":today_inpatient_count,
-        # "today_encounters":today_encounters
-        }
     return render(request, template, context)
 
 

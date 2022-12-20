@@ -33,8 +33,8 @@ class Bill(models.Model):
     lab_request         = models.ForeignKey(LabRequest, on_delete=models.CASCADE, blank=True, null=True)
     status              = models.CharField(max_length=10, choices=BILL_STATUS, default='pending')
     created_by          = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    date_created        = models.DateTimeField(auto_now_add=False, auto_now=True)
-    last_updated        = models.DateTimeField(auto_now_add=True, auto_now=False)
+    date_created        = models.DateTimeField(auto_now_add=True, auto_now=False)
+    last_updated        = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
         if self.medical_service:
@@ -52,7 +52,7 @@ class Payment(models.Model):
     action          = models.CharField(max_length=20, choices=PAY_ACTION)
     patient         = models.ForeignKey(Patient, on_delete=models.CASCADE)
     created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    date_created    = models.DateTimeField(auto_now_add=False, auto_now=True)
+    date_created    = models.DateTimeField(auto_now_add=True, auto_now=False)
 
     def __str__(self):
         return str(self.amount_paid)
@@ -77,11 +77,11 @@ class PaymentDetail(models.Model):
 
 
 class Wallet(models.Model):
-    patient         = models.OneToOneField(Patient, on_delete=models.CASCADE, null=True, blank=True)
+    patient         = models.OneToOneField(Patient, on_delete=models.CASCADE)
     account_balance = models.DecimalField(decimal_places=2, default='00.00', max_digits=20)
     created_by      = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    date_created    = models.DateTimeField(auto_now_add=False, auto_now=True)
-    last_updated    = models.DateTimeField(auto_now_add=True, auto_now=False)
+    date_created    = models.DateTimeField(auto_now_add=True, auto_now=False)
+    last_updated    = models.DateTimeField(auto_now_add=False, auto_now=True, null=True)
 
     def __str__(self):
         return f"N{self.account_balance} || {self.patient.id}"

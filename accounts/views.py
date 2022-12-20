@@ -5,7 +5,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from .models import User
+from .models import User, Group
 from .forms import ContactForm, LoginForm, RegisterForm
 
 from .decorators import allowed_users
@@ -16,7 +16,6 @@ from .decorators import allowed_users
 @allowed_users(alllowed_roles=['admin'])
 def registration_view(request):
     form = RegisterForm(request.POST or None)
-    # profile_form = RegisterForm(request.POST or None)
     if form.is_valid():# and profile_form.is_valid():
         new_user = form.save()
         new_user.save()
@@ -28,10 +27,10 @@ def registration_view(request):
     }
     return render(request, 'accounts/register.html', context)
 
-# @unauthenticated_user
+
 def login_view(request):
+    Group.objects.get_or_create(name='user')
     userlogin = request.user
-    # print(userlogin.id)
     if request.method == "POST":
         username_var = request.POST.get('username')
         password_var = request.POST.get('password')
@@ -82,5 +81,4 @@ def account_setting_view(request, user_id):
 
 def logout_view(request):
     logout(request)
-    # messages.success(request, "Sad to see you leave! See you soon please!")
     return HttpResponseRedirect('%s'%(reverse("auth_login")))
