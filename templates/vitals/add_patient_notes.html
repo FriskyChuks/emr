@@ -6,16 +6,24 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-<br>
-
 {% for p in p_encounter|slice:":1" %}
-<--<a href="{% url 'patient_folder' enc_id=p.id %}">Open {{ p.patient.first_name }}'s <b>Folder</b></a>
-<br>
-
+<a href="{% url 'patient_folder' enc_id=p.id %}">
+  <span class="hovertext" data-hover="Open Folder">
+    <i class="fa-regular fa-folder-open fa-lg"></i>
+  </span>
+</a>&nbsp; &nbsp;
   {% if p.current_clinic %}
-    <--<a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}">Back to {{ p.current_clinic }}</a>
+    <a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}">
+      <span class="hovertext" data-hover="{{ p.current_clinic }}">
+        <i class="fa-solid fa-hospital-user fa-lg"></i>
+      </span> 
+    </a>
   {% else %}
-    <--<a href="{% url 'ward_admission_display' id=p.current_ward.id %}">Back to {{ p.current_ward }}</a>
+    <a href="{% url 'ward_admission_display' id=p.current_ward.id %}">
+      <span class="hovertext" data-hover="{{ p.current_ward }}">
+        <i class="fa-solid fa-hospital-user fa-lg"></i>
+      </span>
+    </a>
   {% endif %}
 {% endfor %}
 <div>

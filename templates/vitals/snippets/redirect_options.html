@@ -1,0 +1,20 @@
+{% for p in p_encounter|slice:":1" %}
+<a href="{% url 'patient_folder' enc_id=p.id %}">
+  <span class="hovertext" data-hover="Open Folder">
+    <i class="fa-regular fa-folder-open fa-lg"></i>
+  </span>
+</a>&nbsp; &nbsp;
+  {% if p.current_clinic %}
+    <a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}">
+      <span class="hovertext" data-hover="{{ p.current_clinic }}">
+        <i class="fa-solid fa-hospital-user fa-lg"></i>
+      </span> 
+    </a>
+  {% else %}
+    <a href="{% url 'ward_admission_display' id=p.current_ward.id %}">
+      <span class="hovertext" data-hover="{{ p.current_ward }}">
+        <i class="fa-solid fa-hospital-user fa-lg"></i>
+      </span>
+    </a>
+  {% endif %}
+{% endfor %}

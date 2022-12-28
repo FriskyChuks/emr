@@ -7,7 +7,7 @@
 
 {% block content %} <br>
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
 
   <h4>Transfering <i>{{ qs.patient.first_name }} {{ qs.patient.last_name }}</i></h4>
   <h5>from {{ qs.current_clinic }} to:</h5>
@@ -24,8 +24,13 @@
     {% if clinic_id %}
     <div class="container">
       <div>
-        <label><input type="radio" name="rdbtn" id="r1" checked="checked" value="clinic" onchange="showClinic()"> Select Clinic</label>
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<label><input type="radio" name="rdbtn" id="r2" value="ward" onchange="showWard()"> Select Ward</label>
+        <label><input type="radio" name="rdbtn" id="r1" checked="checked" value="clinic" onchange="showClinic()"> <i class="fa-solid fa-hospital-user fa-lg"></i> 
+           <span style="font-size: small;">Select Clinic</span> 
+        </label>
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        <label><input type="radio" name="rdbtn" id="r2" value="ward" onchange="showWard()"> <i class="fa-solid fa-bed fa-lg"></i> 
+          <span style="font-size: small;">Select Ward</span>
+        </label>
       </div>
       <br>
       

@@ -14,12 +14,16 @@
 
 {% for patient in current_encounter|slice:":1" %}
   {% if patient.current_clinic %}
-    <a href="{% url 'clinic_visits_display' id=patient.current_clinic.id %}"><-- Go to {{ patient.current_clinic }}</a>
+    <a href="{% url 'clinic_visits_display' id=patient.current_clinic.id %}">
+      <span class="hovertext" data-hover="{{ patient.current_clinic }}">
+        <i class="fa-solid fa-house-chimney-medical fa-lg"></i>
+      </span> 
+    </a>
   {% else %}
   <a href="{% url 'ward_admission_display' id=patient.current_ward.id %}"><-- Go to {{ patient.current_ward }}</a>
   {% endif %}
 {% endfor %}
-<br>
+<br><br>
 <div>
     <p>
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#notes" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -316,62 +320,59 @@
     <br>
     <!-- cards -->
     <!-- Pharmacy Card -->
-    <div class="row">
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">
-              {% for e in current_encounter|slice:":1" %}
-              <a href="{% url 'prescription' enc_id=e.id %}" class="">
-                <h5><button class="btn btn-primary">Prescription</button></h5>
-              </a>
-              <h6 class="card-title">Recent Prescriptions</h6>
-              <p class="card-text">Patients drug allergy shows up here!</p>  
-            </div>
+    <div class="card-group">
+        <div class="card">
+          <div class="card-body">
+            {% for e in current_encounter|slice:":1" %}
+            <a href="{% url 'prescription' enc_id=e.id %}" class="">
+              <span class="hovertext" data-hover="Click to Prescribe">
+                  <i class="fa-solid fa-prescription fa-2xl"></i>
+              </span> 
+            </a>
+            <h6 class="card-title">Pharmacy Prescriptions</h6>
+            <p class="card-text">Patients drug allergy shows up here!</p>  
           </div>
         </div>
 
-        <!-- Card for Lab -->
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">
-              <a href="{% url 'lab_request' enc_id=e.id %}" class="">
-                <h5><button class="btn btn-primary">Lab Investigation</button></h5>
-              </a>
-              <h6 class="card-title">Recent Investigations</h6>
-              <p class="card-text">Flagged investigations show up here!</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <br>
-
-      <!-- Card for Radiology -->
-      <div class="row">
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">
-              <a href="{% url 'raise_patient_radiology_service' encounter_id=e.id %}" class="">
-                <h5><button class="btn btn-primary">Radiology Investigation</button></h5>
-              </a>  
-              <h6 class="card-title">Recent Investigations</h6>
-              <p class="card-text">Flagged investigations show up here!</p>
-            </div>
+      <!-- Card for Lab -->
+        <div class="card">
+          <div class="card-body"> 
+            <a href="{% url 'lab_request' enc_id=e.id %}" class="">
+              <span class="hovertext" data-hover="Click to request investigations">
+                <i class="fa-solid fa-flask-vial fa-2xl"></i>
+              </span>
+            </a>
+            <h6 class="card-title">Laboratory Investigations</h6>
+            <p class="card-text">Flagged investigations show up here!</p>
           </div>
         </div>
 
-        <!-- Card for Medical Services -->
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">              
-              <a href="{% url 'raise_patient_medical_service' encounter_id=e.id %}" class="">
-                <h5><button class="btn btn-primary">Medical Services</button></h5>
-              </a>
-              <h6 class="card-title">Recent Investigations</h6>
-              <p class="card-text">Flagged services show up here!</p>              
-            </div>
+        <!-- Card for Radiology -->
+        <div class="card">
+          <div class="card-body">
+            <a href="{% url 'raise_patient_radiology_service' encounter_id=e.id %}" class="">
+              <span class="hovertext" data-hover="Request Radiology Investigations">
+                <i class="fa-solid fa-x-ray fa-2xl"></i>
+              </span> 
+            </a>  <br>
+            <h6 class="card-title">Radiology Investigations</h6>
+            <p class="card-text">Flagged investigations show up here!</p>
           </div>
         </div>
-      </div>
+
+      <!-- Card for Medical Services -->
+        <div class="card">
+          <div class="card-body">              
+            <a href="{% url 'raise_patient_medical_service' encounter_id=e.id %}" class="">
+              <span class="hovertext" data-hover="Request Medical Services">
+                <i class="fa-solid fa-suitcase-medical fa-2xl"></i>
+              </span>
+            </a> <br>
+            <h6 class="card-title">Medical Services</h6>
+            <p class="card-text">Flagged services show up here!</p>              
+          </div>
+        </div>
+    </div>
       {% endfor %} 
   </div>
   {% endblock %}
