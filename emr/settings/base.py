@@ -103,6 +103,8 @@ WSGI_APPLICATION = 'emr.wsgi.application'
 #     }
 # }
 
+DATABASES['defaults'] = dj_database_url.config()
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
