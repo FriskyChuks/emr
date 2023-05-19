@@ -1,7 +1,9 @@
 from django.contrib.messages import constants as messages
 import os
 from pathlib import Path
+import dj_database_url
 import decouple
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -16,7 +18,11 @@ SECRET_KEY = '3zjkc0dd^5hi@xgvrkb^ip6l=$15pf)w5*spd$9dxx#0$fijf5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
+# ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
+ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', '.now.sh']
+# Or * to allow all
+ALLOWED_HOSTS = ['*']
+
 # ALLOWED_HOSTS = ['192.168.43.67']
 
 
@@ -96,12 +102,19 @@ WSGI_APPLICATION = 'emr.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+load_dotenv()
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'HOST': os.environ.get("DB_HOST"),
+        'PORT': os.environ.get("DB_PORT"),
+    }
+}
+
 
 DATABASES['defaults'] = dj_database_url.config()
 
