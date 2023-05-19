@@ -168,7 +168,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/img/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'assets', 'img')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'static_root')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
@@ -191,4 +191,4 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

@@ -65,18 +65,38 @@
                     </td>
                     
                     <td>{{ qs.updated|timesince }}</td>
-                    <td><a href="{% url 'take_vital_signs' id=qs.id %}">Vitals</a> &nbsp; &nbsp;
-                      <a href="{% url 'patient_notes' id=qs.id %}">Notes</a>&nbsp; &nbsp;
-                      <a href="{% url 'patient_folder' enc_id=qs.id  %}">Folder</a>&nbsp; &nbsp; &nbsp;
+                    <td>
+                      <!-- VITALS -->                            
+                      <a href="{% url 'take_vital_signs' id=qs.id %}">
+                        <span class="hovertext" data-hover="Take vital signs">
+                          <i class="fa-solid fa-stethoscope fa-lg"></i>
+                        </span>
+                      </a> &nbsp; &nbsp;
+                      <!-- NOTES -->
+                      <a href="{% url 'patient_notes' id=qs.id %}">
+                        <span class="hovertext" data-hover="Clerk patient">
+                          <i class="fa-solid fa-notes-medical fa-lg"></i>
+                        </span>
+                      </a>&nbsp; &nbsp; 
+                      <!-- FOLDER -->
+                      <a href="{% url 'patient_folder' enc_id=qs.id  %}">
+                        <span class="hovertext" data-hover="Open Folder">
+                          <i class="fa-regular fa-folder-open fa-lg"></i>
+                        </span>
+                      </a>&nbsp; &nbsp; &nbsp;
+                      <!-- Transfer -->
                       <a href="{% url 'transfer_patient' id=qs.id %}">
-                        <svg class="icon icon-xs text-success me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M14.707 12.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                        <!-- Transfer -->
+                        <span class="hovertext" data-hover="Transfer/Admit patient">
+                          <i class="fa-solid fa-house-chimney-medical fa-lg"></i>
+                        </span>
                       </a>&nbsp; &nbsp;
+                      <!-- Discharge -->
                       <a href="{% url 'discharge_patient' id=qs.id %}">
-                        <svg class="icon icon-xs text-danger me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                        <!-- Discharge -->
+                        <span class="hovertext" data-hover="Discharge patient">
+                          <i class="fa-solid fa-eject fa-lg"></i>
+                        </span>
                       </a>
-                  </td>
+                    </td>
                 </tr>               
                 {% endfor %}
                 </tbody>
