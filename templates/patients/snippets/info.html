@@ -1,0 +1,109 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Patient Info {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+  div.gallery img {
+            width: 180px;
+            height: 180px;
+          }
+
+          div.desc {
+            padding: 15px;
+            text-align: center;
+          }
+</style>
+
+{% for patient in patient %}
+
+  <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
+    <a href="{% url 'schedule_appointment' patient_id=patient.id %}"><button type="button" class="btn btn-primary col-md-12">Click here to Schedule Appointment</button></a>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-3">
+      {% if patient.foto %}
+      <div class="gallery">
+        <img src="{{ patient.foto.url }}" alt="Northern Lights" width="600" height="400">
+        <br>
+        <br>
+        <a href="{% url 'upload_image' pid=patient.id %}"><button class="btn btn-primary">Update Image</button></a>
+      {% else %}
+        <a href="{% url 'upload_image' pid=patient.id %}"><button class="btn btn-primary">Attach Image</button></a>
+      {% endif %}
+      </div>
+    </div>
+    <div class="col-sm-9">
+      <!-- <div class="card">
+        <div class="card-body"> -->
+          <h4 class="card-title">{{ patient.first_name }} {{ patient.last_name }} {{ patient.other_name }} || {{ patient.id }}</h4>
+          <p class="card-text">
+            Phone:&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.phone_1 }} <br>
+            Age:&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.date_of_birth|timesince }} old <br>
+            Gender: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.gender|capfirst }} <br> 
+            Marital status:&nbsp; {{ patient.marital_status|capfirst }} <br>
+            L.G.A: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {{ patient.l_g_a|capfirst }} <br>
+            State: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {{ patient.state|capfirst }} <br>
+            Nationality:&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; {{ patient.country|capfirst }}
+          </p>
+          
+            <hr>
+            <div class="nav d-flex justify-content-between">
+              {% if patient.new %}
+                {% if request.user.group.name == 'HIM' or request.user.group.name == 'admin' %}
+                  <a href="{% url 'create_new_encounter' patient_id=patient.id %}"><button class="btn btn-primary">Send to Clinic</button></a>
+                {% endif %}
+              {% else %}
+                {% for p in patient.patientencounter_set.all|dictsortreversed:"id" %}
+                  {% if p.active  %}
+                    {% if p.current_clinic  %} 
+                      {% if request.user.group.name == 'HIM' or request.user.group.name == 'admin' %}
+                        <a href="{% url 'clinic_visits_display' id=p.current_clinic_id %}"><button class="btn btn-primary">{{ p.current_clinic.clinic }} Clinic</button></a>
+                      {% endif %}
+                    {% else %}
+                      {% if request.user.group.name == 'HIM' or request.user.group.name == 'admin' %}
+                        <a href="{% url 'ward_admission_display' id=p.current_ward_id %}"><button class="btn btn-primary">{{ p.current_ward.ward }} Ward</button></a>            
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+              {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
+                {% if not p.active  %}
+                  {% if request.user.group.name == 'HIM' %}
+                    <a href="{% url 'create_new_encounter' patient_id=patient.id %}"><button class="btn btn-primary">Send to Clinic</button></a>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              {% if request.user.group.name == 'HIM' or request.user.group.name == 'admin' %}
+              <a href="{% url 'update_patient' pk=patient.id %}" class="card-link"><button class="btn btn-primary">Update Record</button></a>
+              {% endif %}
+              {% if request.user.group.name == 'nurse' or request.user.group.name == 'doctor' or request.user.group.name == 'admin' %}
+                {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
+                  {% if p.active  %}
+                    <a href="{% url 'patient_folder' enc_id=p.id %}" class="card-link"><button class="btn btn-primary">View Folder</button></a>
+                  {% else %}
+                    <a href="{% url 'archives' patient_id=patient.id %}" class="card-link"><button class="btn btn-primary">View Patient Achives</button></a>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+              {% if request.user.group.name == 'cashier' %}
+                {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
+                  <a href="{% url 'pending_bills' pid=patient.id %}" class="card-link">Pay Bills</a>
+                {% endfor %}
+              {% endif %}
+            </div>
+            
+        <!-- </div>
+      </div> -->
+    </div>
+  </div>
+
+{% endfor %}
+
+{% endblock %}

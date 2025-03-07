@@ -1,0 +1,91 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Add notes {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+{% for p in p_encounter|slice:":1" %}
+<a href="{% url 'patient_folder' enc_id=p.id %}">
+  <span class="hovertext" data-hover="Open Folder">
+    <i class="fa-regular fa-folder-open fa-lg"></i>
+  </span>
+</a>&nbsp; &nbsp;
+  {% if p.current_clinic %}
+    <a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}">
+      <span class="hovertext" data-hover="{{ p.current_clinic }}">
+        <i class="fa-solid fa-hospital-user fa-lg"></i>
+      </span> 
+    </a>
+  {% else %}
+    <a href="{% url 'ward_admission_display' id=p.current_ward.id %}">
+      <span class="hovertext" data-hover="{{ p.current_ward }}">
+        <i class="fa-solid fa-hospital-user fa-lg"></i>
+      </span>
+    </a>
+  {% endif %}
+{% endfor %}
+<div>
+  <!-- Collapse -->
+  {% for p in p_encounter %}
+  <h4>  
+    {{ p.patient.first_name }} 
+    {{ p.patient.last_name }}  
+    {{ p.patient.other_names }},
+    {{ p.patient.date_of_birth|timesince }} old,
+    {{ p.patient.gender }}    
+  </h4>
+  {% endfor %}
+  <p>
+    <a class="btn btn-primary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Previous Notes</a>
+    <!-- <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Toggle second element</button>
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Toggle both elements</button> -->
+  </p>
+  <div class="row">    
+    <div class="col-md-10">
+      <div class="collapse multi-collapse" id="multiCollapseExample1">
+          {% for notes in current_encounter_notes|slice:":10" %}
+            <table class="table">
+              <thead>               
+               <tr>
+                {{ notes.note_type|capfirst }} &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; 
+                  <div style="color: red;">{{ notes.sub_title }}</div>
+
+                  <tr>
+                    <td><b>Date written: <br> </b>{{ notes.date|time:"h:i a" }} <br> {{ notes.date|date:"d-m-y" }}</td> 
+                    <td><b>Note: </b><br> {{ notes.note }}</td>
+                    <td><b>Written by</b><br> {{ notes.created_by }}</td>
+                    <td><b>Last updated: </b><br> {{ notes.updated }}</td>
+                </tr> 
+                  
+               </tr>
+              </thead> 
+
+            </table>
+            <br>
+            {% endfor %} 
+        </div>
+
+    </div>
+    <div class="col">
+      <div class="collapse multi-collapse" id="multiCollapseExample2">
+        <div class="card card-body">
+          Some placeholder content for the second collapse component of this multi-collapse example. This panel is hidden by default but revealed when the user activates the relevant trigger.
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+ 
+    <h5>Take Notes</h5>
+    <form class="row g-3" id="form" method="POST" action="">{% csrf_token %}
+      <div class="col-md-4">Note type: {{ form.note_type }}</div>
+      <div class="col-md-12">Sub-title: {{ form.sub_title }}</div>
+      <div class="col-md-12">Notes: {{ form.note }}</div>
+      <br>
+      <input type="submit" class="btn btn-success", value="Save">
+    </form>      
+  </div>
+{% endblock %}

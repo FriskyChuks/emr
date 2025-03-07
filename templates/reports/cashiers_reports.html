@@ -1,0 +1,95 @@
+{% extends "layouts/base.html" %}
+{% load humanize %}
+
+{% block title %} Reports {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<p>
+    <a style="background-color:black; color: white;" 
+        href="{% url 'general_financial_reports' %}">
+        <button style="background-color: rgba(57, 13, 201, 0.316);" type="button" class="btn btn-info">
+            General Financial Reports
+        </button> 
+    </a>
+</p>
+
+<h4>Cash Officers Reports</h4>
+<link rel="stylesheet" href="/static/assets/css/bootstrap2.min.css">
+<!-- <link rel="stylesheet" href="/static/assets/js/chart.js"> -->
+<div class="container">
+    <form action="." method="GET">  
+        <div class="form-row">
+            <div class="form-group col-md-2 col-lg-2">
+                <label for="publishDateMin">Transaction from</label>
+                <input type="date" class="form-control" id="publishDateMin" name="date_from">
+            </div>
+            <div class="form-group col-md-2 col-lg-2">
+                <label for="publishDateMax">Transaction to</label>
+                <input type="date" class="form-control" id="publishDateMax" name="date_to">
+            </div>
+            <!-- <div class="form-group col-md-4">
+                <label for="cashier">Payment Type</label>
+                <select id="action" class="form-control" name="action">
+                    <option selected disabled value="">---Select pay type---</option>
+                  <option value="deposit">Deposits</option>
+                  <option value="invoice">Invoices</option>
+                  <option value="receipt">Receipts</option>
+                </select>
+            </div> -->
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+        <br>    
+    </form>
+    <div> 
+        <center>
+        {% if data %}
+            {% if not date_to %}
+                <i>Search from <strong>{{date_from}}</strong> to <strong>Today</strong></i>
+            {% elif date_from and date_to %}
+                <i>Search from <strong>{{date_from}}</strong> to <strong>{{date_to}}</strong></i>
+            {% endif %}
+            <hr>
+            <h5>Total amount for the period: N{{total|intcomma}}</h5>
+            <!-- CHART -->
+            <div class="chart-container" style="position: relative; height:50vh; width:80vw">
+                <canvas id="myChart"></canvas>
+            </div>
+            
+            <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+            <script src="/static/assets/js/chart.js"></script>
+        
+            <script>
+                const ctx = document.getElementById('myChart');
+            
+                new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{labels|safe}},
+                    datasets: [{
+                    label: 'Total Money Received by Cashier (N)',
+                    data: {{data|safe}},
+                    backgroundColor:{{colors|safe}},
+                    borderWidth: 1
+                    }]
+                },
+                options: {
+                    resonsive:true,
+                    scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                    }
+                }
+                });
+            </script>
+        </center>
+        {% else %}
+            <center><h6 style="color: red;">Select date range</h6></center>
+        {% endif %}
+    </div>
+    <hr>
+</div>
+{% endblock %}

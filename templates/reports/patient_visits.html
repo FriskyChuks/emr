@@ -1,0 +1,114 @@
+{% extends "layouts/base.html" %}
+{% load humanize %}
+
+{% block title %} Reports {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/assets/css/bootstrap2.min.css">
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+
+{% include 'reports/snippets/report_categories.html' %}
+<h4>Patients' Visits Reports</h4>
+<form action="." method="GET">
+    <div class="form-row">         
+        <div class="form-group col-3">
+          <label for="validationCustom04" class="form-label">Patient ID</label>
+            <div class="input-group input-group-merge search-bar">
+                <span class="input-group-text" id="topbar-addon">
+                  <svg class="icon icon-xs" x-description="Heroicon name: solid/search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                  </svg>
+                </span>
+                <input type="text" class="form-control" aria-label="Search" aria-describedby="topbar-addon"
+                name="pid_exact" placeholder="Patient ID exact...">
+            </div>
+        </div>
+        <div class="col-md-3">
+          <label for="validationCustom04" class="form-label">Outpatient/Inpatients</label>
+          <select class="form-select" id="validationCustom04" name="clinic_ward">
+            <option selected disabled value="">...Select One...</option>
+              <option value="True">Outpatient</option>
+              <option value="False">Inpatient</option>
+          </select>
+        </div> 
+        <div class="col-md-3">
+          <label for="validationCustom04" class="form-label">Outpatient/Inpatients</label>
+          <select class="form-select" id="validationCustom04" name="clinic">
+            <option selected disabled value="">...Select Clinic...</option>
+            {% for clinic in clinics %}
+              <option value="{{clinic.id}}">{{clinic}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group col-md-2 col-lg-2">
+          <label for="publishDateMin">Date from</label>
+          <input type="date" class="form-control" id="publishDateMin" name="date_from">
+        </div>
+        <div class="form-group col-md-2 col-lg-2">
+          <label for="publishDateMax">Date to</label>
+          <input type="date" class="form-control" id="publishDateMax" name="date_to">
+        </div>
+               
+    </div>
+   
+    <div class="form-row">
+        
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button>
+    <br>    
+</form>
+<br>
+{% if not date_from or not date_to %}
+    <h6>Search result for <strong>today</strong></h6>
+{% elif date_from and date_to %}
+    <h6>Search from start of <strong>{{date_from}}</strong> to end of <strong>{{date_to}}</strong></h6>
+{% endif %}
+<h4>Record Count: {{ bills.count }}</h4>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">DATE</th>
+        <th scope="col">PATIENT</th>
+        <th scope="col">SERVICE</th>
+        <th scope="col">CREATED BY</th>
+        <!-- <th scope="col">CASHIER</th> -->
+      </tr>
+    </thead>
+    <tbody>
+        {% for item in page_obj %}
+            <tr>
+                <td>{{ item.date_created }}</td>
+                <td>{{ item.patient.id }}</td>
+                <td>{{ item }}</td>
+                <td>{{ item.created_by }}</td>
+                <!-- <td>{{ item.payment.created_by.first_name }} {{ p.payment.created_by.last_name }}</td> -->
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <span class="step-links">
+      {% if page_obj.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+
+      {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+  </span>
+</div>
+
+{% endblock %}
+

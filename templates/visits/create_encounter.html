@@ -1,0 +1,87 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Create Encounter {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
+
+  <h4>Sending <i>{{ qs.first_name }} {{ qs.last_name }}</i></h4>
+  <h5> to:</h5>
+
+<style>
+#a {
+    width: 300px;
+    height: 200px;
+}
+</style>
+
+<div class="container">
+<div>
+  <label><input type="radio" name="rdbtn" id="r1" checked="checked" value="clinic" onchange="showClinic()"> <i class="fa-solid fa-hospital-user fa-lg"></i> 
+    <span style="font-size: small;">Select Clinic</span> 
+ </label>
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+ <label><input type="radio" name="rdbtn" id="r2" value="ward" onchange="showWard()"> <i class="fa-solid fa-bed fa-lg"></i> 
+   <span style="font-size: small;">Select Ward</span>
+ </label>
+</div>
+
+  <div class="form-group" id="clinic" md-5>
+    <form id="form-body" class="row g-3" method="POST">{% csrf_token %}
+      <div class="col-md-3" id="current_clinic">
+          <select name="clinic" id="">
+            <option selected disabled value="">Select clinic...</option>
+            {% if qs.gender == 'male' %}
+              {% for c in clinics %}
+                {% if c.female_only != True %}
+                  <option value="{{ c.id }}">{{ c.clinic }}</option>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {% for c in clinics %}
+                <option value="{{ c.id }}">{{ c.clinic }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+      </div>
+
+      <div class="col-md-3" id="current_ward" style="display: none;">
+          <select name="ward" id="">
+            <option selected disabled value="">Select clinic...</option>
+            {% if qs.gender == 'male' %}
+              {% for w in wards %}
+                {% if w.female_only != True %}
+                  <option value="{{ w.id }}">{{ w.ward }}</option>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {% for w in wards %}  
+                <option value="{{ w.id }}">{{ w.ward }}</option>
+              {% endfor %}
+            {% endif %}
+          </select>
+      </div>
+      <!-- <div class="col-md-3" id="current_clinic">{{ form.current_clinic }}</div>
+      <div class="col-md-3" id="current_ward" style="display: none;">{{ form.current_ward }}</div>
+      <br> -->
+      <div class="col-md-10"><input type="submit" class="btn btn-success", value="Transfer Now"></div>
+    </form>
+  </div>  
+</div>
+<script>
+  function showClinic()
+  {
+    $('#current_clinic').css("display","block");
+    $('#current_ward').css("display","none");
+  };
+  function showWard()
+  {
+    $('#current_clinic').css("display","none");
+    $('#current_ward').css("display","block");
+  }
+</script>
+
+{% endblock %}

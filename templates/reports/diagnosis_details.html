@@ -1,0 +1,107 @@
+{% extends "layouts/base.html" %}
+{% load humanize %}
+{% block title %} Diagnosis Reports {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<h3>Diagnosis Detail Reports</h3>
+<h6>(You can filter the report by Dates or Clinics)</h6>
+<form action="." method="GET">   
+    <div class="row g-3">
+        <div class="col-md-2">
+          <label for="publishDateMin">Date from</label>
+          <input type="date" class="form-control" id="publishDateMin" name="date_from">
+        </div>
+        <div class="col-md-2">
+          <label for="publishDateMax">Date to</label>
+          <input type="date" class="form-control" id="publishDateMax" name="date_to">
+        </div>
+        <div class="col-md-4">
+          <label for="clinic">Clinics</label>
+          <select id="clinic" class="form-control" name="select_clinic">
+            {% if request.user.group.name == 'admin' %}
+              <option selected disabled value="">Select dept...</option>
+              {% for clinic in clinics %}
+                <option value="{{ clinic.id }}">{{ clinic.clinic }}</option>
+              {% endfor %}
+            {% else %}
+              {% for clinic in clinics %}
+                {% if request.user.clinic.id == clinic.id %}
+                    <option selected disabled value="">{{clinic}}</option>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+        <div class="col-md-4">
+            <label for="ward">Wards</label>
+            <select id="ward" class="form-control" name="select_ward">
+                {% if request.user.group.name == 'admin' %}
+                    <option selected disabled value="">Select ward...</option>
+                    {% for ward in wards %}
+                        <option value="{{ ward.id }}">{{ ward.ward }}</option>
+                    {% endfor %}
+                {% else %}
+                    {% for ward in wards %}
+                        {% if request.user.clinic.id == ward.clinic.id %}
+                            <option value="{{ ward.id }}">{{ ward.ward }}</option>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </select>
+        </div>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Search</button>    
+</form> <br>
+
+{% for d in page_obj|slice:":1" %}
+    <h3>{{ d.diagnosis }}</h3>
+{% endfor %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">PATIENT</th>
+            <th scope="col">CLINIC</th>
+            <th scope="col">DATE</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for d in page_obj %}
+                <tr>
+                    <td>{{ d.encounter.patient.id }}</td>
+                    {% if d.encounter.current_clinic %}
+                        <td>{{ d.encounter.current_clinic }}</td>
+                    {% else %}
+                        <td>{{ d.encounter.current_ward }}</td>
+                    {% endif %}
+                    <td>{{ d.date_created }}</td>
+                </tr>       
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination">
+<span class="step-links">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span class="current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+    {% endif %}
+</span>
+</div>
+
+{% endblock %}

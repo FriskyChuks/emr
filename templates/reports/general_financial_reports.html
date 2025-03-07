@@ -1,0 +1,34 @@
+{% extends "layouts/base.html" %}
+{% load humanize %}
+
+{% block title %} Reports {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<p>
+    <a style="background-color:black; color: white;" 
+        href="{% url 'cashiers_reports' %}">
+        <button style="background-color: rgba(0, 255, 98, 0.316);" type="button" class="btn btn-info">
+            Cash Officers' Reports
+        </button> 
+    </a>
+</p>
+<form action="" method="GET">
+    <div class="table-responsive">
+        {% include 'reports/snippets/transaction_template.html' %}
+        <br>
+        {% if not pay %}
+            <h6>No transactions for this period</h6>
+        {% elif date_from or not date_to %}
+            <h6>Search result from <strong>{{date_from}} to date</strong></h6>
+        {% elif date_from and date_to %}
+            <h6>Search from start of <strong>{{date_from}}</strong> to end of <strong>{{date_to}}</strong></h6>
+        {% endif %}
+        <h4>Total Cash Collection: N{{ sum_total|intcomma }}0</h4>
+
+        {% include 'reports/snippets/transaction_table.html' %}
+    </div>
+</form>
+{% endblock %}

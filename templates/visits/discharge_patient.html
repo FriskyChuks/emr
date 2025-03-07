@@ -1,0 +1,19 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Discharge Patient {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+<div>
+    {% for encounter in qs %}
+       Discharge {{ encounter.patient.first_name }} {{ encounter.patient.last_name }} {{ encounter.patient.other_names }}
+    {% endfor %}
+    <br><br>
+    <form id="a" class="discharge-patient" method="POST">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" class="btn btn-success", value="Discharge">
+    </form>
+</div>
+{% endblock %}

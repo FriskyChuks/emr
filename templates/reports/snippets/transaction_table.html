@@ -1,0 +1,49 @@
+{% load humanize %}
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">RECEIPT NO</th>
+        <th scope="col">DATE</th>
+        <th scope="col">PATIENT</th>
+        <th scope="col">AMOUNT</th>
+        <th scope="col">CASHIER</th>
+        <th scope="col">NARATIVE</th>
+        <th scope="col">ACTION</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for p in page_obj.object_list %}
+        <tr>
+            <td><a href="{% url 'receipt_detail' payment_id=p.id %}" target="_blank">{{ p.id }}</a></td>
+            <td>{{ p.date_created }}</td>
+            <td>{{ p.patient }} ({{ p.patient.id }})</td>
+            <td style="text-align: right;">{{ p.amount_paid|intcomma }}</td>
+            <!-- <td style="text-align: center;">{{ p.bill_id__count }}</td> -->
+            <td>{{ p.created_by.first_name }} {{ p.created_by.last_name }}</td>
+            <td>{{ p.action }}</td>
+            <td><a href="{% url 'receipt_detail' payment_id=p.id %}" target="_blank">View Detail</a></td>
+            {% comment %} <td>{{ p.payment__date_created__first_name }} {{ p.payment__created_by__last_name }}</td> {% endcomment %}
+        </tr>
+       
+        {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+        &nbsp; &nbsp;
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>&nbsp; &nbsp;
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>

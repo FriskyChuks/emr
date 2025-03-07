@@ -1,0 +1,1 @@
+default_app_config = 'medical_services.apps.MedicalServicesConfig'

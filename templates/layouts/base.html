@@ -1,0 +1,71 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- Primary Meta Tags -->
+
+<title>
+    smartCare{% block title %}{% endblock %} | smartCare
+</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="title" content="Volt - Free Bootstrap 5 Dashboard">
+<meta name="author" content="Themesberg">
+<meta name="description" content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
+<meta name="keywords" content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, themesberg, themesberg dashboard, themesberg admin dashboard" />
+<link rel="canonical" href="https://appseed.us/admin-dashboards/django-dashboard-volt">
+
+<link type="text/css" href="/static/assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+
+<link type="text/css" href="/static/assets/vendor/notyf/notyf.min.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/volt.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'assets/css/custom-style.css' %}">
+
+<!-- FOR FONT AWESOME v6 -->
+<link rel="stylesheet" href="/static/assets/css/font-awesome-all.min.css">
+<script src="/static/assets/js/font-awesome-all.min.js"></script>
+
+<!-- Specific Page JS goes HERE  -->    
+{% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+<body>
+
+    {% include 'includes/sidebar.html' %}
+    
+    <main class="content">
+
+      {% include 'includes/navigation.html' %}
+      <hr>
+      <div>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %} alert-dismissible fade show" role="alert">
+                <ul class="messages">
+                    <li>{{ message }}</li>
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <!-- <span aria-hidden="true">&times;</span> -->
+                </button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      {% block content %} {% endblock content %} 
+      <br><br>
+      {% include 'includes/settings-box.html' %}
+
+      {% include 'includes/footer.html' %}
+
+    </main>
+
+  {% include 'includes/scripts.html' %}
+    
+  <!-- Specific Page JS goes HERE  -->
+  {% block javascripts %}{% endblock javascripts %}  
+      
+</body>
+</html>

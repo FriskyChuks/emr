@@ -1,0 +1,78 @@
+{% extends "layouts/base.html" %}
+{% load humanize %}
+
+{% block title %} Reports {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<link rel="stylesheet" href="/static/assets/css/bootstrap2.min.css">
+
+{% include 'reports/snippets/report_categories.html' %}
+
+<h4>Reports by Services</h4>
+<form action="." method="GET">  
+    <div class="form-row">
+        <div class="form-group col-md-2 col-lg-2">
+            <label for="publishDateMin">Transaction from</label>
+            <input type="date" class="form-control" id="publishDateMin" name="date_from">
+        </div>
+        <div class="form-group col-md-2 col-lg-2">
+            <label for="publishDateMax">Transaction to</label>
+            <input type="date" class="form-control" id="publishDateMax" name="date_to">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <br>    
+</form>
+<br>
+{% if lab_services or med_services or rad_services or pharm_services %}
+  {% if not date_to %}
+    <h6>Search from <strong>{{date_from}}</strong> to <strong>Today</strong></h6>
+  {% elif date_from and date_to %}
+      <h6>Search from <strong>{{date_from}}</strong> to <strong>{{date_to}}</strong></h6>
+  {% endif %}
+  <h4>Total Count: {{ lab_count|add:med_service_count|add:pharm_count|add:rad_count }}</h4>
+  <!-- CHART -->
+  <div class="chart-container" style="position: relative; height:50vh; width:80vw">
+    <canvas id="myChart"></canvas>
+  </div>
+  
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+  <script src="/static/assets/js/chart.js"></script>
+  
+  <script>
+    const ctx = document.getElementById('myChart');
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: {{labels|safe}},
+        datasets: [{
+          label: '# Qty of services',
+          data: {{data|safe}},
+          backgroundColor:['pink','green', 'blue','red'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        resonsive:true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+{% else %}
+   Select date range
+{% endif %}
+
+  <!-- details of reports -->
+
+
+{% endblock %}
+

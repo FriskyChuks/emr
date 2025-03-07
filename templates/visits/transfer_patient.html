@@ -1,0 +1,116 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Transfer Patient {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+  <h4>Transfering <i>{{ qs.patient.first_name }} {{ qs.patient.last_name }}</i></h4>
+  <h5>from {{ qs.current_clinic }} to:</h5>
+
+<style>
+#a {
+    width: 300px;
+    height: 200px;
+}
+</style>
+<br>
+
+<div class="container">
+  <div class="form-group" md-5>
+    {% if clinic_id %}
+    <div class="container">
+      <div>
+        <label>
+          <input type="radio" name="rdbtn" id="r1" checked="checked" value="clinic" onchange="showClinic()"> 
+          <i class="fa-solid fa-hospital-user fa-lg"></i> 
+           <span style="font-size: small;">Select Clinic</span> 
+        </label>
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        <label><input type="radio" name="rdbtn" id="r2" value="ward" onchange="showWard()"> <i class="fa-solid fa-bed fa-lg"></i> 
+          <span style="font-size: small;">Select Ward</span>
+        </label>
+      </div>
+      <br>
+      
+        <div class="form-group" id="clinic" md-5>
+          <form id="form-body" class="row g-3" method="POST">{% csrf_token %}
+            <div class="col-md-3" id="current_clinic">
+              <select class="form-control" name="clinic" id="">
+                <option selected disabled value="">Select clinic...</option>
+                {% if qs.patient.gender == 'male' %}
+                  {% for c in clinics %}
+                    {% if c.female_only != True %}
+                      <option value="{{ c.id }}">{{ c.clinic }}</option>
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  {% for c in clinics %}
+                    <option value="{{ c.id }}">{{ c.clinic }}</option>
+                  {% endfor %}
+                {% endif %}
+              </select>
+            </div>
+            <div class="col-md-3" id="current_ward" style="display: none;">
+              <select class="form-control" name="ward" id="">
+                <option selected disabled value="">Select ward...</option>
+                {% if qs.patient.gender == 'male' %}
+                  {% for w in wards %}
+                    {% if w.female_only != True %}
+                      <option value="{{ w.id }}">{{ w.ward }}</option>
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  {% for w in wards %}  
+                    <option value="{{ w.id }}">{{ w.ward }}</option>
+                  {% endfor %}
+                {% endif %}
+              </select>
+            </div>
+            <br><br>
+            <div class="col-md-10"><input type="submit" class="btn btn-success", id="btnSubmit" value="Transfer Now"></div>
+          </form>
+        </div>  
+      </div>
+      
+    {% else %}
+      <form id="a" class="create-patient-encounter" method="POST">{% csrf_token %}
+        Select ward: 
+        <select class="form-control" name="ward" id="">
+          {% if qs.patient.gender == 'male' %}
+            {% for w in wards %}
+              {% if w.female_only != True %}
+                <option value="{{ w.id }}">{{ w.ward }}</option>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            {% for w in wards %}  
+              <option value="{{ w.id }}">{{ w.ward }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+        <br><br> <br>
+        <input type="submit" class="btn btn-success", value="Transfer Now">
+      </form>
+    {% endif %}
+  </div>  
+</div>
+
+
+<script>
+  function showClinic()
+  {
+    $('#current_clinic').css("display","block");
+    $('#current_ward').css("display","none");
+  };
+
+  function showWard()
+  {
+    $('#current_clinic').css("display","none");
+    $('#current_ward').css("display","block");
+  }
+</script>
+
+{% endblock %}

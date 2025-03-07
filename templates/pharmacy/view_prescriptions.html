@@ -1,0 +1,56 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} View Prescription {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<div class="container">
+    <div class="row g-3">
+      <div class="col-md-5">
+  
+        {% for encounter in enc_id %}
+           # <a href="#" onclick='show(1);'> {{ encounter.encounter_no }}</a>
+            <br>
+        {% endfor %}
+        <br>
+
+           # <a href="#" onclick='show(2);'> Ok</a>
+        <br>             
+      </div>
+  
+      <div class="col-md-1">
+      </div>
+  
+      <!-- Tables -->
+      <div class="col-md-6">
+        <div id="1" class="table">
+            {% for prescription in prescriptions %}
+            # {{ prescription.encounter_no }} {{ prescription.encounter_no.date_created }} ({{ prescription.encounter_no.current_clinic }}) <br>
+        {% endfor %}
+        </div>
+        <div id="2" class="table">
+            <h2>OK</h2>
+        </div>
+      </div>
+   
+    </div>
+  </div>
+  
+  <script>
+    $(document).ready(function()
+    {
+      document.getElementById("1").style.display="none";
+      document.getElementById("2").style.display="none";
+    });
+    function show(nr) {
+      document.getElementById("1").style.display="none";
+      document.getElementById("2").style.display="none";
+      document.getElementById(nr).style.display="block";
+  }
+  </script>
+
+
+{% endblock %}

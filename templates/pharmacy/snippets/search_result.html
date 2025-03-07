@@ -1,0 +1,68 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Foto {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="container">
+    {% if not query %}
+            <center><h3>{{ query1 }}</h3></center>
+    {% else %}
+        {% if patient.count == 1 %}
+            <h6>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> record</h6> <br>
+            {% for pt in patient %} 
+               {% for e in pt.patientencounter_set.all|slice:":1" %} 
+                <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
+                    <a href="{% url 'dispensary' pid=pt.id %}"><button class="btn btn-primary">Dispense Drugs/Consummables</button></a>
+                <!-- {% if e.active %}
+                <a href="{% url 'dispensary' pid=pt.id %}"><button class="btn btn-primary">Dispense Drugs/Consummables</button></a>
+                {% endif %} -->
+                </div>
+                <br>
+              {% endfor %}
+            {% endfor %} 
+        {% else %}
+        <h5>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> records</h5>
+        {% endif %} 
+    <hr>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">PID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Marital status</th>
+            <th scope="col">Date of Birth</th>
+            <th scope="col">Current location</th>
+        </tr>
+        </thead>
+    
+        <tbody>
+            {% for pt in patient %}            
+                <tr>
+                    <th scope="row"><a href="{{ pt.get_absolute_url }}">{{ pt.id }}</a></th>
+                    <!-- <td>{{ qs.id }}</td> -->
+                    <td>{{ pt.first_name }} {{ pt.last_name }} {% if pt.other_names %} {{ pt.other_names }} {% endif %}</td>
+                    <td>{{ pt.gender|capfirst }}</td>
+                    <td>{{ pt.marital_status|capfirst }}</td>
+                    <td>{{ pt.date_of_birth|capfirst }}</td>
+                    {% for p in pt.patientencounter_set.all %}
+                        {% if p.active  %}
+                            {% if p.current_clinic %}
+                                <td>{{ p.current_clinic.clinic }} Clinic</td>                          
+                            {% else %}
+                                <td>{{ p.current_ward.ward }} Ward</td>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </tr> 
+            {% endfor %}              
+        </tbody>
+    </table>           
+    {% endif %}              
+</div>
+{% endblock %}

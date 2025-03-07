@@ -1,0 +1,19 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Create Medical Service {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<div>
+    <h5>Create New Medical Service</h5>
+    <form class="row g-6" id="form" method="POST" action="">{% csrf_token %}
+        Service Name: {{ form.medical_service }}
+        Service Type: {{ form.type }}
+        <input type="submit" class="btn btn-success", value="Save">
+    </form>      
+</div>
+
+{% endblock %}

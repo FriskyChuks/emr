@@ -1,0 +1,70 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Preview {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+
+
+<h3>Preview your submission</h3>
+<div class="row g-3">
+  <div class="col-md-4">
+    <h4>Bio_data</h4>
+    <p>Foto: <img src="{{ form.cleaned_data.foto.url }}" alt=""></p>
+    <p>Firstname: {{ form.cleaned_data.first_name }}</p>
+    <p>Lastname: {{ form.cleaned_data.last_name }}</p>
+    <p>Othernames: {{ form.cleaned_data.other_names }}</p>
+    <p>Gender: {{ form.cleaned_data.gender }}</p>
+    <p>Date of Birth: {{ form.cleaned_data.date_of_birth }}</p>
+    <p>Marital Status: {{ form.cleaned_data.marital_status }}</p> 
+  </div>
+
+  <div class="col-md-4">
+    <h4>Address</h4>
+    <p>Phone 1: {{ form.cleaned_data.phone_1 }}</p>
+    <p>Phone 2: {{ form.cleaned_data.phone_2 }}</p>
+    <p>Address: {{ form.cleaned_data.address }}</p>
+    <p>LGA: {{ form.cleaned_data.l_g_a }}</p>
+    <p>State: {{ form.cleaned_data.state }}</p>
+    <p>Country: {{ form.cleaned_data.Country }}</p> 
+  </div>
+
+  <div class="col-md-4">
+    <h4>Next of Kin Details</h4>
+    <p>Next of Kin: {{ form.cleaned_data.full_name }}</p>
+    <p>Relationship: {{ form.cleaned_data.next_of_kin_relationship }}</p>
+    <p>Phone: {{ form.cleaned_data.phone }}</p>
+    <p>Address: {{ form.cleaned_data.next_of_kin_address }}</p>
+  </div>
+
+</div>
+  
+<br>
+  <div style="text-align: right;">
+    <form action="{% url 'registration' %}" method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      {{ field.as_hidden }}
+      {% endfor %}
+      <input type="hidden" name="{{ stage_field }}" value="2" />
+      <input type="hidden" name="{{ hash_field }}" value="{{ hash_value }}" />
+
+      <!-- Submit button -->
+      <button type="submit">Submit record</button>
+      <!-- Go back button -->
+      <button type="submit">
+        <a href="{% url 'registration' %}" 
+          onClick="history.go(-1);return false;" >
+          Go back and edit your entries
+        </a>
+    </button>
+
+</div>
+
+</form>
+</div>
+
+{% endblock %}

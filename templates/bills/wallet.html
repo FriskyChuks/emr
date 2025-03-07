@@ -1,0 +1,34 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+
+  <a href="{% url 'pending_bills' pid=patient.id %}">
+    <button type="button" class="btn btn-primary">Pay Pending Bills</button>
+  </a>
+  {% if new_os_total %}
+    <a href="{% url 'outstanding_bills' pid=patient.id %}">
+      <button type="button" class="btn btn-danger">Clear outstanding Bills</button>
+    </a>
+  {% endif %}
+  <br> <br>
+
+  <div class="row">
+    <div class="col-sm-12">  
+      <div class="card">
+        <div class="card-header">
+          {% include 'bills/card/temp.html' %}
+        </div>
+        <div class="col-md-4">
+          <div class="container">
+            <br>
+            <form action="" method="POST">{% csrf_token %}
+              Amount of Deposit (N)<input class="form-control" type="number" name="amount" id="amount" placeholder="Enter amount (in Naira)"> <br>
+                <button class="btn btn-success">Load Wallet</button>
+            </form> <br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

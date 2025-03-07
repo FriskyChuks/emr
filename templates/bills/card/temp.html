@@ -1,0 +1,12 @@
+{% load humanize %}
+
+<h4 style="color: blue;">{{patient.first_name}} {{patient.last_name}} 
+   <small>|| {{patient.id}}</small>
+   {% if wallet_balance < 0 %}
+        <h4 style="color: red;">Account Balance: N{{ initial_balance|intcomma }}</h4>
+   {% else %}
+        <h4 style="color: blue;">Account Balance: 
+          <span style="color: green;">N{{ initial_balance|intcomma }}</span>
+        </h4>
+   {% endif %}
+</h4>

@@ -1,0 +1,189 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Prescription {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<style>
+    .btn{
+        background-color: #4CAF50;
+        color: white;
+        /* padding: 8px 20px; */
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+    }
+
+    #btn{
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 20px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+
+
+<div class="row">
+    <!-- <div class="col-md-8"></div> -->
+    <div class="col-md-4">
+
+        <div class="">
+            <input type="text" class="form-control" id="searchField" placeholder="Search">
+        </div>
+    </div>
+</div>
+<br>
+
+{% include 'pharmacy/drug_search_result.html' %}
+
+<br>
+
+<div class="table-prescribe">
+    <h5>Prescription Sheet</h5>
+    <table class="table table-stripped table-hover" id="prescription-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Id</th>
+                <th>Item</th>
+                <th>Type</th>
+                <th>Qty per in-take</th>
+                <th>No. of times daily</th>
+                <th>No. of days</th>
+            </tr>
+        </thead>
+
+        <tbody id="add-new">
+            
+        </tbody>
+    </table>
+    <button type="button" class="delete-row" style="color: red;">Delete Row</button>
+    <input class="btn btn-success" type="button" id="bt" value="Prescribe Items" onclick="storeTblValues()" />
+</div>
+
+
+<script>
+    const searchField = document.querySelector("#searchField");
+    const tableOutput = document.querySelector(".table-output");
+    const tablePrescribe = document.querySelector(".table-prescribe");
+    const tableBody = document.querySelector(".table-body");
+    const noResults = document.querySelector(".no-result");
+
+    tableOutput.style.display = "none";
+    tablePrescribe.style.display = "none";
+    searchField.addEventListener('keyup', (e)=>{
+        const searchValue=e.target.value;
+        
+        if(searchValue.trim().length > 0) {
+            tableBody.innerHTML="";
+            console.log('searchValue', searchValue);
+            
+            fetch("/pharmacy/search_drug/", {
+                body: JSON.stringify({ searchText: searchValue }),
+                method: "POST",
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log("data", data);
+
+                    tableOutput.style.display = "block";
+                    tablePrescribe.style.display = "block";
+                    noResults.style.display = "none";
+
+                    if (data.length === 0) {
+                        noResults.style.display = "block";
+                        tableOutput.style.display="none";
+                    }else{
+                        noResults.style.display="none";
+                        data.forEach((item) => {
+                            tableBody.innerHTML +=`
+                                <tr>
+                                    <td class="item-id">${ item.id }</td>
+                                    <td>${ item.title }</td>
+                                    <td>${ item.type }</td>
+                                    <td>
+                                        <button class="btn">This one</button>
+                                    </td>
+                                </tr>
+
+                                `
+                        })
+
+                        
+                    }
+                });
+        } else{
+            tableOutput.style.display = "none";
+        }
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+
+        $('.table tbody').on('click','.btn',function(){
+        var currentRow = $(this).closest('tr');
+        var col1 = currentRow.find('.item-id').text();
+        var col2 = currentRow.find('td:eq(1)').text();
+        var col3 = currentRow.find('td:eq(2)').text();
+
+        var itemId = col1;
+        var title = col2;
+        var type = col3;
+        var result = "<tr><td><input type='checkbox' name='record'></td><td>" + itemId + "</td><td>" + title + "</td><td>" + type + 
+                    "</td><td> <input type='int' name='single'></td><td> <input type='int' name='daily'></td><td> <input type='int' name='days'></td></tr>";
+        $('#add-new').append(result);        
+        }) 
+
+        // Find and remove selected table rows
+        $(".delete-row").click(function(){
+            $("#add-new").find('input[name="record"]').each(function(){
+                if($(this).is(":checked")){
+                    console.log("Checked")
+                    $(this).parents("tr").remove();
+                }
+            }); 
+        });     
+    })
+</script>
+
+<script>
+     // function to extract and submit table data.
+     var TableData;
+        TableData = storeTblValues()
+        TableData = $.toJSON(TableData);
+
+        function storeTblValues()
+        {
+            var TableData = new Array();          
+
+            $('#prescription-table tr').each(function(row, tr){
+                var data1 = $("#prescription-table :input").serializeArray();
+                var obj = {};
+                for (var i = 0, l = data1.length; i < l; i++) {
+                    obj[data1[i].name] = data1[i].value;
+                    console.log(obj);
+                }
+                TableData[row]={
+                    "checked" : $(tr).find('td:eq(0)').text(),
+                     "itemId" :$(tr).find('td:eq(1)').text(),
+                     "title" : $(tr).find('td:eq(2)').text(),
+                     "type" : $(tr).find('td:eq(3)').text(),
+                     "qtyPerTake" : obj['single'],
+                     "timesDaily" : obj['daily'],
+                     "noOfDays" : obj['days']
+                    
+                }    
+            }); 
+            TableData.shift();  // first row will be empty - so remove
+            console.log("TableData", TableData);
+            return TableData;
+        }
+</script>
+
+{% endblock %}

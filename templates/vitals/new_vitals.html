@@ -1,0 +1,110 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} New Vital Signs {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<div class="container">
+{% for p in p_encounter|slice:":1" %}
+<a href="{% url 'patient_folder' enc_id=p.id %}">
+  <span class="hovertext" data-hover="Open Folder">
+    <i class="fa-regular fa-folder-open fa-lg"></i>
+  </span>
+</a>&nbsp; &nbsp;
+  {% if p.current_clinic %}
+    <a href="{% url 'clinic_visits_display' id=p.current_clinic.id %}">
+      <span class="hovertext" data-hover="{{ p.current_clinic }}">
+        <i class="fa-solid fa-hospital-user fa-lg"></i>
+      </span> 
+    </a>
+  {% else %}
+    <a href="{% url 'ward_admission_display' id=p.current_ward.id %}">
+      <span class="hovertext" data-hover="{{ p.current_ward }}">
+        <i class="fa-solid fa-hospital-user fa-lg"></i>
+      </span>
+    </a>
+  {% endif %}
+{% endfor %}
+
+  {% for p in p_encounter %}
+  <h4>  
+    {{ p.patient.first_name }} 
+    {{ p.patient.last_name }}  
+    {{ p.patient.other_names }},
+    {{ p.patient.date_of_birth|timesince }} old,
+    {{ p.patient.gender }}    
+  </h4>
+  {% endfor %}
+
+    <!-- Collapse -->
+    <p>
+      <a class="btn btn-secondary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">View previous Vital signs</a>
+      <!-- <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Toggle second element</button>
+      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Toggle both elements</button> -->
+    </p>
+    <div class="row">
+      <div class="col-md-10">
+        <div class="collapse multi-collapse" id="multiCollapseExample1">
+          <div class="card card-body">
+            <div class="table-responsive">
+              <h5>Previous Vitals</h5>    
+              <table class="table">
+                <thead>
+                  <tr>
+                    <!-- <th scope="col">Ecounter</th> -->
+                    <!-- <th scope="col">PID</th> -->
+                    <th scope="col">Date</th>
+                    <th scope="col">Weight(Kg)</th>
+                    <th scope="col">Temp(°C)</th>
+                    <th scope="col">B/P</th>
+                    <th scope="col">Pulse Rate</th>
+                    <th scope="col">SP02</th>
+                  </tr>
+                </thead>
+                
+                <tbody>
+                    {% for vitals in current_encounter_vitals|slice:":10" %}            
+                    <tr>
+                        <!-- <td>{{ vitals.date|date:"d-m-y" }} {{ vitals.date|time:"h:i a" }}</td> -->
+                        <td>{{ vitals.date }}</td>
+                        <td>{{ vitals.weight }}</td>
+                        <td>{{ vitals.temperature }}</td>
+                        <td>{{ vitals.blood_pressure }}</td>
+                        <td>{{ vitals.pulse_rate }}</a></td>
+                        <td>{{ vitals.sp_02 }}</td>
+                    </tr>       
+                    {% endfor %}           
+                </tbody>
+              </table>
+            </div>  
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="collapse multi-collapse" id="multiCollapseExample2">
+          <div class="card card-body">
+            Some placeholder content for the second collapse component of this multi-collapse example. This panel is hidden by default but revealed when the user activates the relevant trigger.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <h5>Add Vital signs</h5>
+
+  <form class="row g-3" id="form" method="POST" action="">{% csrf_token %}
+    <div class="col-md-2">* Weight(KG): {{ form.weight }}</div>
+    <div class="col-md-2">Temperature: {{ form.temperature }}</div>
+    <div class="col-md-2">BP: {{ form.blood_pressure }}</div>
+    <div class="col-md-2">Pulse rate: {{ form.pulse_rate }}</div>
+    <div class="col-md-2">SP-02: {{ form.sp_02 }}</div>
+    <div class="col-md-10"><input type="submit" class="btn btn-success", value="Save"></div>
+  </form>
+    
+    
+   
+</div>
+{% endblock %}

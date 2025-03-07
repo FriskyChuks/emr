@@ -1,0 +1,52 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Prescription {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<script>
+	function cloneMore(selector, type) {
+    var newElement = $(selector).clone(true);
+    var total = $('#id_' + type + '-TOTAL_FORMS').val();
+    newElement.find(':input').each(function() {
+        var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-');
+        var id = 'id_' + name;
+        $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+    });
+    newElement.find('label').each(function() {
+        var newFor = $(this).attr('for').replace('-' + (total-1) + '-','-' + total + '-');
+        $(this).attr('for', newFor);
+    });
+    total++;
+    $('#id_' + type + '-TOTAL_FORMS').val(total);
+    $(selector).after(newElement);
+}
+</script>
+
+<form id="form" method="POST" action="">{% csrf_token %} 
+    {{ formset.management_form }}
+{% for form in formset.forms %}
+    <div class='table'>
+    <table class='no_error'>
+        {{ form.as_table }}
+    </table>
+    </div>
+{% endfor %}
+<input type="button" value="Add More" id="add_more">
+<script>
+    $('#add_more').click(function() {
+        cloneMore('div.table:last', 'service');
+    });
+</script>
+<input type="submit" class="btn btn-success", value="Prescribe">
+    </form>
+    
+
+    
+</form>
+
+{% endblock %}

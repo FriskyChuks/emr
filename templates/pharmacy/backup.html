@@ -1,0 +1,221 @@
+{% extends "layouts/base.html" %} {% load mathfilters %} 
+{% block title %} Create Item {% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %} <br />
+
+<script src="js/jquery.dropdown.js"></script>
+
+<style>
+  table {
+  }
+  html {
+    background: #ccc;
+  }
+  .val td:nth-child(4) {
+    width: 15%;
+  }
+  .val td:nth-child(3) {
+    width: 25%;
+  }
+</style>
+
+{{json_prescriptions|json_script:"json_prescriptions"}}
+{{json_brands|json_script:"json_brands"}}
+
+<script>
+  // $(document).ready(function()
+  //   {
+  //       document.getElementById("txtDisplay").style.display="none";
+  //   });
+</script>
+<script defer>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie("csrftoken");
+
+  const updateInputValues = (p) => {
+    let imt = JSON.parse(
+      document.getElementById("json_prescriptions").textContent
+    );
+
+    let imb = JSON.parse(document.getElementById("json_brands").textContent);
+
+    let selectElementValue = document.querySelector(`#brandSelect${p}`).value;
+
+    let brand_item = imb.find((item) => item.id == selectElementValue);
+
+    let unitElement = document.querySelector(`#unitCost${p}`);
+
+    let costElement = document.querySelector(`#cost${p}`);
+
+    let dispensedElement = document.querySelector(`#validateQuantity${p}`);
+
+    unitElement.value = brand_item.sale_price;
+
+    costElement.value = brand_item.sale_price * dispensedElement.value;
+    const k = costElement.value
+    console.log(k)
+  };
+
+  const updateQuantity = (p) => {
+    let imb = JSON.parse(document.getElementById("json_brands").textContent);
+
+    let dispensedElement = document.querySelector(`#validateQuantity${p}`);
+    let costElement = document.querySelector(`#cost${p}`);
+
+    let selectElementValue = document.querySelector(`#brandSelect${p}`)?.value;
+
+    let brand_item = imb.find((item) => item.id == selectElementValue);
+
+    if (brand_item) {
+      costElement.value = brand_item.sale_price * dispensedElement.value;
+    }
+  };
+
+  const handleFormSubmit = () => {
+    const costItems = document.querySelectorAll(".allCostItems");
+    let dataToSubmit = [];
+
+    let newcostItems = Array.from(costItems).filter((item) => item.value > 0);
+
+    let costIds = newcostItems.map((item) => Number(item.id.match(/(\d+)/)[0]));
+
+    costIds.forEach((item) => {
+      let brand_id = document.getElementById(`brandSelect${item}`).value;
+      let enc_id = document.getElementById(`enc_id${item}`).value;
+      let quantity_dispensed = document.getElementById(
+        `validateQuantity${item}`
+      ).value;
+      dataToSubmit.push({
+        enc_id,
+        brand_id,
+        quantity_dispensed,
+        prescription_id: item,
+      });
+    });
+    let formData = new FormData();
+    formData.append("data", JSON.stringify(dataToSubmit));
+    fetch("{% url 'submit_dispensary' %}", {
+      method: "POST",
+      headers: { "X-CSRFToken": csrftoken },
+      mode: "same-origin",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        window.location.href = "{% url 'dispensary' pid %}"
+      })
+      .catch((err) => console.error(err));
+  };
+</script>
+  {% if not prescription %}
+    <h3>No pending prescriptions </h3>
+  {% else %}
+      {% for p in prescription|slice:":1" %}
+      <h3>
+        {{ p.patient.first_name }} {{ p.patient.last_name }} || ({{ p.patient.id }})
+      </h3>
+      {% endfor %} 
+
+      <br /><br />
+      <div class="row g-2">
+        <!-- <div class="col-md-3"></div> -->
+        <div class="col-md-12">
+          <form method="POST" class="row g-3" id="formPrescription">
+            {% csrf_token %} {% for p in prescription %}
+            <div class="col-md-12">{{ p.item}} 
+              <span style="font-size: xx-small;">
+                {% if p.p.encounter_no.current_clinic %}
+                  <i>({{p.encounter_no.current_clinic}})</i>
+                {% elif p.encounter_no.current_ward %}
+                  <i>({{p.encounter_no.current_ward}})</i>
+                {% endif %}
+              </span>
+            </div>
+            <div class="col-md-2">
+              Presc. Qty:
+              <input
+                type="text"
+                class="form-control"
+                value="{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}"
+                id=""
+                readonly
+              />
+            </div>
+            <div class="col-md-4">
+              Select Brand:
+              <select
+                class="form-select"
+                id="brandSelect{{p.id}}"
+                onchange="updateInputValues({{p.id}})"
+              >
+                <option selected disabled value="">Choose...</option>
+                {% for brand in brands %} {% if brand.item.id == p.item.id %}
+                  <option value="{{brand.id}}">{{brand.title}} ({{brand.stock_level}})</option>
+                {% endif %} {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-2">
+              Unit Cost:
+              <input
+                type="text"
+                class="form-control"
+                value="0.00"
+                id="unitCost{{p.id}}"
+                readonly
+              />
+            </div>
+
+            <div class="col-md-2">
+              Disp. Qty:
+              <input
+                type="number"
+                min="1"
+                class="form-control"
+                id="validateQuantity{{p.id}}"
+                value="{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}"
+                onchange="updateQuantity({{p.id}})"
+              />
+            </div>
+            <div class="col-md-2">
+              Cost:
+              <input
+                type="text"
+                class="form-control allCostItems"
+                value="0.00"
+                id="cost{{p.id}}"
+                readonly
+              />
+            </div>
+            <hr />
+            <input type="text" id="enc_id{{p.id}}" name="enc_id" value="{{p.encounter_no.id}}" hidden>
+            {% endfor %}
+            <br />
+            <div class="col-md-10">
+              <button
+                type="button"
+                class="btn btn-success"
+                onclick="handleFormSubmit()"
+              >
+                Dispense
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+  {% endif %}
+{% endblock %}

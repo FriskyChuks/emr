@@ -1,0 +1,41 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Diagnosis Reports {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="container">
+    <h4>Update Patient Record</h4><br>
+    <form id="registration-form" class="row g-3" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <div class="col-md-12"><b>*Personal Info</b> </div>
+        <!-- <div class="col-md-12">Image: {{ form.foto }}</div> -->
+        <div class="col-md-4">Firstname: {{ form.first_name }}</div>
+        <div class="col-md-4">Lastname: {{ form.last_name }}</div>
+        <div class="col-md-4">Othernames: {{ form.other_names }}</div>
+        <div class="col-md-4">Gender: {{ form.gender }}</div>
+        <div class="col-md-4">Date of Birth: {{ form.date_of_birth }}</div>
+        <div class="col-md-4">Marital Status: {{ form.marital_status }}</div>
+        <h5></h5>
+        <div class="col-md-12"><b>*Address Line</b> </div>
+        <div class="col-md-4">Phone 1: {{ form.phone_1 }}</div>
+        <div class="col-md-4">Phone 2: {{ form.phone_2 }}</div>
+        <div class="col-md-4">Country: {{ form.country }}</div>
+        <div class="col-md-4">State: {{ form.state }}</div>
+        <div class="col-md-8">L.G.A.: {{ form.l_g_a }}</div>
+        <div class="col-md-12">Address: {{ form.address }}</div>
+        <h5></h5>
+        <div class="col-md-12"><b>*Next of Kin Details</b> </div>
+        <div class="col-md-12">Fullname: {{ form.full_name }}</div>
+        <div class="col-md-6">Relationship {{ form.next_of_kin_relationship }}</div>
+        <div class="col-md-6">Phone: {{ form.phone }}</div>
+        <div class="col-md-12">Address: {{ form.next_of_kin_address }}</div>
+
+        <!-- {{ form }} -->
+
+        <div class="col-md-12"><input type="submit" class="btn btn-success", value="Update Data"></div>
+      </form>
+    </div>
+{% endblock %}
+

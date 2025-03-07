@@ -1,0 +1,58 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Raise Rad. Service {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+<a href="{% url 'patient_folder' encounter.id %}">
+  <span class="hovertext" data-hover="Open Folder">
+    <i class="fa-regular fa-folder-open fa-lg"></i>
+  </span>
+</a>&nbsp; &nbsp;
+  {% if encounter.current_clinic %}
+    <a href="{% url 'clinic_visits_display' encounter.current_clinic.id %}">
+      <span class="hovertext" data-hover="{{ encounter.current_clinic }}">
+        <i class="fas fa-clinic-medical fa-lg"></i>
+      </span> 
+    </a>
+  {% else %}
+    <a href="{% url 'ward_admission_display' encounter.current_ward.id %}">
+      <span class="hovertext" data-hover="{{ encounter.current_ward }}">
+        <i class="fa-solid fa-bed fa-lg"></i>
+      </span>
+    </a>
+  {% endif %}
+
+<h5>Create Services for <b>{{ encounter.patient.first_name }} {{ encounter.patient.last_name }}</b> </h5> 
+<br>
+
+<form id="form" method="POST" action="">{% csrf_token %} 
+  <input type="submit" class="btn btn-success", value="Request Investigations">
+    {{ formset.management_form }}
+    <div class="table-responsive">
+    <table>
+        <thead>
+          <tr>
+            <th scope="col">Select service</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Clinical Information</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for form in formset %}
+            <tr>
+              <td>{{ form.radiology_service }}</td>
+              <td>{{ form.unit }}</td>
+              <td>{{ form.clinical_info }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table><br>
+    </div>
+      <input type="submit" class="btn btn-success", value="Request Investigations">
+</form>
+
+
+{% endblock %}

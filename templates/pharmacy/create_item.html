@@ -1,0 +1,22 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Create Item {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+<div>
+    <h4>New Item Registration</h4>
+    <form class="row g-3" action="" method="POST">{% csrf_token %}
+        <div class="col-md-4">Select Category: {{ form.category }}</div><br>
+        <div class="col-md-8">Title (Generic Name): {{ form.title }}</div>
+        <div class="col-md-8">Description (Optional): {{ form.description }}</div><br>
+        <div class="col-md-4">Type (For Drugs only): {{ form.type }}</div><br>
+    
+        <div class="col-md-12"><input type="submit" class="btn btn-success", value="submit"></div>
+    </form>
+</div>
+
+    
+{% endblock %}

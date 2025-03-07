@@ -1,0 +1,112 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Display Request {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="container">
+  <div>
+    <button onclick="switcState()" id="toggle" type="button" class="btn btn-secondary">
+      User Entry
+    </button>
+    <!-- <button id="icd" type="button" class="btn btn-secondary">ICD</button> -->
+  </div> <br>
+
+  <form id="userDefined" method="POST" class="row g-1 needs-validation" novalidate>{% csrf_token %}
+    <div class="col-md-12">
+        <label for="validationCustom04" class="form-label">Enter Diagnosis</label>
+        <input class="form-control" type="text" name="user_defined" required>
+        <div class="invalid-feedback">
+          Please enter a diagnosis.
+        </div>
+    </div>
+    <div class="col-4">
+      <div class="form-check">
+        <br>
+        <input class="form-check-input" type="checkbox" value="1" name="preliminary" id="invalidCheck2">
+        <label class="form-check-label" for="invalidCheck2">
+          Preliminary?
+      </div>
+    </div>
+    
+    <div class="col-12">
+      <button class="btn btn-primary" type="submit">Submit Diagnosis</button>
+    </div>
+  </form>
+
+  <form id="icd" method="POST" class="row g-1 needs-validation" novalidate>{% csrf_token %}
+    <div class="col-md-12">
+        <label for="validationCustom04" class="form-label">Select Diagnosis</label>
+        <select class="form-select" id="validationCustom04" name="_icd" required>
+          <option selected disabled value="">Choose...</option>
+          {% for d in diagnosis %}
+          <option value="{{d.id}}">{{d.title}}</option>
+          {% endfor %}
+        </select>
+        <div class="invalid-feedback">
+          Please select a diagnosis.
+        </div>
+    </div>
+    <div class="col-4">
+      <div class="form-check">
+        <br>
+        <input class="form-check-input" type="checkbox" value="1" name="preliminary" id="invalidCheck2">
+        <label class="form-check-label" for="invalidCheck2">
+          Preliminary?
+      </div>
+    </div>
+    
+    <div class="col-12">
+      <button class="btn btn-primary" type="submit">Submit Diagnosis</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  window.onload = function() {
+    document.getElementById('icd').style.display = 'none';
+    toggle.innerHTML='Show ICD-10'
+  };
+
+  function switcState() {
+    var toggle = document.getElementById("toggle");
+    var userDefined = document.getElementById("userDefined");
+    var icd = document.getElementById("icd");
+    if (userDefined.style.display === "none") {
+      userDefined.style.display = "block";
+      icd.style.display = "none";
+      toggle.innerHTML='Show ICD-10'
+    } else {
+      userDefined.style.display = "none";
+      icd.style.display = "block";
+      toggle.innerHTML='Click to Enter manually'
+    }
+  }
+</script>
+
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+(() => {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+</script>
+
+{% endblock content %}

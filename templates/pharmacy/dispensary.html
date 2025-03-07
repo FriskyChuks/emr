@@ -1,0 +1,212 @@
+{% extends "layouts/base.html" %}
+{% load mathfilters %}
+{% block title %} Create Item {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<style>
+    table {
+
+}
+html {
+  background: #ccc;
+}
+.val td:nth-child(3){
+  width: 10%;
+}
+.val td:nth-child(4){
+    width: 15%;
+}
+.val td:nth-child(5) {
+  width: 15%;
+} 
+</style>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  
+      $(document).ready(function()
+      {
+          document.getElementById("txtDisplay").style.display="none";
+          document.getElementById("txtQtyDisplay").style.display="none";
+          document.getElementById("pay_hidden").style.display="none";
+          $('.chkbox').click(function()
+          {
+              var selectedValue = "";
+              var selectQty = '';
+              var myArray = [];
+              var myQtyArray = [];
+              $('.chkbox:checked').each(function()
+              {
+                  selectedValue += $(this).data('value1')+",";
+                  selectQty += $(this).data('value2')+",";
+                  myArray.push(selectedValue);
+                  myQtyArray.push(selectQty)
+              });
+              selectedValue = selectedValue.substring(0,selectedValue.length-1);
+              selectQty = selectQty.substring(0,selectQty.length-1);
+              $('#txtDisplay').val(selectedValue);
+              $('#txtQtyDisplay').val(selectQty);
+              
+              // console.log(selectedValue)
+              
+          });
+   
+      });
+  
+  
+      $(document).ready(function() {
+        function calculateSum(){
+          var subTotal=0;
+          var sumTotal=0;
+          var tax = $("#tax").val()
+          $("#pay_hidden").val(0);
+          
+          // var outstanding = $("#outstanding").val()
+              $('table tbody tr').each(function() {
+                var $tr = $(this);
+  
+                if ($tr.find('input[type="checkbox"]').is(':checked')) {   
+                  var $td = $tr.find("td");
+                  var price = $td.eq(2).text();
+                  var qty = $td.eq(1).text();
+                  var pending = price*qty;
+                  // sumTotal+=billTotal;
+                  subTotal+=pending;
+                  newSubTotal = parseFloat(subTotal).toFixed(2)
+                  var billTotal = subTotal + parseInt(tax);
+                  sumTotal=parseFloat(billTotal).toFixed(2);
+                }
+              });
+              
+              $("#sub-total").val(newSubTotal); 
+              $("#pay_amount_visible").val(sumTotal);
+              $("#pay_hidden").val(sumTotal);
+                           
+          }
+  
+            $('#sum').on('click', function() {
+              
+              calculateSum();
+            });
+  
+            $("input[type='text']").keyup(function() {
+              calculateSum();
+  
+            });
+            
+            $("input[type='checkbox']").change(function() {
+              calculateSum();
+  
+            });
+        }); 
+  
+  </script>
+
+{% if not prescription %}
+  <center><h1>No pending prescription for this patient</h1></center>
+{% else %}
+  {% for p in prescription|slice:":1" %}
+    <h3>{{ p.patient.first_name }} {{ p.patient.last_name }} || ({{ p.patient.id }})</h3> 
+  {% endfor %}
+
+  {% comment %} {% for p in prescription %}
+      <a href=""><button class="btn btn-primary">{{p.encounter_no.current_clinic}}</button></a>
+  {% endfor %} {% endcomment %}
+  
+  <br>
+  <div class="card">
+    <div class="col-md-12">
+      <div id="extraControls" class="hidden">
+        <form action="" method="POST">{% csrf_token %}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table table-responsive">
+                <table id="myTable" class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Item</th>
+                      <th scope="col">Qty</th>
+                      {% comment %} <th scope="col">Select Brand</th> {% endcomment %}
+                      <!-- <th scope="col">Dispense Qty</th> -->
+                      <th style="text-align: right;" scope="col">Unit Cost</th>
+                      <th style="text-align: right;" scope="col">Total Cost</th>
+                      <th scope="col">[ ]</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {% for p in prescription %}
+                          <tr class="val">
+                              <td>{{ p.brand }} ({{ p.brand.item.strength }})</td>
+                              <td> {{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}</td>
+
+                              <!-- <td>
+                                  <select class="form-select" id="brandSelect" onchange="myFunction()">
+                                  <option selected disabled value="">Select...</option>
+                                  {% for brand in brands %}
+                                  {% if brand.item.id == p.item.id %}
+                                  <option>{{brand.title}}</option>
+                                  {% endif %}
+                                  {% endfor %}
+                                  </select>
+                              </td> -->
+
+                              <!-- <td>
+                                  <input name="dispenseQty" id=dispenseQty type="number" value="{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}"
+                                  min="0" max="{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}" 
+                                  class="form-control" id="validationCustom01" value="" required>
+                              </td> -->
+                              <td style="text-align: right;" id="unitCost">{{p.brand.sale_price}}</td>
+                              <td style="text-align: right;" id="cost">0.00</td>
+                              <td><input id="chkBox" class="chkbox" name="check_list" style="text-align:center" type="checkbox" data-value1="{{ p.id }}"
+                                data-value2='{{ p.times_daily|mul:p.qty_per_take|mul:p.no_of_days }}' value=""></td>
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+                  <tfoot>
+                    {% if outstanding_bills %}
+                    <tr>
+                        <th class="empty" colspan="2"></th>
+                        <th>OUTSTANDING(N)</th>
+                        <!-- <th colspan="2" style="text-align: right;"><input style="color: red; text-align: right;" id="outstanding" type="text" value="{{ outstanding_bills }}0"></th> -->
+                        <th id="outstanding" style="color: red; text-align: right;" colspan="2" class="sub-total">{{ outstanding_bills }}0</th>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th class="empty" colspan="1"></th>
+                        <th>SUBTOTAL (N)</th>
+                        <th colspan="2" style="text-align: right;"><input style="text-align: right;" id="sub-total" type="text" value="0.00" disabled></th>
+                        <!-- <th style="text-align:right" colspan="2" class="sub-total">{{ total_bill }}0</th> -->
+                    </tr>
+                    <tr>
+                        <th class="empty" colspan="1"></th>
+                        <th>TAX (N)</th>
+                        <th colspan="2" style="text-align: right;"><input style="text-align: right;" id="tax" value="00.00" type="text" disabled></th>
+                        <!-- <td style="text-align:right" colspan="2">00.00</td> -->
+                    </tr>
+                    <tr>
+                        <th class="empty" colspan="1"></th>
+                        <th>PAY NOW (NGN)</th>
+                        <th colspan="2" style="text-align: right;" class="total" ><h3><input style="text-align:right" type="text" name="pay_amount" id="pay_amount_visible" value="0.00" disabled/></h3></th>
+                    </tr>
+                  </tfoot>   
+                </table> 
+              </div>           
+            </div>
+            <input type="text" id="txtDisplay" name="brand_ID">
+            <input type="text" id="txtQtyDisplay" name="brand_Qty">
+            <input type="text" id="pay_hidden" name="pay_amount" value="0.00">
+            <div class="card-header">
+              <center><input type="submit" id="btnRequest" class="btn btn-success" value="Process this Bill"></center>
+            </div>
+                     
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% endif %}
+
+{% endblock %}
