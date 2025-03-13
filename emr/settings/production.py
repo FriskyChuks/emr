@@ -1,6 +1,4 @@
 from django.contrib.messages import constants as messages
-import dj_database_url
-import django_heroku
 
 import os
 from pathlib import Path
@@ -18,14 +16,13 @@ SECRET_KEY = '3zjkc0dd^5hi@xgvrkb^ip6l=$15pf)w5*spd$9dxx#0$fijf5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['smart-care.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['www.medisync.friskytech.com.ng', 'medisync.friskytech.com.ng']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'formtools',
-    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,7 +34,6 @@ INSTALLED_APPS = [
     'django_filters',
     'django.contrib.humanize',
     'mathfilters',
-    'smart_selects',
 
 
     # myapps
@@ -102,21 +98,21 @@ WSGI_APPLICATION = 'emr.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': "emr",
-        # 'USER': "root",
-        # 'PASSWORD': "",
-        # 'HOST': "localhost",
-        # 'PORT': "3306",
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
-# Overwrite DB settings to use POSTGRESQL in Heroku
-db_from_env = dj_database_url.config()
-DATABASES['default'].update(db_from_env)
-DATABASES['default']['CONN_MAX_AGE'] = 500
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': "emr",
+#         'USER': "root",
+#         'PASSWORD': "",
+#         'HOST': "localhost",
+#         'PORT': "3306",
+#     }
+# }
 
 
 # Password validation
@@ -162,27 +158,12 @@ MEDIA_URL = '/img/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'assets', 'img')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'static_root')
-
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = (
     STATIC_DIR,
 )
 
-
-CORS_REPLACE_HTTPS_REFERER = True
-HOST_SCHEME = "https://"
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_SECONDS = 1000000
-SECURE_FRAME_DENY = True
-
-
-# Activate Django-Heroku.
-django_heroku.settings(locals())
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
